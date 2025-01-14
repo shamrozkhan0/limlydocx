@@ -1,8 +1,8 @@
 package com.limlydocx.service;
 
 import com.limlydocx.entity.User;
-import com.limlydocx.repository.UserRepository;
 import com.limlydocx.globalVariable.GlobalVariable;
+import com.limlydocx.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,44 +23,69 @@ public class AuthenticationService {
     private PasswordEncoder passwordEncoder;
 
 
+
     /**
-     * Register new User in the database
+     * Register User Signup
+     * @param user
+     * @param result
+     * @param redirectAttributes
      */
-    public void registerUser(User user, BindingResult result , RedirectAttributes redirectAttributes) {
+    public void registerUser(User user, BindingResult result, RedirectAttributes redirectAttributes) {
 
+        GlobalVariable.checkFeildError(result);
+        checkUserIsPresentByEmail(user.getEmail());
 
-        if (result.hasErrors()) {
-            GlobalVariable.checkFeildError(result);
-        }
+        String hashPassword = passwordEncoder.encode(user.getPassword());
+        String formatedUsername = StringUtils.cleanPath(user.getUsername());
 
-        if (userRepository.findUserByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username  already Exist");
-        }
-
-        if( userRepository.findUserByEmail(user.getEmail()).isPresent()){
-            throw new RuntimeException("Email already Exist");
-        }
-
-            String hashPassword = passwordEncoder.encode(user.getPassword());
-            System.out.println("hashPassword : " + hashPassword);
-
-            User createUser = new User();
-            createUser.setEmail(user.getEmail());
-
-            createUser.setPassword(hashPassword);
-            createUser.setAcutalPassword(user.getPassword()); // for testing
-
-            String formatedUsername =StringUtils.cleanPath(user.getUsername());
-            createUser.setUsername(formatedUsername);
-            createUser.setJoinedin(LocalDateTime.now());
-
-            createUser.setName(StringUtils.cleanPath(user.getName()));
-            System.out.println("user si going to saved ");
-
-            userRepository.save(createUser);
-            System.out.println("user is saved");
+        createNewUser(user.getEmail(), user.getPassword(), hashPassword, formatedUsername, user.getName());
+        System.out.println("user is saved"); // for testing
 
     }
+
+
+
+    /**
+     * It will create new user with properly formated and encoded data
+     *
+     * @param email
+     * @param password     for testing
+     * @param hashPassword
+     * @param username
+     * @param name
+     */
+    public void createNewUser(String email, String password, String hashPassword, String username, String name) {
+
+        User createUser = new User();
+        createUser.setEmail(email);
+        createUser.setActualPassword(password); //for testing
+        createUser.setJoinedOn(LocalDateTime.now());
+        createUser.setPassword(hashPassword);
+        createUser.setUsername(username);
+        createUser.setName(StringUtils.cleanPath(name));
+        System.out.println("user si going to saved ");
+        userRepository.save(createUser);
+
+    }
+
+
+
+    /**
+     * Checks If user already present in database based on email
+     * @param email
+     */
+    public boolean checkUserIsPresentByEmail(String email){
+        userRepository.findUserByEmail(email).ifPresent(
+                user -> {
+                    throw new RuntimeException("User already present by email :" + email);
+                }
+        );
+        return false;
+    }
+
+
+
+
 
 
 }

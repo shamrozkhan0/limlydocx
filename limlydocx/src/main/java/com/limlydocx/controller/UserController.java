@@ -14,10 +14,15 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+
+
     @GetMapping("/hello")
-    public String  sayhello(){
+    public String sayhello(){
         return "hello world  31-December-2024";
     }
+
+
+
 
     @GetMapping("/users")
     public List<User> showAllusers(){
