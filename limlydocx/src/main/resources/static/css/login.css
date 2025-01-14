@@ -1,0 +1,104 @@
+.login-button{
+    background: linear-gradient(150deg , #96306F,#062A66);
+    
+}
+.login-parent{
+    /* padding-left: 250px !important; */
+align-items: end;
+width: 50%;
+}
+
+.login-inputs{
+    border: 2px solid #432F6F;
+}
+.login-inputs .input{
+    max-width: 80%;
+}
+
+.login-image{
+    height: 100vh;
+}
+
+
+h2{
+    background:linear-gradient(to left , #002B62 10%, #99316E);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+}
+
+.google-button{
+    border: 3px solid #a7a7a7;
+}
+
+.google-button img{
+    /* max-width: 30px; */
+    /* max-height:30px ; */
+    max-width: clamp(30px, 10%, 30px);
+}
+
+.shake{
+    transition: all 0.5s ease;
+    animation: shake .5s ease;
+    }
+
+@keyframes shake{
+    0%{
+        transform:translateX(10px);
+    }
+    10%{
+        transform: translateX(-10px);
+    }
+    20%{
+        transform:translateX(10px);
+    }
+    30%{
+        transform: translateX(-10px);
+    }
+    40%{
+        transform:translateX(10px);
+    }
+    50%{
+        transform: translateX(-10px);
+    }
+    60%{
+        transform:translateX(10px);
+    }
+    70%{
+        transform: translateX(-10px);
+    }
+    80%{
+        transform:translateX(10px);
+    }
+    100%{
+        transform: translateX(-10px);
+    }
+}
+
+@media screen and (max-width:1580px) {
+    .login-parent{
+        padding-left: 100px !important;
+    }
+}
+
+@media screen and (max-width:1280px) {
+    .login-parent{
+        padding-left: 0px !important;
+    }
+
+    .login-image h1{
+        font-size: 30px;
+    }
+}
+
+@media screen and (max-width:998px) {
+    .login-image{
+        height: auto;
+    }
+}
+
+@media screen and (max-width:470px) {
+    .login-image h1{
+        font-size: 25px;
+    }
+}

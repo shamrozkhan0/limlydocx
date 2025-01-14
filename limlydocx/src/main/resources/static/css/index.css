@@ -1,0 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.text-color {
+    color: #DBE2EF;
+
+}
+
+.letter-spacing-normal {
+    letter-spacing: 20px;
+}
+
+.letter-spacing-sm {
+    letter-spacing: 1px;
+}
+
+.fs-14 {
+    font-size: 14px;
+}
+
+.fs-16 {
+    font: 16px;
+}
+
+.fs-18 {
+    font-size: 18px;
+}
+
+.outline-none {
+    outline: none;
+}
+
+.button-limly{
+    background:linear-gradient(to left, #002B62,#992F6D);
+}
+
+

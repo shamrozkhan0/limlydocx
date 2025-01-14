@@ -1,35 +1,35 @@
 package com.limlydocx.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
-import javax.print.DocFlavor;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User  implements UserDetails {
+public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotBlank(message = "You forget to write name")
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Name can only contain letters")
+    @Column
     private String name;
 
     @NotBlank(message = "Username will be used as your unique identity")
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username can only contain letters, numbers and _ ")
-    @Column(unique = true )
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "write your gmail")
@@ -39,20 +39,24 @@ public class User  implements UserDetails {
 
     @NotBlank(message = "Write a password")
 //    @Size(min = 8, max = 20)
+    @Column
     private String password;
 
-    private LocalDateTime joinedin;
+    @Column
+    private LocalDateTime joinedOn;
 
     // for testing
-    private String acutalPassword;
+    @Column
+    private String actualPassword;
 
-    public User(String name, String username, String email, String password, LocalDateTime joinedin, String acutalPassword) {
+
+    public User(String name, String username, String email, String password, LocalDateTime joinedOn, String acutalPassword) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.joinedin = joinedin;
-        this.acutalPassword = acutalPassword;
+        this.joinedOn = joinedOn;
+        this.actualPassword = actualPassword;
     }
 
     public User() {
@@ -104,20 +108,20 @@ public class User  implements UserDetails {
         this.password = password;
     }
 
-    public LocalDateTime getJoinedin() {
-        return joinedin;
+    public LocalDateTime getJoinedOn() {
+        return joinedOn;
     }
 
-    public void setJoinedin(LocalDateTime joinedin) {
-        this.joinedin = joinedin;
+    public void setJoinedOn(LocalDateTime joinedOn) {
+        this.joinedOn = joinedOn;
     }
 
-    public String getAcutalPassword() {
-        return acutalPassword;
+    public String getActualPassword() {
+        return actualPassword;
     }
 
-    public void setAcutalPassword(String acutalPassword) {
-        this.acutalPassword = acutalPassword;
+    public void setActualPassword(String actualPassword) {
+        this.actualPassword = actualPassword;
     }
 
     @Override
@@ -144,5 +148,6 @@ public class User  implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 
 }

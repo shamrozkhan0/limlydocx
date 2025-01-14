@@ -1,6 +1,5 @@
 package com.limlydocx.configs;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,12 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -25,18 +22,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/css/**" , "/js/**" , "/img/**").permitAll()
                         .requestMatchers("/signup/**", "/login/**", "/users").permitAll()
                         .anyRequest().authenticated()
                 )
-                        .formLogin(form -> form
+
+                .formLogin(form -> form
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/hello")
                                 .failureUrl("/login?error=true")
-                                .permitAll()  // Allow all users to access the login page
-                        )
+                )
 
-
-                        .logout(logout -> logout
+                .logout(logout -> logout
                         .logoutSuccessUrl("/login")
                         .permitAll()
                 )
@@ -51,13 +47,10 @@ public class SecurityConfig {
     }
 
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-
 
 
 }
