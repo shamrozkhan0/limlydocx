@@ -22,30 +22,28 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(request -> request
+                        // Resource permit
                         .requestMatchers("/css/**" , "/js/**" , "/img/**").permitAll()
                         .requestMatchers("/signup/**", "/login/**", "/users").permitAll()
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> form
                                 .loginPage("/login")
                                 .failureUrl("/login?error=true")
                 )
-
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
                         .permitAll()
                 )
-
                 .build();
     }
+
 
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

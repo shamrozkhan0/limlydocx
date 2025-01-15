@@ -45,13 +45,15 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public String registerUserSignup(@Valid @ModelAttribute User user, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
-
         log.info("Processing Start for user : {}", user.getEmail());
+        System.out.println("in the signup");
 
         try {
             authenticationService.registerUser(user, result, redirectAttributes);
+            System.out.println("doneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
+            System.out.println("exception:"+ ex);
             redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:/signup";

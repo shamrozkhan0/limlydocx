@@ -4,6 +4,8 @@ import com.limlydocx.entity.User;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,10 +20,14 @@ public class AuthenticationService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private Authentication authentication;
 
 
     /**
@@ -31,16 +37,16 @@ public class AuthenticationService {
      * @param redirectAttributes
      */
     public void registerUser(User user, BindingResult result, RedirectAttributes redirectAttributes) {
-
+        System.out.println("enter the process");
         GlobalVariable.checkFeildError(result);
         checkUserIsPresentByEmail(user.getEmail());
 
         String hashPassword = passwordEncoder.encode(user.getPassword());
         String formatedUsername = StringUtils.cleanPath(user.getUsername());
 
+        System.out.println("hiuiquerojireo");
         createNewUser(user.getEmail(), user.getPassword(), hashPassword, formatedUsername, user.getName());
         System.out.println("user is saved"); // for testing
-
     }
 
 
@@ -49,13 +55,12 @@ public class AuthenticationService {
      * It will create new user with properly formated and encoded data
      *
      * @param email
-     * @param password     for testing
+     * @param password for testing
      * @param hashPassword
      * @param username
      * @param name
      */
     public void createNewUser(String email, String password, String hashPassword, String username, String name) {
-
         User createUser = new User();
         createUser.setEmail(email);
         createUser.setActualPassword(password); //for testing
@@ -65,7 +70,6 @@ public class AuthenticationService {
         createUser.setName(StringUtils.cleanPath(name));
         System.out.println("user si going to saved ");
         userRepository.save(createUser);
-
     }
 
 
