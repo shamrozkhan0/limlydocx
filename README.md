@@ -22,3 +22,8 @@ A Collaborative cloud text editor where you can create and customize documents i
 ## Coming Soon
 
 - 🤖 **AI Bot**: An intelligent assistant that will help you write and review your documents, making content creation even easier and faster!
+
+## LimlyDocx Gallery
+
+![LimlyDocx](src/main/resources/static/img/login-image.png "LimlyDocx Login Form")
+
