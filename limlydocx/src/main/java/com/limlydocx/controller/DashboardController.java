@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DashboardController {
 
 
-    @GetMapping("editor")
-    public String showEditor(){
-        return "editor";
-    }
 
 
 

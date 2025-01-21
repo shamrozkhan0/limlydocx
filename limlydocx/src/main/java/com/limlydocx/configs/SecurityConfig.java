@@ -31,6 +31,9 @@ public class SecurityConfig {
                                 .loginPage("/login")
                                 .failureUrl("/login?error=true")
                 )
+                 .oauth2Login(oauth2 -> oauth2
+                                .loginPage("/login")
+                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
                         .permitAll()

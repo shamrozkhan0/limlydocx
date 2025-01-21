@@ -1,18 +1,205 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Editor</title>
-</head>
-<body>
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module"></script>
     
+    <script src="https://kit.fontawesome.com/0a7c965840.js" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            /* background-color: #080811; */
+        }
+
+        /* Custom styles for dropdowns and toolbar */
+        .ql-size .ql-picker-label::before,
+        .ql-size .ql-picker-item::before,
+        .ql-header .ql-picker-label::before,
+        .ql-header .ql-picker-item::before {
+            content: attr(data-value) !important;
+        }
+
+        #toolbar {
+            background: #f3f3f3;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        #editor {
+            height: 70vh;
+            /* color: white; */
+            /* background: #1B1821; */
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 20px;
+        }
+
+        .ql-toolbar button {
+            margin: 0 2px;
+        }
+
+        .container {
+            max-width: 1200px !important;
+        }
+
+        /* Custom font families */
+        .ql-font span[data-label="Arial"]::before {
+            font-family: Arial;
+        }
+
+        .ql-font span[data-label="Times New Roman"]::before {
+            font-family: "Times New Roman";
+        }
+
+        .ql-font span[data-label="Courier New"]::before {
+            font-family: "Courier New";
+        }
+
+        .ql-editor img {
+            max-width: auto;
+            /* Ensure images do not overflow */
+            height: auto;
+        }
+
+        .mic {
+            position: absolute;
+            /* display: none; */
+        }
+
+        #popupButton {
+            display: none;
+            /* Hide initially */
+            position: absolute;
+            z-index: 9999;
+            /* Make sure it's on top of other elements */
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+    <title>LimlyDocx-Editor</title>
+</head>
+
+<body>
+
+    <div class="container-fluid px-0">
+        <div id="toolbar" class="sticky-top">
+            <!-- Font Family -->
+            <select class="ql-font" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="select font">
+                <option class="d-flex" value="arial">Arial</option>
+                <option class="d-flex flex gap-0" value="times-new-roman">Times New Roman</option>
+                <option class="d-flex" value="courier-new">Courier New</option>
+            </select>
+
+            <!-- Font Size -->
+            <select class="ql-size" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="font size">
+                <option value="8px">8</option>
+                <option value="10px">10</option>
+                <option value="12px">12</option>
+                <option value="14px">14</option>
+                <option value="16px">16</option>
+                <option value="20px" selected>20</option>
+                <option value="24px">24</option>
+                <option value="32px">32</option>
+                <option value="48px">48</option>
+            </select>
+
+            <span class="ql-formats">
+                <button class="ql-bold">bold</button>
+                <button class="ql-italic">italic</button>
+                <button class="ql-underline">underline</button>
+                <button class="ql-strike">line-thorough</button>
+            </span>
+
+            <!-- Text Color and Background Color -->
+            <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+            </span>
+
+            <!-- Text Alignment -->
+            <span class="ql-formats">
+                <!-- <button class="ql-align" value="left">left</button> -->
+                <button class="ql-align" value="center">center</button>
+                <button class="ql-align" value="right">right</button>
+                <button class="ql-align" value="justify">justify</button>
+            </span>
+
+            <!-- Lists -->
+            <span class="ql-formats">
+                <button class="ql-list" value="ordered">ordered</button>
+                <button class="ql-list" value="bullet">bullet</button>
+                <button class="ql-indent" value="-1">forward</button>
+                <button class="ql-indent" value="+1">backward</button>
+            </span>
+
+            <!-- Script -->
+            <span class="ql-formats">
+                <button class="ql-script" value="sub">subline</button>
+                <button class="ql-script" value="super">superline</button>
+            </span>
+
+            <!-- Other formatting -->
+            <span class="ql-formats">
+                <button class="ql-link"></button>
+                <button class="ql-image"></button>
+                <button class="ql-code-block"></button>
+                <button class="ql-blockquote"></button>
+                <button class="ql-clean"></button>
+            </span>
+        </div>
+
+    </div>
+
+    <div class="container mt-4">
+        <form th:action="@{/savecontent}" method="post">
+            <div id="editor" name="content">
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    <button id="popupButton" class="btn btn-primary rounded-5 mic">
+        <i class="fa-solid fa-volume-high"></i>
+    </button>
+
+    <button id="getData">Get content</button>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <script th:src="@{/js/editor.js}"></script>
+    <script th:src="@{/js/editor-backend.js}"></script>
+    <script th:src="@{/js/editor-TTS.js}"></script>
+
+    <!-- <script src="../static/js/editor.js"></script>
+    <script src="../static/js/editor-backend.js"></script> -->
+    <!-- <script src="../static/js/editor-TTS.js"></script> -->
+
+    <script>
+
+ 
+//
+// 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
+    </script>
+
+
 </body>
+
 </html>

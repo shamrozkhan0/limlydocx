@@ -23,13 +23,6 @@ public class AuthenticationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private Authentication authentication;
-
-
     /**
      * Register User Signup
      * @param user

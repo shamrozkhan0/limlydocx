@@ -15,7 +15,7 @@ public class StaticFileConfig implements WebMvcConfigurer {
             "classpath:static/js/**",
             "classpath:static/img/**"
     };
-
+ 
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
