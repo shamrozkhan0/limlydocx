@@ -26,3 +26,8 @@ A Collaborative cloud text editor where you can create and customize documents i
 ## LimlyDocx Gallery
 
 ![LimlyDocx](limlydocx/src/main/resources/static/img/login-image.png "LimlyDocx Login Form")
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 1327b9cf2c97c1fda35706fa66311158924950b3
