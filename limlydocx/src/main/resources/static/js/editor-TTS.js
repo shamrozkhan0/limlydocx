@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+
     const popupButton = document.getElementById('popupButton');
-    let selectedText = ''; // Variable to store selected text
+    let selectedText = ''; 
 
     document.addEventListener('mouseup', function () {
         selectedText = window.getSelection().toString();
@@ -22,34 +23,54 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Button action when clicked
-    popupButton.addEventListener('click', function () {
+    popupButton.click = () => {CheckText();}
+
+    /**
+     * Check if the text is selected and then convert the text to speech
+     */
+    const CheckText = (){
         if (selectedText) {
             console.log("inside the click " + selectedText)
             textToSpeech(selectedText);
         } else {
             alert('No text selected!');
         }
-    });
+    }
+
+
+    /**
+     * Converts text to speech using the SpeechSynthesis API
+     * 
+     * @param {*} text passed from the 
+     */
+
+    function textToSpeech(text) {
+        // Check if the browser supports the SpeechSynthesis API
+        if ('speechSynthesis' in window) {
+            const synth = window.speechSynthesis;
+
+            // Create a new utterance object
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            // Optional settings
+            utterance.lang = 'en-US'; 
+            utterance.rate = 1;
+            utterance.pitch = 1; 
+            utterance.volume = 1; 
+
+            // Speak the text
+            synth.speak(utterance);
+        } else {
+            console.error('Text-to-Speech is not supported in this browser.');
+        }
+    }
+
+
+
+
+
+
 });
 
-function textToSpeech(text) {
-// Check if the browser supports the SpeechSynthesis API
-if ('speechSynthesis' in window) {
-    const synth = window.speechSynthesis;
 
-    // Create a new utterance object
-    const utterance = new SpeechSynthesisUtterance(text);
 
-    // Optional settings
-    utterance.lang = 'en-US'; // Set the language (default is 'en-US')
-    utterance.rate = 1; // Set the speed of speech (1 is normal)
-    utterance.pitch = 1; // Set the pitch (1 is normal)
-    utterance.volume = 1; // Set the volume (1 is maximum)
-
-    // Speak the text
-    synth.speak(utterance);
-} else {
-    console.error('Text-to-Speech is not supported in this browser.');
-}
-}

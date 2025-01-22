@@ -1,4 +1,4 @@
-# LimlyDocx
+# LimlyDocx - A Collaborative Text-Editor
 
 A Collaborative cloud text editor where you can create and customize documents in any format. LimlyDocx features a rich text editor and provides a secure environment for your work.
 
@@ -26,5 +26,3 @@ A Collaborative cloud text editor where you can create and customize documents i
 ## LimlyDocx Gallery
 
 ![LimlyDocx](limlydocx/src/main/resources/static/img/login-image.png "LimlyDocx Login Form")
-
-
