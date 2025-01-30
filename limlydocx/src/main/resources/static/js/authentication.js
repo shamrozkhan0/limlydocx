@@ -16,13 +16,19 @@ $(document).ready(function () {
     });
     
 
-    let input = document.querySelectorAll('input').forEach((text) => {
+    let input = document.querySelectorAll('input');
+
+    input.focus();
+
+    input.forEach((text) => {
         text.addEventListener("keypress", (e) => {
             if (e.key === " ") {
                 e.preventDefault(); 
             }
         });
     });
+
+    
 
     
 });

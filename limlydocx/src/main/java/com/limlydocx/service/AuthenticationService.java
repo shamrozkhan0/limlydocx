@@ -4,8 +4,6 @@ import com.limlydocx.entity.User;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,6 +21,11 @@ public class AuthenticationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private GlobalVariable globalVariable;
+
+
+
     /**
      * Register User Signup
      * @param user
@@ -31,7 +34,7 @@ public class AuthenticationService {
      */
     public void registerUser(User user, BindingResult result, RedirectAttributes redirectAttributes) {
         System.out.println("enter the process");
-        GlobalVariable.checkFeildError(result);
+        globalVariable.checkFeildError(result);
         checkUserIsPresentByEmail(user.getEmail());
 
         String hashPassword = passwordEncoder.encode(user.getPassword());
@@ -45,8 +48,7 @@ public class AuthenticationService {
 
 
     /**
-     * It will create new user with properly formated and encoded data
-     *
+     * Register user in the database
      * @param email
      * @param password for testing
      * @param hashPassword

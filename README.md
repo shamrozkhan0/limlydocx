@@ -26,3 +26,7 @@ A Collaborative cloud text editor where you can create and customize documents i
 ## LimlyDocx Gallery
 
 ![LimlyDocx](limlydocx/src/main/resources/static/img/login-image.png "LimlyDocx Login Form")
+
+**All Rights Reserved:**
+- **Shamroz Khan is the owner of this repository**
+- **Designed and Developed by Shamroz Khan**

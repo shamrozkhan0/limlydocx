@@ -1,71 +1,76 @@
- $(document).ready(function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-document.getElementById("getData").addEventListener("click", () => {
-    console.log("clicked") // for testing
+    const button = document.getElementById("getContent");
+    const editor = document.getElementById("editor");
 
-    let rawData = document.getElementById("editor").innerHTML
-    let tempDiv = document.createElement("div");
 
-    tempDiv.innerHTML = rawData;
-    let filteredHTML = "";
-    
-    tempDiv.querySelectorAll("p").forEach((element) => {
-        filteredHTML += element.outerHTML; // Append the cleaned-up elements
-    });
 
-    console.log(filteredHTML);
-    tempDiv.remove();
+    /**
+     * Function to get the content of the editor
+     */
+    const getEditorContent = () => {
 
-    sendDataToSpringBoot(filteredHTML)
+        const content = editor.innerHTML;
+        let format = "pdf";
 
-})
+        filterContent(content, format);
+    };
 
-/**
- * This function sends data to the backend Which then saved in the database
- * @param {*} data 
- */
 
-const sendDataToSpringBoot = (data)=> {
 
-    let confirmRequest = confirm("you do want to send an http request to save data")
+    /**
+     * Filter the unwanted tags from the content
+     * 
+     * @param {*} content - The content (HTML) to filter
+     * @param {*} format - Either "pdf" or "docx", specifying the output format
+     */
+    const filterContent = (content, format) => {
 
-    if(confirmRequest){
+        let tempDiv = document.createElement("div");
+        tempDiv.innerHTML = content;
 
-        $.ajax({
-            type: "POST",
-            url: "http://localhost:8080/savecontent",
-            contentType:"application/json",
-            data: JSON.stringify({content: data}) ,
-            dataType: "json",
-            success: function (response, status) {
-                console.log("data has been saved" + status )
-            },
+        let filteredHTML = '';
 
-            error: function(request, status, error){
-                console.error(error)
-            }
-            
-            
+        tempDiv.querySelectorAll('img, p, pre').forEach((element) => {
+            filteredHTML += element.outerHTML;  
         });
-       
-    } 
-    else{
-        console.log("data send request is canceled by the user")
+
+        console.log("Filtered Content:", filteredHTML);
+
+        tempDiv.remove();
+        sendContentToSpringboot(filteredHTML);
+
     }
 
-}
+
+
+    /**
+     * Function to send the content to the springboot
+     * @param {String} content  
+     */
+    const sendContentToSpringboot = (content) => {
+        $.ajax({
+            type: "POST",
+            url: "/savecontent",
+            data: content,  // Send the raw HTML content
+            contentType: "text/html",  // Specify that you're sending raw HTML
+            success: function (response) {
+                console.log("Data sent successfully");
+            },
+            error: function (error) {
+                console.log("Data not sent successfully");
+            }
+        });
+    }
 
 
 
 
- });
+
+    button.addEventListener("click", getEditorContent);
 
 
-
-
-
-
-
+});
 
 
 

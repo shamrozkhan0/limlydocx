@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module"></script>
-    
+
     <script src="https://kit.fontawesome.com/0a7c965840.js" crossorigin="anonymous"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,6 +19,13 @@
     <style>
         body {
             /* background-color: #080811; */
+            background-color: #E3E9F7;
+        }
+
+        .ql-size {
+            background: #151A2D;
+            color: white !important;
+
         }
 
         /* Custom styles for dropdowns and toolbar */
@@ -28,21 +36,27 @@
             content: attr(data-value) !important;
         }
 
+        .ql-snow .ql-picker-options {
+            background-color: #151A2D !important;
+        }
+
         #toolbar {
-            background: #f3f3f3;
-            border: 1px solid #ccc;
-            padding: 8px;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            background: #151A2D;
+            border: 0px !important;
+            color: white;
+            /* padding: 8px; */
+            /* border-radius: 4px; */
+            /* margin-bottom: 10px; */
         }
 
         #editor {
             height: 70vh;
             /* color: white; */
-            /* background: #1B1821; */
+            background: white;
+            padding: 100px;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            font-size: 20px;
+            font-size: 20px !important;
         }
 
         .ql-toolbar button {
@@ -90,14 +104,33 @@
             border-radius: 50%;
             cursor: pointer;
         }
+
+        .ql-snow .ql-stroke {
+            stroke: white !important;
+        }
+
+        .ql-snow .ql-fill,
+        .ql-snow .ql-stroke.ql-fill {
+            fill: white;
+        }
+
+        .ql-snow .ql-picker {
+            color: white !important;
+        }
+
+        /* @page {
+            size: A4;
+            /* or use size: 1000px 1500px; */
+        /* } */
     </style>
     <title>LimlyDocx-Editor</title>
 </head>
 
 <body>
 
-    <div class="container-fluid px-0">
-        <div id="toolbar" class="sticky-top">
+    <div class="container-fluid px-0 m-0">
+
+        <div id="toolbar" class="">
             <!-- Font Family -->
             <select class="ql-font" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="select font">
                 <option class="d-flex" value="arial">Arial</option>
@@ -106,7 +139,8 @@
             </select>
 
             <!-- Font Size -->
-            <select class="ql-size" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="font size">
+            <select class="ql-size bg-webdark  text-white" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                data-bs-title="font size">
                 <option value="8px">8</option>
                 <option value="10px">10</option>
                 <option value="12px">12</option>
@@ -155,7 +189,7 @@
 
             <!-- Other formatting -->
             <span class="ql-formats">
-                <button class="ql-link"></button>
+                <button class="text-white  ql-link"></button>
                 <button class="ql-image"></button>
                 <button class="ql-code-block"></button>
                 <button class="ql-blockquote"></button>
@@ -166,18 +200,19 @@
     </div>
 
     <div class="container mt-4">
-        <form th:action="@{/savecontent}" method="post">
-            <div id="editor" name="content">
-            </div>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </form>
+
+        
+        <div id="editor" name="content"></div>
+        <button id="getContent">Get content</button>
+
     </div>
+
+
 
     <button id="popupButton" class="btn btn-primary rounded-5 mic">
         <i class="fa-solid fa-volume-high"></i>
     </button>
 
-    <button id="getData">Get content</button>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -187,15 +222,10 @@
     <script th:src="@{/js/editor-TTS.js}"></script>
 
     <!-- <script src="../static/js/editor.js"></script>
-    <script src="../static/js/editor-backend.js"></script> -->
-    <!-- <script src="../static/js/editor-TTS.js"></script> -->
+    <script src="../static/js/editor-backend.js"></script> 
+     <script src="../static/js/editor-TTS.js"></script> -->
 
     <script>
-
- 
-//
-// 
-
 
     </script>
 

@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             imageResize: {},
         },
-        placeholder: 'Start typing your document...',
+        // placeholder: 'Start typing your document...',
     });
 
     // Set default font size and family

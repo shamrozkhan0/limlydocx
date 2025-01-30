@@ -1,38 +1,36 @@
 package com.limlydocx.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Document")
+@Table(name = "document")
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DocumentEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//
-//    @OneToMany(mappedBy = "document" ,cascade = CascadeType.ALL , orphanRemoval = true)
-//    private List<DocImage> images = new ArrayList<>();
 
-
-//    @Column(columnDefinition = "JSON")
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
-    public DocumentEntity(Long id, String content) {
-        this.id = id;
-        this.content = content;
-    }
+    private LocalDate uploadOn;
 
-    public DocumentEntity() {
-    }
+    private String creator;
 
-    public String getContent() {
-        return content;
-    }
+//  @OneToMany(mappedBy = "guest")
+    private List<String> guest = new ArrayList<>();
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

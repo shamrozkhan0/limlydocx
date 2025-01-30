@@ -8,6 +8,10 @@
 
 }
 
+.transition05{
+    transition: all .5s ease;
+}
+
 .letter-spacing-normal {
     letter-spacing: 20px;
 }
@@ -36,4 +40,6 @@
     background:linear-gradient(to left, #002B62,#992F6D);
 }
 
-
+.bg-webdark{
+    background: #151A2D;
+}

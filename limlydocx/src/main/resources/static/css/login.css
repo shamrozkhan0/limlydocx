@@ -42,6 +42,8 @@ h2{
     animation: shake .5s ease;
     }
 
+
+
 @keyframes shake{
     0%{
         transform:translateX(10px);
@@ -100,5 +102,8 @@ h2{
 @media screen and (max-width:470px) {
     .login-image h1{
         font-size: 25px;
+    }
+    .login-image {
+    height: 100px;
     }
 }
