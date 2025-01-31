@@ -9,6 +9,8 @@
     <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/quill-image-uploader@1.2.3/dist/quill.imageUploader.min.js"></script> -->
+
 
     <script src="https://kit.fontawesome.com/0a7c965840.js" crossorigin="anonymous"></script>
 
@@ -40,23 +42,25 @@
             background-color: #151A2D !important;
         }
 
-        #toolbar {
+        .bg-webdark {
             background: #151A2D;
+        }
+
+        #toolbar {
             border: 0px !important;
-            color: white;
             /* padding: 8px; */
             /* border-radius: 4px; */
             /* margin-bottom: 10px; */
         }
 
         #editor {
-            height: 70vh;
+            /* height: 1500px; */
             /* color: white; */
             background: white;
             padding: 100px;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            font-size: 20px !important;
+            /* font-size: 20px !important; */
         }
 
         .ql-toolbar button {
@@ -130,7 +134,7 @@
 
     <div class="container-fluid px-0 m-0">
 
-        <div id="toolbar" class="">
+        <div id="toolbar" class="bg-webdark text-white">
             <!-- Font Family -->
             <select class="ql-font" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="select font">
                 <option class="d-flex" value="arial">Arial</option>
@@ -199,12 +203,11 @@
 
     </div>
 
-    <div class="container mt-4">
-
-        
-        <div id="editor" name="content"></div>
-        <button id="getContent">Get content</button>
-
+    <div class="container mt-4 d-flex flex-column ">
+        <div id="editor" name="content">
+        </div>
+        <div id="counter" name="counter" class="bg-webdark text-white text-end px-2">0</div>
+        <button id="getContent" class="mt-2">Get content</button>
     </div>
 
 
@@ -220,8 +223,8 @@
     <script th:src="@{/js/editor.js}"></script>
     <script th:src="@{/js/editor-backend.js}"></script>
     <script th:src="@{/js/editor-TTS.js}"></script>
-
-    <!-- <script src="../static/js/editor.js"></script>
+<!-- 
+    <script src="../static/js/editor.js"></script>
     <script src="../static/js/editor-backend.js"></script> 
      <script src="../static/js/editor-TTS.js"></script> -->
 
