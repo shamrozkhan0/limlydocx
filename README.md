@@ -18,6 +18,7 @@ A Collaborative cloud text editor where you can create and customize documents i
 - **Frontend**: HTML, CSS, Bootstrap, JavaScript, jQuery, Thymeleaf(SSR) 🖥️🎨
 - **Backend**: Java, Spring Boot, Spring Security, OAuth2, WebSocket ⚙️🔒
 - **Database**: MySQL 💾
+- **Libraries**: QuillJs, itext (`.pdf`),  📚
 
 ## Coming Soon
 
