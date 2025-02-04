@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Service
 public class DocumentService {
