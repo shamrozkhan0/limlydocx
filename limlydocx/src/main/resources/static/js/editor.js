@@ -15,35 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
         modules: {
             toolbar: {
                 container: '#toolbar',
-                handlers: {
-                    // Custom image handler
-                    image: () => {
-                        const input = document.createElement('input');
-                        input.setAttribute('type', 'file');
-                        input.setAttribute('accept', 'image/*');
-                        input.click();
-
-                        input.onchange = () => {
-                            const file = input.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = (e) => {
-                                    const imageUrl = e.target.result;
-                                    const range = quill.getSelection();
-                                    quill.insertEmbed(range.index, 'image', imageUrl, 'user');
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        };
-                    }
-                }
             },
             imageResize: {},
         },
     });
 
     // Set default font size and family
-    quill.format('size', '12px');
+    quill.format('size', '12px'); // initial font size
     quill.format('font', 'arial');
 
 
@@ -56,10 +34,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
+
+
+    const counterElement = document.querySelector('#counter');
+
+
+
+    // Editor words counter
+    quill.on('text-change', function () {
+        counterElement.innerHTML = quill.getLength() - 1;
+    });
+
+
     //======================= Getting Content =====================================
 
-
+    // trigger getEditorContent() function
     const button = document.getElementById("getContent");
+    const spinnerEl = document.querySelector(".spinner-parent");
+
 
 
 
@@ -68,10 +60,16 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     const getEditorContent = () => {
         const editorContent = quill.root.innerHTML;
+
         console.log(`Editor Content: ${editorContent}`);
-        console.log(`Content Length ${quill.getLength() -1}`)
+        console.log(`Content Length ${quill.getLength() - 1}`)
+        
+        spinnerEl.classList.replace("d-none", "d-block")
         sendContentToSpringboot(editorContent);
     };
+
+      // Attach the event listener to the button
+      button.addEventListener("click", getEditorContent);
 
 
 
@@ -88,27 +86,20 @@ document.addEventListener("DOMContentLoaded", () => {
             contentType: "text/html",  // Specify that you're sending raw HTML
             success: function (response) {
                 console.log("Data sent successfully");
+                spinnerEl.classList.replace("d-block", "d-none")
             },
             error: function (error) {
                 console.log("Data not sent successfully");
+
             }
         });
     };
 
-    // Attach the event listener to the button
-    button.addEventListener("click", getEditorContent);
 
 
 
-// ======================= Custom Features =====================================
 
-const counterElement = document.querySelector('#counter');
-
-// Words counter
-quill.on('text-change', function () {
-    counterElement.innerHTML = quill.getLength() - 1;
-});
-
+    // ======================= Custom Features =====================================
 
 
 

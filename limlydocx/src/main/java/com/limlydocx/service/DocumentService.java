@@ -7,20 +7,16 @@ import com.limlydocx.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
 public class DocumentService {
-
-
-
-    // This project uses iText, licensed under the AGPL.
-    // You can find the source code here: <your-repo-link>
-
-
 
     @Autowired
     private GlobalVariable globalVariable;
@@ -30,35 +26,30 @@ public class DocumentService {
 
 
 
-    public void saveDocument(String content, Authentication authentication) {
-
+    public void saveDocumentInDatabase(String content, Authentication authentication) {
         String username = globalVariable.getUsername(authentication);
         System.out.println("This is the username " + username);//  for testing
-
-        System.out.println("Impure : " +content);
 
         DocumentEntity savedocument = new DocumentEntity();
         savedocument.setContent(content);
         savedocument.setUploadOn(LocalDate.now());
         savedocument.setCreator(username);
         documentRepository.save(savedocument);
-
-        generatePdf(content);
     }
 
 
 
-    public void generatePdf(String content){
-//        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\" + UUID.randomUUID().toString() +".pdf";
-
+    public void generatePdf(String content, RedirectAttributes redirectAttributes){
         String path =  "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
 
         try{
-
             System.out.println(content);
 
-            FileOutputStream pdfOutputStream = new FileOutputStream(path);
-            HtmlConverter.convertToPdf(content,pdfOutputStream);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            HtmlConverter.convertToPdf(content, byteArrayOutputStream);
+
+            redirectAttributes.addFlashAttribute("file", byteArrayOutputStream.toByteArray());
+
             System.out.println("pdf is creatted successfully ");
 
         } catch (Exception e) {

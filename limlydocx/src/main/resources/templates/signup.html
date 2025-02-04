@@ -9,7 +9,7 @@
 </head>
 <body>
     
-    <form action="/signup" method="post" th:object="${user}">
+    <form tha:ction="@{/signup}" method="post" th:object="${user}">
         <div class="alert alert-danger" th:if="${error}">
             [[${error}]]
         </div>
