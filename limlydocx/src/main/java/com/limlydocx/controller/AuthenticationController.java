@@ -28,32 +28,45 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
 
+    /**
+     * Send User To Login Page
+     *
+     * @return Login Page
+     */
     @GetMapping("/login")
     public String showLoginPage() {
         return "login";
     }
 
 
+    /**
+     * Show SignUp Page
+     * @param model
+     * @return Signup Page
+     */
     @GetMapping("/signup")
     public String showSignupPage(Model model) {
         if (!model.containsAttribute("user")) {
+            // This will set page as new User
             model.addAttribute("user", new User());
         }
         return "signup";
     }
 
 
+
+    // Incomplete Its has many errors
     @PostMapping("/signup")
     public String registerUserSignup(@Valid @ModelAttribute User user, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+
         log.info("Processing Start for user : {}", user.getEmail());
-        System.out.println("in the signup");
 
         try {
             authenticationService.registerUser(user, result, redirectAttributes);
-            System.out.println("doneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-
         } catch (Exception ex) {
-            System.out.println("exception:"+ ex);
+            System.out.println("exception:" + ex);
+
+            // Rediret To The SignUp Page With User Credential When SignUp Fail
             redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:/signup";

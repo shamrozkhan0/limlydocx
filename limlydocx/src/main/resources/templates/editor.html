@@ -66,7 +66,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .container{
+        .container {
             width: 800px;
         }
 
@@ -155,7 +155,8 @@
 
         }
 
-        .ql-snow.ql-toolbar:after, .ql-snow .ql-toolbar:after{
+        .ql-snow.ql-toolbar:after,
+        .ql-snow .ql-toolbar:after {
             display: none;
         }
 
@@ -182,92 +183,104 @@
     <div class="container-fluid px-0 m-0 sticky-top">
 
         <div id="toolbar" class="bg-webdark text-white d-flex align-items-center justify-content-between px-4 py-2 ">
-  
+
             <div class="quill">
-                          <!-- Font Family -->
-            <select class="ql-font" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="select font">
-                <option class="d-flex" value="arial">Arial</option>
-                <option class="d-flex flex gap-0" value="times-new-roman">Times New Roman</option>
-                <option class="d-flex" value="courier-new">Courier New</option>
-            </select>
+                <!-- Font Family -->
+                <select class="ql-font" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="select font">
+                    <option class="d-flex" value="arial">Arial</option>
+                    <option class="d-flex flex gap-0" value="times-new-roman">Times New Roman</option>
+                    <option class="d-flex" value="courier-new">Courier New</option>
+                </select>
 
-            <!-- Font Size -->
-            <select class="ql-size bg-webdark  text-white" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                data-bs-title="font size">
-                <option value="8px" selected>8</option>
-                <option value="10px">10</option>
-                <option value="12px">12</option>
-                <option value="14px">14</option>
-                <option value="16px">16</option>
-                <option value="20px">20</option>
-                <option value="24px">24</option>
-                <option value="32px">32</option>
-                <option value="48px">48</option>
-            </select>
+                <!-- Font Size -->
+                <select class="ql-size bg-webdark  text-white" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    data-bs-title="font size">
+                    <option value="8px" selected>8</option>
+                    <option value="10px">10</option>
+                    <option value="12px">12</option>
+                    <option value="14px">14</option>
+                    <option value="16px">16</option>
+                    <option value="20px">20</option>
+                    <option value="24px">24</option>
+                    <option value="32px">32</option>
+                    <option value="48px">48</option>
+                </select>
 
-            <span class="ql-formats" value="Font-Weight" >
-                <button class="ql-bold">bold</button>
-                <button class="ql-italic">italic</button>
-                <button class="ql-underline">underline</button>
-                <button class="ql-strike">line-thorough</button>
-            </span>
+                <span class="ql-formats" value="Font-Weight">
+                    <button class="ql-bold">bold</button>
+                    <button class="ql-italic">italic</button>
+                    <button class="ql-underline">underline</button>
+                    <button class="ql-strike">line-thorough</button>
+                </span>
 
-            <!-- Text Color and Background Color -->
-            <span class="ql-formats">
-                <select class="ql-color"></select>
-                <select class="ql-background"></select>
-            </span>
+                <!-- Text Color and Background Color -->
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
 
-            <!-- Text Alignment -->
-            <span class="ql-formats">
-                <!-- <button class="ql-align" value="left">left</button> -->
-                <button class="ql-align" value="center">center</button>
-                <button class="ql-align" value="right">right</button>
-                <button class="ql-align" value="justify">justify</button>
-            </span>
+                <!-- Text Alignment -->
+                <span class="ql-formats">
+                    <!-- <button class="ql-align" value="left">left</button> -->
+                    <button class="ql-align" value="center">center</button>
+                    <button class="ql-align" value="right">right</button>
+                    <button class="ql-align" value="justify">justify</button>
+                </span>
 
-            <!-- Lists -->
-            <span class="ql-formats">
-                <button class="ql-list" value="ordered">ordered</button>
-                <button class="ql-list" value="bullet">bullet</button>
-                <button class="ql-indent" value="-1">forward</button>
-                <button class="ql-indent" value="+1">backward</button>
-            </span>
+                <!-- Lists -->
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered">ordered</button>
+                    <button class="ql-list" value="bullet">bullet</button>
+                    <button class="ql-indent" value="-1">forward</button>
+                    <button class="ql-indent" value="+1">backward</button>
+                </span>
 
-            <!-- Script -->
-            <span class="ql-formats">
-                <button class="ql-script" value="sub">subline</button>
-                <button class="ql-script" value="super">superline</button>
-            </span>
+                <!-- Script -->
+                <span class="ql-formats">
+                    <button class="ql-script" value="sub">subline</button>
+                    <button class="ql-script" value="super">superline</button>
+                </span>
 
-            <!-- Other formatting -->
-            <span class="ql-formats">
-                <button class="text-white  ql-link"></button>
-                <button class="ql-image"></button>
-                <button class="ql-code-block"></button>
-                <button class="ql-blockquote"></button>
-                <button class="ql-clean"></button>
-            </span>
+                <!-- Other formatting -->
+                <span class="ql-formats">
+                    <button class="text-white  ql-link"></button>
+                    <button class="ql-image"></button>
+                    <button class="ql-code-block"></button>
+                    <button class="ql-blockquote"></button>
+                    <button class="ql-clean"></button>
+                </span>
             </div>
 
-            <div class="" th:if="${file}">
-                <a class="btn btn-primary text-white" th:href="@{${file}}">Download PDF</a>
+            <div class="d-flex align-items-center gap-3">
+
+                <div th:if="${btn}">
+                    <form th:action="@{/download-document(id=${btn})}" method="post">
+                        <button class="w-100 h-100 bg-primary text-white px-3 py-2 rounded-pill fw-semibold fs-18"
+                            type="submit">Download PDF</a>
+                    </form>
+                </div>
+
+                <form th:action="@{/savecontent}" method="post">
+                    <input type="text"  name="content" hidden>
+                    <button type="submit" id="getContent"
+                        class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF</button>
+                </form>
+
             </div>
+
 
         </div>
     </div>
 
     <div class="container mt-4 d-flex flex-column align-items-center ">
-        <div id="editor" name="content" class="w-100">
-        </div>
-        <div id="counter" name="counter" class="bg-webdark text-white text-end px-2 w-100">0</div>
-        <button id="getContent" class="mt-2 w-100">Get content</button>
+
+        <div id="editor" name="content" class="w-100" th:field="*{content}"></div>
+        <!-- <div id="counter" name="counter" class="bg-webdark text-white text-end px-2 w-100">0</div> -->
     </div>
 
     <button id="popupButton" class="btn btn-primary rounded-5 mic">
         <i class="fa-solid fa-volume-high"></i>
     </button>
-
 
 
 

@@ -1,16 +1,14 @@
 package com.limlydocx.service;
 
-import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 public class DocumentService {
@@ -23,39 +21,54 @@ public class DocumentService {
 
 
 
-    public void saveDocumentInDatabase(String content, Authentication authentication) {
+    /**
+     * Saves Data in the database with owner username
+     *
+     * @param content
+     * @param authentication
+     */
+    public UUID saveDocumentInDatabase(String content, Authentication authentication) {
         String username = globalVariable.getUsername(authentication);
         System.out.println("This is the username " + username);//  for testing
 
+        UUID id = UUID.randomUUID();
+
         DocumentEntity savedocument = new DocumentEntity();
         savedocument.setContent(content);
+        savedocument.setId(id);
         savedocument.setUploadOn(LocalDate.now());
         savedocument.setCreator(username);
         documentRepository.save(savedocument);
+
+        return id;
     }
 
 
 
-    public void generatePdf(String content, RedirectAttributes redirectAttributes){
-        String path =  "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
+//    /**
+//     * creates Pdf & sends to user frontend to download pdf
+//     * @param content
+//     */
+//    public void generatePdf(String content, Model model){
+//        String path =  "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
+//
+//        try{
+//            System.out.println(content); // for testing
+//
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            HtmlConverter.convertToPdf(content, byteArrayOutputStream);
+//
+//            model.addAttribute("file", byteArrayOutputStream.toByteArray());
+//
+//            System.out.println("pdf is creatted successfully "); // for testing
+//
+//        } catch (Exception e) {
+//            System.out.println("Error : " + e.getMessage());
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
+//
 
-        try{
-            System.out.println(content);
 
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            HtmlConverter.convertToPdf(content, byteArrayOutputStream);
-
-            redirectAttributes.addFlashAttribute("file", byteArrayOutputStream.toByteArray());
-
-            System.out.println("pdf is creatted successfully ");
-
-        } catch (Exception e) {
-            System.out.println("Error : " + e.getMessage());
-            throw new RuntimeException(e);
-        }
-
-    }
-
-
-
-    }
+}

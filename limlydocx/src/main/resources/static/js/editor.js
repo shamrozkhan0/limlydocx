@@ -53,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const spinnerEl = document.querySelector(".spinner-parent");
 
 
-
-
     /**
      * Function to get the content of the editor
      */
@@ -63,43 +61,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log(`Editor Content: ${editorContent}`);
         console.log(`Content Length ${quill.getLength() - 1}`)
-        
+
         spinnerEl.classList.replace("d-none", "d-block")
         sendContentToSpringboot(editorContent);
     };
 
-      // Attach the event listener to the button
-      button.addEventListener("click", getEditorContent);
-
-
-
-
-    /**
-     * Function to send the content to the Spring Boot backend
-     * @param {String} content - The filtered HTML content
-     */
-    const sendContentToSpringboot = (content) => {
-        $.ajax({
-            type: "POST",
-            url: "/savecontent",
-            data: content,  // Send the raw HTML content
-            contentType: "text/html",  // Specify that you're sending raw HTML
-            success: function (response) {
-                console.log("Data sent successfully");
-                spinnerEl.classList.replace("d-block", "d-none")
-            },
-            error: function (error) {
-                console.log("Data not sent successfully");
-
-            }
-        });
-    };
-
-
-
+    // Attach the event listener to the button
+    button.addEventListener("click", getEditorContent);
 
 
     // ======================= Custom Features =====================================
+
+
 
 
 
