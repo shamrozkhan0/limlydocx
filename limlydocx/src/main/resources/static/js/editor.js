@@ -48,9 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //======================= Getting Content =====================================
 
+    const spinnerEl = document.querySelector(".spinner-parent");
     // trigger getEditorContent() function
     const button = document.getElementById("getContent");
-    const spinnerEl = document.querySelector(".spinner-parent");
+    const contentSender = document.querySelector("#contentSender");
+
 
 
     /**
@@ -58,9 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     const getEditorContent = () => {
         const editorContent = quill.root.innerHTML;
+        contentSender.value = editorContent
 
-        console.log(`Editor Content: ${editorContent}`);
-        console.log(`Content Length ${quill.getLength() - 1}`)
+        // console.log(`Editor Content: ${editorContent}`);
+        // console.log(`Content Length ${quill.getLength() - 1}`)
 
         spinnerEl.classList.replace("d-none", "d-block")
         sendContentToSpringboot(editorContent);

@@ -34,3 +34,4 @@ build/
 
 # Ignore application.properties file
 security.properties
+CloudinaryAPI.java

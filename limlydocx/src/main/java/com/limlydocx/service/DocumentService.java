@@ -1,12 +1,16 @@
 package com.limlydocx.service;
 
+import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -44,6 +48,23 @@ public class DocumentService {
     }
 
 
+    public void DownloadDocument(@RequestBody UUID id){
+
+        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
+        File file = new File(path);
+
+        try{
+
+            String content = documentRepository.getDocumentById(id);
+
+            HtmlConverter.convertToPdf(content,null );
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
 
 //    /**
 //     * creates Pdf & sends to user frontend to download pdf
@@ -68,7 +89,6 @@ public class DocumentService {
 //        }
 //
 //    }
-//
 
 
 }

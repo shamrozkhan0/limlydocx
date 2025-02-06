@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Controller
@@ -50,15 +52,17 @@ public class DocumentController {
                 return "/login";
             }
 
+            String decodedContent= URLDecoder.decode(content, StandardCharsets.UTF_8.name());
+
             // for debug
-            System.out.println("content: " + content);
+            System.out.println("content: " + decodedContent);
 
             // returns a UUID
             UUID id = documentService.saveDocumentInDatabase(content, authentication);
 
             // redirect the id which activates the button which help to download
             redirectAttributes.addFlashAttribute("btn", id);
-            redirectAttributes.addFlashAttribute("content", content);
+            redirectAttributes.addFlashAttribute("content", decodedContent);
 
         } catch (Exception e) {
             e.getMessage();

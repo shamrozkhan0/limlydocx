@@ -260,8 +260,8 @@
                     </form>
                 </div>
 
-                <form th:action="@{/savecontent}" method="post">
-                    <input type="text"  name="content" hidden>
+                <form th:action="@{/savecontent}" method="post" >
+                    <input type="text"  name="content" id="contentSender" hidden >
                     <button type="submit" id="getContent"
                         class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF</button>
                 </form>
