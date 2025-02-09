@@ -6,12 +6,11 @@ import com.limlydocx.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Controller
@@ -42,52 +41,41 @@ public class DocumentController {
 
     @RequestMapping(path = "/savecontent", method = RequestMethod.POST)
     public String saveDocumentContent(
-            @RequestBody String content,
+            @RequestParam("content") String content,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            // if user not and somehow access the editor he returns to login page
+
             if (authentication == null) {
                 return "/login";
             }
 
-            String decodedContent= URLDecoder.decode(content, StandardCharsets.UTF_8.name());
+            if(!content.isEmpty() ||  content != null){
+                redirectAttributes.addFlashAttribute("error" , "Content is empty");
+                return "redirect:/doc";
+            }
 
-            // for debug
-            System.out.println("content: " + decodedContent);
+            System.out.println(content);
 
-            // returns a UUID
             UUID id = documentService.saveDocumentInDatabase(content, authentication);
+            documentService.downloadDocument(content);
 
-            // redirect the id which activates the button which help to download
             redirectAttributes.addFlashAttribute("btn", id);
-            redirectAttributes.addFlashAttribute("content", decodedContent);
+            redirectAttributes.addFlashAttribute("content", content);
+
+            return "redirect:/doc";
 
         } catch (Exception e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
             return "redirect:/doc";
         }
-        // returns to the editor with the button with pdf id which saves in the database
-        return "redirect:/doc";
     }
 
 
 
-    @RequestMapping(path = "/download-document", method = RequestMethod.POST)
-    public String DownloadDocument(@RequestParam UUID id) {
-        System.out.println("id : " + id);
-        System.out.println("bweuoqow");
-        return "redirect:/doc";
-    }
 
 
-
-    /**
-     *  TODO AT HOME
-     *  CLEAN HTML CODE USING THYMELEAF FRAGMENTS
-     *  AND SOME HTTP CODE
-     */
 
 
 }

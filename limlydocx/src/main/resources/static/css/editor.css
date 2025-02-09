@@ -1,21 +1,134 @@
-/* #editor{
+body {
+    /* background-color: #080811; */
+    background-color: #c8d8ff;
+}
+
+.ql-size {
+    background: #151A2D;
+    color: white !important;
+
+}
+
+/* Custom styles for dropdowns and toolbar */
+.ql-size .ql-picker-label::before,
+.ql-size .ql-picker-item::before,
+.ql-header .ql-picker-label::before,
+.ql-header .ql-picker-item::before {
+    content: attr(data-value) !important;
+}
+
+.ql-snow .ql-picker-options {
+    background-color: #151A2D !important;
+}
+
+.bg-webdark {
+    background: #151A2D;
+}
+
+#toolbar {
+    border: 0px !important;
+    /* padding: 8px; */
+    /* border-radius: 4px; */
+    /* margin-bottom: 10px; */
+}
+
+#editor {
+    height: 800px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
     width: 800px;
-    height: 500px;
-    border: 3px solid black;
-
-} 
-.ql-size-small {
-    font-size: 12px;
 }
 
-.ql-size-medium {
-    font-size: 16px;
+.ql-toolbar button {
+    margin: 0 2px;
 }
 
-.ql-size-large {
-    font-size: 24px;
+.container {
+    max-width: 1200px !important;
 }
 
-.ql-size-huge {
-    font-size: 32px;
-} */
+/* Custom font families */
+.ql-font span[data-label="Arial"]::before {
+    font-family: Arial;
+}
+
+.ql-font span[data-label="Times New Roman"]::before {
+    font-family: "Times New Roman";
+}
+
+.ql-font span[data-label="Courier New"]::before {
+    font-family: "Courier New";
+}
+
+.ql-editor img {
+    max-width: auto;
+    /* Ensure images do not overflow */
+    height: auto;
+}
+
+.mic {
+    position: absolute;
+    /* display: none; */
+}
+
+#popupButton {
+    display: none;
+    /* Hide initially */
+    position: absolute;
+    z-index: 9999;
+    /* Make sure it's on top of other elements */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.ql-snow .ql-stroke {
+    stroke: white !important;
+}
+
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+    fill: white;
+}
+
+.ql-snow .ql-picker {
+    color: white !important;
+}
+
+.spinner-parent {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.spinner-icon {
+    animation: spin 1s linear infinite;
+}
+
+.spinner {
+    width: 100px;
+    height: 100px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+
+}
+
+.ql-snow.ql-toolbar:after,
+.ql-snow .ql-toolbar:after {
+    display: none;
+}

@@ -9,7 +9,7 @@
     <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/quill-image-uploader@1.2.3/dist/quill.imageUploader.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-uploader@1.2.3/dist/quill.imageUploader.min.js"></script>
 
 
     <script src="https://kit.fontawesome.com/0a7c965840.js" crossorigin="anonymous"></script>
@@ -20,151 +20,11 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/editor.css">
 
-    <!-- <link rel="stylesheet" th:href="@{/css/index.css}"> -->
+    <link rel="stylesheet" th:href="@{/css/editor.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 
-
-    <style>
-        body {
-            /* background-color: #080811; */
-            background-color: #E3E9F7;
-        }
-
-        .ql-size {
-            background: #151A2D;
-            color: white !important;
-
-        }
-
-        /* Custom styles for dropdowns and toolbar */
-        .ql-size .ql-picker-label::before,
-        .ql-size .ql-picker-item::before,
-        .ql-header .ql-picker-label::before,
-        .ql-header .ql-picker-item::before {
-            content: attr(data-value) !important;
-        }
-
-        .ql-snow .ql-picker-options {
-            background-color: #151A2D !important;
-        }
-
-        .bg-webdark {
-            background: #151A2D;
-        }
-
-        #toolbar {
-            border: 0px !important;
-            /* padding: 8px; */
-            /* border-radius: 4px; */
-            /* margin-bottom: 10px; */
-        }
-
-        #editor {
-            height: 800px;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .container {
-            width: 800px;
-        }
-
-        .ql-toolbar button {
-            margin: 0 2px;
-        }
-
-        .container {
-            max-width: 1200px !important;
-        }
-
-        /* Custom font families */
-        .ql-font span[data-label="Arial"]::before {
-            font-family: Arial;
-        }
-
-        .ql-font span[data-label="Times New Roman"]::before {
-            font-family: "Times New Roman";
-        }
-
-        .ql-font span[data-label="Courier New"]::before {
-            font-family: "Courier New";
-        }
-
-        .ql-editor img {
-            max-width: auto;
-            /* Ensure images do not overflow */
-            height: auto;
-        }
-
-        .mic {
-            position: absolute;
-            /* display: none; */
-        }
-
-        #popupButton {
-            display: none;
-            /* Hide initially */
-            position: absolute;
-            z-index: 9999;
-            /* Make sure it's on top of other elements */
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .ql-snow .ql-stroke {
-            stroke: white !important;
-        }
-
-        .ql-snow .ql-fill,
-        .ql-snow .ql-stroke.ql-fill {
-            fill: white;
-        }
-
-        .ql-snow .ql-picker {
-            color: white !important;
-        }
-
-        .spinner-parent {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%);
-        }
-
-        .spinner-icon {
-            animation: spin 1s linear infinite;
-        }
-
-        .spinner {
-            width: 100px;
-            height: 100px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-
-        }
-
-        .ql-snow.ql-toolbar:after,
-        .ql-snow .ql-toolbar:after {
-            display: none;
-        }
-
-        /* @page {
-            size: A4;
-            /* or use size: 1000px 1500px; */
-        /* } */
-    </style>
     <title>LimlyDocx-Editor</title>
 </head>
 
@@ -251,19 +111,26 @@
                 </span>
             </div>
 
+
+            <div class="message text-danger shadow-danger alert alert-danger " th:if="${error}">
+                <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
+            </div>
+
+
             <div class="d-flex align-items-center gap-3">
 
                 <div th:if="${btn}">
                     <form th:action="@{/download-document(id=${btn})}" method="post">
-                        <button class="w-100 h-100 bg-primary text-white px-3 py-2 rounded-pill fw-semibold fs-18"
-                            type="submit">Download PDF</a>
-                    </form>
+                    <button class="w-100 h-100 bg-primary text-white px-3 py-2 rounded-pill fw-semibold fs-18"
+                        type="submit">Download PDF</a>
+                        </form>
                 </div>
 
-                <form th:action="@{/savecontent}" method="post" >
-                    <input type="text"  name="content" id="contentSender" hidden >
-                    <button type="submit" id="getContent"
-                        class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF</button>
+                <form th:action="@{/savecontent}" method="post">
+                <input type="text" name="content" id="contentSender" hidden>
+                <button type="submit" id="getContent"
+                    class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF
+                </button>
                 </form>
 
             </div>
@@ -273,16 +140,12 @@
     </div>
 
     <div class="container mt-4 d-flex flex-column align-items-center ">
-
         <div id="editor" name="content" class="w-100" th:field="*{content}"></div>
-        <!-- <div id="counter" name="counter" class="bg-webdark text-white text-end px-2 w-100">0</div> -->
     </div>
 
     <button id="popupButton" class="btn btn-primary rounded-5 mic">
         <i class="fa-solid fa-volume-high"></i>
     </button>
-
-
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"
@@ -297,11 +160,109 @@
     <script src="../static/js/editor-backend.js"></script>
     <script src="../static/js/editor-TTS.js"></script>
 
-    <script>
+    <script th:inline="javascript">
+
+
+        // Configure custom fonts
+        const Font = Quill.import('formats/font');
+        Font.whitelist = ['arial', 'times-new-roman', 'courier-new'];
+        Quill.register(Font, true);
+
+        // Configure custom sizes
+        const Size = Quill.import('attributors/style/size');
+        Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '20px', '24px', '32px', '48px'];
+        Quill.register(Size, true);
+
+        // Initialize Quill editor
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: {
+                    container: '#toolbar',
+                },
+                imageResize: {},
+            },
+        });
+
+        // Set default font size and family
+        quill.format('size', '12px'); // initial font size
+        quill.format('font', 'arial');
+
+
+
+
+        // Initialize Bootstrap tooltips
+        var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipElements.forEach(function (element) {
+            new bootstrap.Tooltip(element);
+        });
+
+
+
+        //======================= Getting Content =====================================
+
+        const spinnerEl = document.querySelector(".spinner-parent");
+        // trigger getEditorContent() function
+        const button = document.getElementById("getContent");
+        const contentSender = document.querySelector("#contentSender");
+
+
+
+        /**
+         * Function to get the content of the editor
+         */
+        const getEditorContent = () => {
+            const editorContent = quill.root.innerHTML;
+            contentSender.value = editorContent
+
+            console.log(`Editor Content: ${editorContent}`);
+            // console.log(`Content Length ${quill.getLength() - 1}`)
+
+            spinnerEl.classList.replace("d-none", "d-block")
+            // sendContentToSpringboot(editorContent);
+        };
+
+        // Attach the event listener to the button
+        button.addEventListener("click", getEditorContent);
+
+
+        // const sendContentToSpringboot = async (content) => {
+        //     try {
+        //         console.log("hello")
+        //         const response = await fetch("/savecontent", {
+        //             method: "POST",
+        //             headers: {
+        //                 "Content-Type": "text/plain",
+        //             },
+        //             body: content,
+        //         });
+
+        //         if (!response.ok) {
+        //         console.log("hello2")
+        //             throw new Error(`HTTP error! Status: ${response.status}`);
+        //         }
+
+        //         const data = await response.json(); // Expecting JSON response with URL
+        //         console.log("Data sent successfully:", data);
+
+        //         if (data.url) {
+        //         console.log("hello3")
+        //             window.location.href = data.url; // Manually redirect
+        //         }
+        //     } catch (error) {
+        //         console.error("Error:", error);
+        //     }
+        // };
+
+
+
+        var contentFromBackend = /*[[${content}]]*/ '';
+        if (contentFromBackend) {
+            quill.root.innerHTML = contentFromBackend;
+        }
+
 
     </script>
-
-
 </body>
 
 </html>

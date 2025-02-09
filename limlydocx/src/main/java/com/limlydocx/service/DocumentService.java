@@ -7,10 +7,10 @@ import com.limlydocx.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -22,7 +22,6 @@ public class DocumentService {
 
     @Autowired
     private DocumentRepository documentRepository;
-
 
 
     /**
@@ -43,52 +42,30 @@ public class DocumentService {
         savedocument.setUploadOn(LocalDate.now());
         savedocument.setCreator(username);
         documentRepository.save(savedocument);
-
         return id;
     }
 
 
-    public void DownloadDocument(@RequestBody UUID id){
+    public void downloadDocument(
+//            @RequestBody UUID id,
+            String content
+    ) {
 
         String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
         File file = new File(path);
 
-        try{
+        try {
 
-            String content = documentRepository.getDocumentById(id);
+            OutputStream outputStream = new FileOutputStream(file);
+//            String content = documentRepository.getDocumentById(id);
+            HtmlConverter.convertToPdf(content, outputStream);
 
-            HtmlConverter.convertToPdf(content,null );
-
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-
-//    /**
-//     * creates Pdf & sends to user frontend to download pdf
-//     * @param content
-//     */
-//    public void generatePdf(String content, Model model){
-//        String path =  "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
-//
-//        try{
-//            System.out.println(content); // for testing
-//
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            HtmlConverter.convertToPdf(content, byteArrayOutputStream);
-//
-//            model.addAttribute("file", byteArrayOutputStream.toByteArray());
-//
-//            System.out.println("pdf is creatted successfully "); // for testing
-//
-//        } catch (Exception e) {
-//            System.out.println("Error : " + e.getMessage());
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
 
 
 }
