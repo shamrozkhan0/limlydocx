@@ -46,28 +46,39 @@ public class DocumentController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-
+            // Check If user is Authenticated
             if (authentication == null) {
                 return "/login";
             }
 
-            if(!content.isEmpty() ||  content != null){
+            // Check if Content is null or is empty
+            if(content == null ||  content.isEmpty()){
                 redirectAttributes.addFlashAttribute("error" , "Content is empty");
                 return "redirect:/doc";
             }
 
+            // for testing
             System.out.println(content);
 
+            // Method return a unique id which will be saves in id
             UUID id = documentService.saveDocumentInDatabase(content, authentication);
+
+            // Currently testing
             documentService.downloadDocument(content);
 
+
+            // Redirect id for user to download with it
             redirectAttributes.addFlashAttribute("btn", id);
+
+            // Preserved Content in the editor
             redirectAttributes.addFlashAttribute("content", content);
+
 
             return "redirect:/doc";
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+//            System.out.println(e.getMessage());
+            e.printStackTrace();
             return "redirect:/doc";
         }
     }

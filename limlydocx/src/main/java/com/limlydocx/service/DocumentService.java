@@ -4,6 +4,8 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
+import jdk.jfr.Category;
+import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class DocumentService {
     @Autowired
     private DocumentRepository documentRepository;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     /**
      * Saves Data in the database with owner username
@@ -46,25 +50,56 @@ public class DocumentService {
     }
 
 
-    public void downloadDocument(
-//            @RequestBody UUID id,
+
+    public String  downloadDocument(
             String content
-    ) {
+    ){
 
-        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
-        File file = new File(path);
+        String uniqueFileName = UUID.randomUUID().toString() + ".pdf"; // Unique filename
+        File file = new File(System.getProperty("java.io.tmpdir") + "/" + uniqueFileName); // Save in temp dir
 
-        try {
-
-            OutputStream outputStream = new FileOutputStream(file);
-//            String content = documentRepository.getDocumentById(id);
+        try (OutputStream outputStream = new FileOutputStream(file)) {
+            // Convert HTML content to PDF
             HtmlConverter.convertToPdf(content, outputStream);
 
+            // Upload PDF to Cloudinary
+            String cloudinaryUrl = cloudinaryService.uploadFile(file);
+
+            // Delete local temp file
+            file.delete();
+
+            return cloudinaryUrl; // Return Cloudinary file URL
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
 
     }
+
+
+//    public void downloadDocument(
+////            @RequestBody UUID id,
+//            String content
+//    ) {
+//
+//        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.pdf";
+//        File file = new File(path);
+//
+//        try {
+//
+//            OutputStream outputStream = new FileOutputStream(file);
+////            String content = documentRepository.getDocumentById(id);
+//            HtmlConverter.convertToPdf(content, outputStream);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+
+
+
 
 
 

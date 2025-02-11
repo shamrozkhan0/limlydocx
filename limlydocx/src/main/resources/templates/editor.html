@@ -30,6 +30,11 @@
 
 <body>
 
+    <div class="message text-danger shadow-danger alert alert-danger " th:if="${error}">
+        <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
+    </div>
+
+
     <div class="spinner-parent z-2 position-absolute d-flex flex-column align-items-center gap-3 d-none">
         <!-- spinner icon -->
         <div class="spinner">
@@ -112,25 +117,21 @@
             </div>
 
 
-            <div class="message text-danger shadow-danger alert alert-danger " th:if="${error}">
-                <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
-            </div>
-
 
             <div class="d-flex align-items-center gap-3">
 
                 <div th:if="${btn}">
                     <form th:action="@{/download-document(id=${btn})}" method="post">
-                    <button class="w-100 h-100 bg-primary text-white px-3 py-2 rounded-pill fw-semibold fs-18"
-                        type="submit">Download PDF</a>
-                        </form>
+                        <button class="w-100 h-100 bg-primary text-white px-3 py-2 rounded-pill fw-semibold fs-18"
+                            type="submit">Download PDF</a>
+                    </form>
                 </div>
 
                 <form th:action="@{/savecontent}" method="post">
-                <input type="text" name="content" id="contentSender" hidden>
-                <button type="submit" id="getContent"
-                    class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF
-                </button>
+                    <input type="text" name="content" id="contentSender" hidden>
+                    <button type="submit" id="getContent"
+                        class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF
+                    </button>
                 </form>
 
             </div>
@@ -139,13 +140,12 @@
         </div>
     </div>
 
-    <div class="container mt-4 d-flex flex-column align-items-center ">
+    <div class="container mt-4 d-flex gap-2 ">
+        <div class="py-3">
+            <button class="bg-transparent outline-none border-0 editor-lock-button"><i class="fas fa-unlock fs-6"></i></button>
+        </div>
         <div id="editor" name="content" class="w-100" th:field="*{content}"></div>
     </div>
-
-    <button id="popupButton" class="btn btn-primary rounded-5 mic">
-        <i class="fa-solid fa-volume-high"></i>
-    </button>
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"
@@ -160,7 +160,27 @@
     <script src="../static/js/editor-backend.js"></script>
     <script src="../static/js/editor-TTS.js"></script>
 
+
+
     <script th:inline="javascript">
+
+        document.addEventListener("DOMContentLoaded",()=>{
+            
+        let isLock = false; // editor is unlocked initially
+        let lockButton = document.querySelector(".editor-lock-button"); // Select the button
+
+        lockButton.addEventListener("click", () => {
+            isLock = !isLock; // Toggle lock state
+            console.log(`is lock : ${isLock}`);
+
+            // Update icon and Quill editor readOnly state
+            lockButton.querySelector("i").classList.toggle("fa-lock", isLock);
+            lockButton.querySelector("i").classList.toggle("fa-unlock", !isLock);
+
+            // Update Quill editor readOnly state
+            quill.enable(!isLock); // Enable or disable editor based on lock state
+        });
+
 
 
         // Configure custom fonts
@@ -175,6 +195,7 @@
 
         // Initialize Quill editor
         const quill = new Quill('#editor', {
+            readOnly: isLock,
             theme: 'snow',
             modules: {
                 toolbar: {
@@ -196,6 +217,9 @@
         tooltipElements.forEach(function (element) {
             new bootstrap.Tooltip(element);
         });
+
+
+
 
 
 
@@ -226,41 +250,12 @@
         button.addEventListener("click", getEditorContent);
 
 
-        // const sendContentToSpringboot = async (content) => {
-        //     try {
-        //         console.log("hello")
-        //         const response = await fetch("/savecontent", {
-        //             method: "POST",
-        //             headers: {
-        //                 "Content-Type": "text/plain",
-        //             },
-        //             body: content,
-        //         });
-
-        //         if (!response.ok) {
-        //         console.log("hello2")
-        //             throw new Error(`HTTP error! Status: ${response.status}`);
-        //         }
-
-        //         const data = await response.json(); // Expecting JSON response with URL
-        //         console.log("Data sent successfully:", data);
-
-        //         if (data.url) {
-        //         console.log("hello3")
-        //             window.location.href = data.url; // Manually redirect
-        //         }
-        //     } catch (error) {
-        //         console.error("Error:", error);
-        //     }
-        // };
-
-
-
         var contentFromBackend = /*[[${content}]]*/ '';
         if (contentFromBackend) {
             quill.root.innerHTML = contentFromBackend;
         }
 
+        })
 
     </script>
 </body>
