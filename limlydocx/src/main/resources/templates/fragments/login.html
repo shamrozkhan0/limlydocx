@@ -1,0 +1,72 @@
+<div th:fragment="login" class="container-fluid  h-100 w-100">
+    <div class="row h-100  flex-column-reverse flex-lg-row ">
+
+        <!-- Login Form -->
+        <div class="col-12 col-lg-5 m-0   d-flex flex-column gap-2 
+        justify-content-center login-parent  align-items-center pe-0 pe-md-0 ">
+
+            <form th:action="@{/login}" method="post" class="  d-flex flex-column gap-4 px-0 px-md-3 py-3 w-75">
+
+                <!-- Error Alert -->
+                <div class="message text-danger shadow-danger alert alert-danger " th:if="${param.error}">
+                    <p class="p-0 p-md-2 m-0  fw-semibold">Username or password is incorrect</p>
+                </div>
+
+                <div class="">
+                    <h2 class="p-0 m-0 fw-bold">Welcome Back</h5>
+                        <p class="m-0 p-0 text-capitalize text-white fs-18 fw-semibold">Let's create your document</p>
+                </div>
+
+                <div class="d-flex align-items-center login-inputs  px-3 py-2 fs-16 rounded-2">
+                    <input type="email" class="border-0 w-100 fs-16 bg-transparent text-white fw-semibold border-0 outline-none"
+                        placeholder="abc@mail.com" name="username" required>
+                    <i class="fa-regular fa-envelope text-secondary fs-16"></i>
+                </div>
+
+                <div class="d-flex align-items-center login-inputs  px-3 py-2 rounded-2 fs-16">
+                    <input type="password" class="border-0 bg-transparent text-white w-100 fs-16 fw-semibold border-0 outline-none"
+                        placeholder="password" autocomplete="off" name="password" id="password" required>
+                    <i class="fas fa-eye-slash text-secondary transition05 fs-16"></i>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between">
+                    <a href="/forgetpassword" aria-disabled="true">Forget password</a>
+                    <button class="btn text-white login-button fw-semibold  px-5" type="submit">Login</button>
+                </div>
+
+                <a href="/oauth2/authorization/google" class="w-100 google-button bg-white m-0 p-0 text-decoration-none 
+                    d-flex align-items-center justify-content-center gap-2 text-black fw-semibold  py-2 rounded-3">
+                    <img th:src="@{/img/google-logo.webp}" class="w-100 h-100 ">
+                    Continue with google
+                </a>
+
+                <a href="/signup" class="button-limly text-center text-decoration-none 
+                        text-white py-2 rounded-3 fs-18 fw-semibold">
+                    signup
+                </a>
+
+            </form>
+        </div>
+
+
+        <!-- Login Image -->
+        <div class="col-12 col-lg-7  m-0 p-0 position-relative d-flex 
+             align-items-center justify-content-center  login-image">
+            
+            <img th:src="@{img/login.jpg}" alt="image with text" class="w-100 h-100 position-absolute z-n1">
+            
+            <div class="text-center text-white d-flex flex-column gap-2 py-2">
+                <h1 class="z-1  ls-md letter-spacing-normal text-uppercase fw-bold">
+                    Limly-DocX
+                </h1>
+                <p class="m-0 fs-18  fw-semibold letter-spacing-sm text-capitalize">
+                    Edit with collaboration
+                </p>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>

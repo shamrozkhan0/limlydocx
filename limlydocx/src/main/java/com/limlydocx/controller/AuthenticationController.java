@@ -34,8 +34,10 @@ public class AuthenticationController {
      * @return Login Page
      */
     @GetMapping("/login")
-    public String showLoginPage() {
-        return "login";
+    public String showLoginPage(Model model) {
+//        return "login";
+        model.addAttribute("login" , true);
+        return "authentication";
     }
 
 

@@ -64,11 +64,14 @@ public class DocumentController {
             UUID id = documentService.saveDocumentInDatabase(content, authentication);
 
             // Currently testing
-            documentService.downloadDocument(content);
+            String url = documentService.uploadDocumentToCloudinary(content);
 
+//            documentService.uploadDocumentToCloudinary(content);
 
             // Redirect id for user to download with it
-            redirectAttributes.addFlashAttribute("btn", id);
+            redirectAttributes.addFlashAttribute("btn", url);
+
+            System.out.println("URl : " + url);
 
             // Preserved Content in the editor
             redirectAttributes.addFlashAttribute("content", content);
@@ -77,7 +80,6 @@ public class DocumentController {
             return "redirect:/doc";
 
         } catch (Exception e) {
-//            System.out.println(e.getMessage());
             e.printStackTrace();
             return "redirect:/doc";
         }
