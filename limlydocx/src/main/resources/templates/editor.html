@@ -117,13 +117,16 @@
             </div>
    
   
+            <a href="
+            https://res.cloudinary.com/dph2oxlsa/raw/upload/fl_attachment/v1739430838/document_20250213_130453_8cf6853e-fbc3-417e-90d0-332ef434a682.pdf"
+             class="btn btn-primary fs3" download> download this </a>
          
             <div class="d-flex align-items-center gap-3">
 
-                <div th:if="${btn}">
+                <div th:if="${download_url}">
                     <a class="btn btn-primary text-white" 
-                       th:href="${btn}" 
-                       th:download="${#strings.substringAfterLast(btn, '/')}">Download document</a>
+                       th:href="${download_url}" 
+                       >Download document</a>
                 </div>
                 <form th:action="@{/savecontent}" method="post">
                     <input type="text" name="content" id="contentSender" hidden>

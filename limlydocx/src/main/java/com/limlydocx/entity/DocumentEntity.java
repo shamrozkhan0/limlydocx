@@ -1,6 +1,7 @@
 package com.limlydocx.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,13 +22,14 @@ import java.util.UUID;
 public class DocumentEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String content;
+    private String fileName;
 
     private LocalDate uploadOn;
 
+    @NotBlank(message = "Cannot find you account info please do logout and login again")
     private String creator;
 
 //  @OneToMany(mappedBy = "guest")

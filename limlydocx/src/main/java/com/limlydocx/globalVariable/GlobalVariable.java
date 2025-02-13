@@ -22,7 +22,7 @@ public  class GlobalVariable {
      * Validates the given BindingResult for field errors and throws an exception if any are found.
      * @param bindingResult
      */
-    public  void checkFeildError(BindingResult bindingResult){
+    public void checkFeildError(BindingResult bindingResult){
        if(bindingResult.hasErrors()){
            for (FieldError error : bindingResult.getFieldErrors()) {
                throw new RuntimeException(error.getField() + " : " + error.getDefaultMessage());

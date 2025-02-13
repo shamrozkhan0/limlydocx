@@ -35,8 +35,8 @@ public class AuthenticationController {
      */
     @GetMapping("/login")
     public String showLoginPage(Model model) {
-//        return "login";
         model.addAttribute("login" , true);
+        model.addAttribute("signup" , false);
         return "authentication";
     }
 
@@ -48,11 +48,12 @@ public class AuthenticationController {
      */
     @GetMapping("/signup")
     public String showSignupPage(Model model) {
+        model.addAttribute("signup" , true);
+        model.addAttribute("login" , false);
         if (!model.containsAttribute("user")) {
-            // This will set page as new User
             model.addAttribute("user", new User());
         }
-        return "signup";
+        return "authentication";
     }
 
 

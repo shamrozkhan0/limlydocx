@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class ApplicationConfig {
+public class CloudConfig {
 
     @Value("${cloud.name}")
     private String cloudName;
@@ -22,7 +22,6 @@ public class ApplicationConfig {
 
     @Bean
     public Cloudinary cloudinary(){
-
         Map<String, String> config = new HashMap<>();
         config.put("cloud_name" , cloudName);
         config.put("api_key" , apiKey);
