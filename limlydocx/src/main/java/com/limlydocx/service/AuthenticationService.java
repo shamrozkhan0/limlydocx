@@ -3,7 +3,8 @@ package com.limlydocx.service;
 import com.limlydocx.entity.User;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -13,16 +14,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
+@Log4j2
 public class AuthenticationService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private GlobalVariable globalVariable;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final GlobalVariable globalVariable;
 
 
 
@@ -33,16 +31,15 @@ public class AuthenticationService {
      * @param redirectAttributes
      */
     public void registerUser(User user, BindingResult result, RedirectAttributes redirectAttributes) {
-        System.out.println("enter the process");
+        log.info("Processing the user register");
         globalVariable.checkFeildError(result);
         checkUserIsPresentByEmail(user.getEmail());
 
         String hashPassword = passwordEncoder.encode(user.getPassword());
         String formatedUsername = StringUtils.cleanPath(user.getUsername());
 
-        System.out.println("hiuiquerojireo");
         createNewUser(user.getEmail(), user.getPassword(), hashPassword, formatedUsername, user.getName());
-        System.out.println("user is saved"); // for testing
+        log.info("User is Saves");
     }
 
 
@@ -63,7 +60,6 @@ public class AuthenticationService {
         createUser.setPassword(hashPassword);
         createUser.setUsername(username);
         createUser.setName(StringUtils.cleanPath(name));
-        System.out.println("user si going to saved ");
         userRepository.save(createUser);
     }
 

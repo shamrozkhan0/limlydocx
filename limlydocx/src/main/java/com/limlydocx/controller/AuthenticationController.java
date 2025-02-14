@@ -1,12 +1,10 @@
 package com.limlydocx.controller;
 
 import com.limlydocx.entity.User;
-import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.AuthenticationService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,16 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
+@RequiredArgsConstructor
+@Log4j2
 public class AuthenticationController {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
-
-
-    @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final AuthenticationService authenticationService;
 
 
     /**
@@ -35,21 +28,23 @@ public class AuthenticationController {
      */
     @GetMapping("/login")
     public String showLoginPage(Model model) {
-        model.addAttribute("login" , true);
-        model.addAttribute("signup" , false);
+        model.addAttribute("login", true);
+//        model.addAttribute("signup", false);
         return "authentication";
     }
 
 
+
     /**
      * Show SignUp Page
+     *
      * @param model
      * @return Signup Page
      */
     @GetMapping("/signup")
     public String showSignupPage(Model model) {
-        model.addAttribute("signup" , true);
-        model.addAttribute("login" , false);
+        model.addAttribute("signup", true);
+//        model.addAttribute("login", false);
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new User());
         }
@@ -57,26 +52,33 @@ public class AuthenticationController {
     }
 
 
-
-    // Incomplete Its has many errors
+    /**
+     * Check User credential & And Saved in the database
+     *
+     * @param user
+     * @param result
+     * @param redirectAttributes
+     * @param model
+     * @return
+     */
     @PostMapping("/signup")
     public String registerUserSignup(@Valid @ModelAttribute User user, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+
+
 
         log.info("Processing Start for user : {}", user.getEmail());
 
         try {
             authenticationService.registerUser(user, result, redirectAttributes);
         } catch (Exception ex) {
-            System.out.println("exception:" + ex);
-
-            // Rediret To The SignUp Page With User Credential When SignUp Fail
+            log.error("Exception : " + ex);
             redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:/signup";
         }
 
         log.info("User is registered");
-        return "redirect:/hello";
+        return "redirect:/doc";
     }
 
 

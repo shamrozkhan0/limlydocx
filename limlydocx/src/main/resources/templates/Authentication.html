@@ -18,13 +18,12 @@
     -->
 
     <div class="container-fluid h-100 w-100" th:if="${login}">
-    <div  th:replace="~{fragments/login :: login}"></div>
+        <div  th:replace="~{fragments/login :: login}"></div>
     </div>
 
-    <!-- <div th:if="${signup}" th:replace="~{fragments/signup :: signup}"></div> -->
-     <div th:if="${signup}">
+    <div th:if="${signup}">
         <div class="" th:replace="~{fragments/signup :: signup}"></div>
-     </div>
+    </div>
 
 
 

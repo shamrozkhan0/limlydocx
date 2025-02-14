@@ -2,7 +2,7 @@ package com.limlydocx.globalVariable;
 
 import com.limlydocx.entity.User;
 import com.limlydocx.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -11,11 +11,11 @@ import org.springframework.validation.FieldError;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public  class GlobalVariable {
 
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
 
 
     /**
@@ -29,6 +29,7 @@ public  class GlobalVariable {
            }
        }
     }
+
 
 
     /**

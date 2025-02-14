@@ -19,7 +19,7 @@ public class UserController {
     @Autowired
     private DocumentRepository documentRepository;
 
-    @GetMapping("/hello")
+    @GetMapping("/start-at")
     public String sayhello(){
         return "hello world  31-December-2024";
     }

@@ -26,6 +26,8 @@ public class DocumentService {
     private final GlobalVariable globalVariable;
     private final DocumentRepository documentRepository;
 
+
+
     /**
      * Saves document information in the database.
      * @param uniqueFileName the unique file name
@@ -45,6 +47,8 @@ public class DocumentService {
         }
     }
 
+
+
     /**
      * Generates a PDF from HTML content and uploads it to Cloudinary.
      * @param content the HTML content
@@ -61,6 +65,8 @@ public class DocumentService {
             throw new RuntimeException("PDF generation failed", e);
         }
     }
+
+
 
     /**
      * Uploads the PDF byte array to Cloudinary.
