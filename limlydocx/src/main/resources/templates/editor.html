@@ -28,7 +28,7 @@
     <title>LimlyDocx-Editor</title>
 </head>
 
-<body>
+<body class="editor-body" data-bs-theme="dark">
 
     <div class="message text-danger shadow-danger alert alert-danger " th:if="${error}">
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
@@ -114,6 +114,8 @@
                     <button class="ql-blockquote"></button>
                     <button class="ql-clean"></button>
                 </span>
+
+
             </div>
    
          
@@ -138,8 +140,16 @@
     </div>
 
     <div class="container mt-4 d-flex gap-2 ">
-        <div class="py-3">
-            <button class="bg-transparent outline-none text-white border-0 editor-lock-button"><i class="fas fa-unlock fs-6"></i></button>
+        <div class="d-flex flex-column gap-2">
+            <!-- Theme button  -->
+            <button class="bg-transparent p-0 text-white border-0 theme-btn fs-5" aria-label="theme button">
+                <!-- <i class="fa-duotone fa-solid fa-sun-bright"></i> -->
+                <i class="fa-solid fa-sun-bright"></i>
+            </button>
+            <!-- Lock Editor -->
+            <button class="bg-transparent outline-none text-white border-0 editor-lock-button fs-5" aria-label="lock editor button">
+                <i class="fas fa-unlock"></i>
+            </button>
         </div>
         <div id="editor" name="content" class="w-100" th:field="*{content}"></div>
     </div>

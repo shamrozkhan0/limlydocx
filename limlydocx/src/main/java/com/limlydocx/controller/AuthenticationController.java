@@ -21,15 +21,14 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
 
+
     /**
      * Send User To Login Page
-     *
      * @return Login Page
      */
     @GetMapping("/login")
     public String showLoginPage(Model model) {
         model.addAttribute("login", true);
-//        model.addAttribute("signup", false);
         return "authentication";
     }
 
@@ -44,12 +43,12 @@ public class AuthenticationController {
     @GetMapping("/signup")
     public String showSignupPage(Model model) {
         model.addAttribute("signup", true);
-//        model.addAttribute("login", false);
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new User());
         }
         return "authentication";
     }
+
 
 
     /**
@@ -64,9 +63,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public String registerUserSignup(@Valid @ModelAttribute User user, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
 
-
-
-        log.info("Processing Start for user : {}", user.getEmail());
+        log.info("Processing Start for user , {}", user.getEmail());
 
         try {
             authenticationService.registerUser(user, result, redirectAttributes);

@@ -1,6 +1,10 @@
-body {
+.editor-dark{
     background-color: #080811;
-    /* background-color: #c8d8ff; */
+}
+
+.editor-light{
+    background-color: #c8d8ff;
+
 }
 
 .ql-size {
