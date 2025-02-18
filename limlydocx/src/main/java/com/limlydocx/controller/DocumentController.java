@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -43,8 +44,6 @@ public class DocumentController {
     }
 
 
-
-
     /**
      * Saves the document content, generates a PDF, uploads it to Cloudinary, and stores the document info in the database.
      *
@@ -53,8 +52,9 @@ public class DocumentController {
      * @param redirectAttributes attributes for redirect
      * @return the redirect view name
      */
-    @PostMapping("/savecontent")
+    @PostMapping("/savecontent/{format}")
     public String saveDocumentContent(
+            @PathVariable String format,
             @RequestParam("content") String content,
             Authentication authentication,
             RedirectAttributes redirectAttributes
@@ -71,12 +71,26 @@ public class DocumentController {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String uniqueFileName = "document_" + timestamp + "_" + UUID.randomUUID().toString() + ".pdf";
 
+        System.out.println("format : " + format);
+
         try {
             // Upload document to Cloudinary
-            documentService.generatePdfAndUploadToCloud(content, uniqueFileName);
+//            documentService.generatePdfAndUploadToCloud(content, uniqueFileName);
 
             // Save document info in the database
-            documentService.saveDocumentInDatabase(uniqueFileName, authentication);
+//            documentService.saveDocumentInDatabase(uniqueFileName, authentication);
+
+            documentService.generatesDocxAndUploadToCloud(content);
+
+            switch (format) {
+                case "PDF":
+                    System.out.println("pdf");
+
+                    break;
+                case "DOCX":
+                    System.out.println("word");
+                    break;
+            }
 
             // Provide download URL to the user
             redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);

@@ -28,7 +28,7 @@
     <title>LimlyDocx-Editor</title>
 </head>
 
-<body class="editor-body" data-bs-theme="dark">
+<body class="editor-body">
 
     <div class="message text-danger shadow-danger alert alert-danger " th:if="${error}">
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
@@ -117,21 +117,23 @@
 
 
             </div>
-   
-         
+
+
             <div class="d-flex align-items-center gap-3">
 
                 <div th:if="${download_url}">
-                    <a class="btn btn-primary text-white" 
-                       th:href="${download_url}" 
-                       >Download document</a>
+                    <a class="btn btn-primary text-white" th:href="${download_url}">Download document</a>
                 </div>
-                <form th:action="@{/savecontent}" method="post">
+
+                <!-- <form th:action="@{/savecontent/}" method="post"> -->
                     <input type="text" name="content" id="contentSender" hidden>
-                    <button type="submit" id="getContent"
-                        class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">Get PDF
+                    <button type="submit" 
+                            data-format="PDF" 
+                            id="getContent"
+                            class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">
+                        Get PDF
                     </button>
-                </form>
+                <!-- </form> -->
 
             </div>
 
@@ -143,11 +145,11 @@
         <div class="d-flex flex-column gap-2">
             <!-- Theme button  -->
             <button class="bg-transparent p-0 text-white border-0 theme-btn fs-5" aria-label="theme button">
-                <!-- <i class="fa-duotone fa-solid fa-sun-bright"></i> -->
-                <i class="fa-solid fa-sun-bright"></i>
+                <i class="fa-solid fa-sun"></i>
             </button>
             <!-- Lock Editor -->
-            <button class="bg-transparent outline-none text-white border-0 editor-lock-button fs-5" aria-label="lock editor button">
+            <button class="bg-transparent outline-none text-white border-0 editor-lock-button fs-5"
+                aria-label="lock editor button">
                 <i class="fas fa-unlock"></i>
             </button>
         </div>
@@ -171,96 +173,96 @@
 
     <script th:inline="javascript">
 
-        document.addEventListener("DOMContentLoaded",()=>{
-            
-        let isLock = false; // editor is unlocked initially
-        let lockButton = document.querySelector(".editor-lock-button"); // Select the button
+        document.addEventListener("DOMContentLoaded", () => {
 
-        lockButton.addEventListener("click", () => {
-            isLock = !isLock; // Toggle lock state
-            console.log(`is lock : ${isLock}`);
+            let isLock = false; // editor is unlocked initially
+            let lockButton = document.querySelector(".editor-lock-button"); // Select the button
 
-            // Update icon and Quill editor readOnly state
-            lockButton.querySelector("i").classList.toggle("fa-lock", isLock);
-            lockButton.querySelector("i").classList.toggle("fa-unlock", !isLock);
+            lockButton.addEventListener("click", () => {
+                isLock = !isLock; // Toggle lock state
+                console.log(`is lock : ${isLock}`);
 
-            // Update Quill editor readOnly state
-            quill.enable(!isLock); // Enable or disable editor based on lock state
-        });
+                // Update icon and Quill editor readOnly state
+                lockButton.querySelector("i").classList.toggle("fa-lock", isLock);
+                lockButton.querySelector("i").classList.toggle("fa-unlock", !isLock);
+
+                // Update Quill editor readOnly state
+                quill.enable(!isLock); // Enable or disable editor based on lock state
+            });
 
 
 
-        // Configure custom fonts
-        const Font = Quill.import('formats/font');
-        Font.whitelist = ['arial', 'times-new-roman', 'courier-new'];
-        Quill.register(Font, true);
+            // Configure custom fonts
+            const Font = Quill.import('formats/font');
+            Font.whitelist = ['arial', 'times-new-roman', 'courier-new'];
+            Quill.register(Font, true);
 
-        // Configure custom sizes
-        const Size = Quill.import('attributors/style/size');
-        Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '20px', '24px', '32px', '48px'];
-        Quill.register(Size, true);
+            // Configure custom sizes
+            const Size = Quill.import('attributors/style/size');
+            Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '20px', '24px', '32px', '48px'];
+            Quill.register(Size, true);
 
-        // Initialize Quill editor
-        const quill = new Quill('#editor', {
-            readOnly: isLock,
-            theme: 'snow',
-            modules: {
-                toolbar: {
-                    container: '#toolbar',
+            // Initialize Quill editor
+            const quill = new Quill('#editor', {
+                readOnly: isLock,
+                theme: 'snow',
+                modules: {
+                    toolbar: {
+                        container: '#toolbar',
+                    },
+                    imageResize: {},
                 },
-                imageResize: {},
-            },
-        });
+            });
 
-        // Set default font size and family
-        quill.format('size', '12px'); // initial font size
-        quill.format('font', 'arial');
+            // Set default font size and family
+            quill.format('size', '12px'); // initial font size
+            quill.format('font', 'arial');
 
 
 
 
-        // Initialize Bootstrap tooltips
-        var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        tooltipElements.forEach(function (element) {
-            new bootstrap.Tooltip(element);
-        });
+            // Initialize Bootstrap tooltips
+            var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipElements.forEach(function (element) {
+                new bootstrap.Tooltip(element);
+            });
 
 
 
+            //======================= Get Content =====================================
+
+            const spinnerEl = document.querySelector(".spinner-parent");
+            // trigger getEditorContent() function
+            const button = document.getElementById("getContent");
+            const contentSender = document.querySelector("#contentSender");
 
 
 
-        //======================= Getting Content =====================================
+            /**
+             * Function to get the content of the editor
+             */
+            const getEditorContent = () => {
+                const editorContent = quill.root.innerHTML;
+                contentSender.value = editorContent
 
-        const spinnerEl = document.querySelector(".spinner-parent");
-        // trigger getEditorContent() function
-        const button = document.getElementById("getContent");
-        const contentSender = document.querySelector("#contentSender");
+                console.log(`Editor Content: ${editorContent}`);
+                // console.log(`Content Length ${quill.getLength() - 1}`)
 
+                spinnerEl.classList.replace("d-none", "d-block")
+                // sendContentToSpringboot(editorContent);
+            };
 
-
-        /**
-         * Function to get the content of the editor
-         */
-        const getEditorContent = () => {
-            const editorContent = quill.root.innerHTML;
-            contentSender.value = editorContent
-
-            console.log(`Editor Content: ${editorContent}`);
-            // console.log(`Content Length ${quill.getLength() - 1}`)
-
-            spinnerEl.classList.replace("d-none", "d-block")
-            // sendContentToSpringboot(editorContent);
-        };
-
-        // Attach the event listener to the button
-        button.addEventListener("click", getEditorContent);
+            // Attach the event listener to the button
+            button.addEventListener("click",()=>{
+                getEditorContent();
+                console.log(button.getAttribute('data-format'))
+            });
 
 
-        var contentFromBackend = /*[[${content}]]*/ '';
-        if (contentFromBackend) {
-            quill.root.innerHTML = contentFromBackend;
-        }
+            var contentFromBackend = /*[[${content}]]*/ '';
+            if (contentFromBackend) {
+                quill.root.innerHTML = contentFromBackend;
+            }
 
         })
 

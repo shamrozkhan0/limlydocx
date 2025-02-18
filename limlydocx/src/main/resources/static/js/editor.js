@@ -25,12 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function changeEditorTheme() {
         if (body.classList.contains("editor-dark")) {
             body.classList.replace("editor-dark", "editor-light");
+            
             localStorage.setItem("theme", "editor-light");
-            body.dataset.bsTheme="light"
         } else {
             body.classList.replace("editor-light", "editor-dark");
             localStorage.setItem("theme", "editor-dark");
-            body.dataset.bsTheme="dark"
         }
     }
 

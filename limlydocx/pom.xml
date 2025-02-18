@@ -86,9 +86,20 @@
         </dependency>
 
         <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-pdf</artifactId>
-            <version>23.9</version> <!-- Use the latest version available -->
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-core</artifactId>
+            <version>11.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-ImportXHTML-core</artifactId>
+            <version>11.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>11.5.2</version>
         </dependency>
 
         <!-- CLUDINARY DEPENDENCY -->
