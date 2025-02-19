@@ -7,21 +7,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableCaching
-public class StaticFileConfig implements WebMvcConfigurer {
-
-
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-            "classpath:static/css/**",
-            "classpath:static/js/**",
-            "classpath:static/img/**"
-    };
- 
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-                .addResourceHandler("static/**")
-                .addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS)
-                .setCachePeriod(3600);
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("classpath:/custom-static/")
+                .setCachePeriod(3600); // Cache for 1 hour
     }
+
 }

@@ -84,7 +84,6 @@ public class DocumentController {
                 documentService.generatesDocxAndUploadToCloud(content , String.valueOf(uniqueFileName));
             } else {
                 System.out.println("Invalid format: " + format);
-
             }
 
 
@@ -94,7 +93,7 @@ public class DocumentController {
             // Provide download URL to the user
             redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
 
-            // Preserve content in the editor
+            // Preserve content in the editorclea
             redirectAttributes.addFlashAttribute("content", content);
 
         } catch (Exception e) {

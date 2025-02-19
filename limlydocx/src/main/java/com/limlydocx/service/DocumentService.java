@@ -116,7 +116,6 @@ public class DocumentService {
              uploadToCloudinary(uniqueFileName, docxByte);
 
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
             e.printStackTrace();
         }
     }
