@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const button = document.querySelector(".theme-btn");
     const body = document.querySelector("body");
 
+
+    
     /**
      * Load Theme For Editor 
      */
@@ -15,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Calls the function when DOM is ready
     loadEditorTheme();
 
 

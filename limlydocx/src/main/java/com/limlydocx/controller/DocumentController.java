@@ -3,7 +3,6 @@ package com.limlydocx.controller;
 import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.DocumentService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 @Controller
@@ -69,28 +69,27 @@ public class DocumentController {
         }
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        String uniqueFileName = "document_" + timestamp + "_" + UUID.randomUUID().toString() + ".pdf";
+        StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
 
-        System.out.println("format : " + format);
 
         try {
-            // Upload document to Cloudinary
-//            documentService.generatePdfAndUploadToCloud(content, uniqueFileName);
+
+            if(Objects.equals(format, "pdf")){
+                System.out.println("Generating PDF...");
+                uniqueFileName.append(".pdf");
+                documentService.generatePdfAndUploadToCloud(content, String.valueOf(uniqueFileName));
+            } else if (Objects.equals(format, "docx")) {
+                System.out.println("Generating DOCX...");
+                uniqueFileName.append(".docx");
+                documentService.generatesDocxAndUploadToCloud(content , String.valueOf(uniqueFileName));
+            } else {
+                System.out.println("Invalid format: " + format);
+
+            }
+
 
             // Save document info in the database
-//            documentService.saveDocumentInDatabase(uniqueFileName, authentication);
-
-            documentService.generatesDocxAndUploadToCloud(content);
-
-            switch (format) {
-                case "PDF":
-                    System.out.println("pdf");
-
-                    break;
-                case "DOCX":
-                    System.out.println("word");
-                    break;
-            }
+            documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
 
             // Provide download URL to the user
             redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);

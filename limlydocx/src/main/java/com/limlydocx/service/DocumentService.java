@@ -8,25 +8,17 @@ import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.docx4j.convert.in.xhtml.XHTMLImporter;
 import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
-import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.vml.root.Xml;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Node;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -38,9 +30,9 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
 
 
-
     /**
      * Saves document information in the database.
+     *
      * @param uniqueFileName the unique file name
      * @param authentication the authentication object
      */
@@ -59,18 +51,42 @@ public class DocumentService {
     }
 
 
+//    /**
+//     * Generates a PDF from HTML content and saves it locally.
+//     * @param content the HTML content
+//     * @param uniqueFileName the unique file name (without extension)
+//     */
+//    public void generatePdfAndUploadToCloud(String content, String uniqueFileName) {
+//        // Define the output file path dynamically
+//        String outputPath = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\" + uniqueFileName + ".pdf";
+//        File outputPdf = new File(outputPath);
+//
+//        try (OutputStream outputStream = new FileOutputStream(outputPdf)) {
+//            ConverterProperties properties = new ConverterProperties();
+//            HtmlConverter.convertToPdf(content, outputStream, properties);
+//            System.out.println("✅ PDF created successfully at: " + outputPath);
+//        } catch (IOException e) {
+//            System.err.println("❌ Error generating PDF: " + e.getMessage());
+//            throw new RuntimeException("PDF generation failed", e);
+//        }
+//    }
+
 
     /**
      * Generates a PDF from HTML content and uploads it to Cloudinary.
-     * @param content the HTML content
+     *
+     * @param content        the HTML content
      * @param uniqueFileName the unique file name
      */
     public void generatePdfAndUploadToCloud(String content, String uniqueFileName) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
             ConverterProperties properties = new ConverterProperties();
             HtmlConverter.convertToPdf(content, byteArrayOutputStream, properties);
             byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+
             uploadToCloudinary(uniqueFileName, pdfBytes);
+            System.out.println("pdf is creadted");
         } catch (IOException e) {
             log.error("Error generating PDF: {}", e.getMessage());
             throw new RuntimeException("PDF generation failed", e);
@@ -78,8 +94,9 @@ public class DocumentService {
     }
 
 
-    public void generatesDocxAndUploadToCloud(String content) {
-        try {
+    public void generatesDocxAndUploadToCloud(String content, String uniqueFileName) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
             // Create a new WordprocessingMLPackage (a DOCX file)
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
 
@@ -90,21 +107,13 @@ public class DocumentService {
             List<Object> convertedContent = xhtmlImporter.convert(content, null);
 
             // Add the converted content to the main document part
-            wordMLPackage.getMainDocumentPart().getContent().addAll(convertedContent);
+             wordMLPackage.getMainDocumentPart().getContent().addAll(convertedContent);
 
-            // Specify the path where you want to save the DOCX file locally
-            File outputDocx = new File("E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\output.docx");
+             wordMLPackage.save(byteArrayOutputStream);
 
-            // Ensure the output directory exists
-            File parentDir = outputDocx.getParentFile();
-            if (parentDir != null && !parentDir.exists()) {
-                parentDir.mkdirs();
-            }
+             byte[] docxByte = byteArrayOutputStream.toByteArray();
 
-            // Save the converted DOCX file to the specified location
-            wordMLPackage.save(outputDocx);
-
-            System.out.println("DOCX file saved to: " + outputDocx.getAbsolutePath());
+             uploadToCloudinary(uniqueFileName, docxByte);
 
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
@@ -113,11 +122,11 @@ public class DocumentService {
     }
 
 
-
     /**
      * Uploads the PDF byte array to Cloudinary.
+     *
      * @param uniqueFileName the unique file name
-     * @param pdfBytes the PDF byte array
+     * @param pdfBytes       the PDF byte array
      */
     private void uploadToCloudinary(String uniqueFileName, byte[] pdfBytes) {
         Map<String, Object> options = new HashMap<>();

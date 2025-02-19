@@ -125,15 +125,17 @@
                     <a class="btn btn-primary text-white" th:href="${download_url}">Download document</a>
                 </div>
 
-                <!-- <form th:action="@{/savecontent/}" method="post"> -->
+                <form method="post" id="content-form">
                     <input type="text" name="content" id="contentSender" hidden>
-                    <button type="submit" 
-                            data-format="PDF" 
-                            id="getContent"
-                            class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">
+                    <button value="PDF" data-format="PDF" id="getContent"
+                        class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">
                         Get PDF
                     </button>
-                <!-- </form> -->
+                    <button value="DOCX" data-format="DOCX" id="getContent"
+                        class="w-100 h-100 bg-success text-white px-3 py-2 fs-18 fw-bold rounded-pill">
+                        Get DOCX
+                    </button>
+                </form>
 
             </div>
 
@@ -233,7 +235,7 @@
 
             const spinnerEl = document.querySelector(".spinner-parent");
             // trigger getEditorContent() function
-            const button = document.getElementById("getContent");
+            const button = document.querySelectorAll("#getContent");
             const contentSender = document.querySelector("#contentSender");
 
 
@@ -246,16 +248,32 @@
                 contentSender.value = editorContent
 
                 console.log(`Editor Content: ${editorContent}`);
-                // console.log(`Content Length ${quill.getLength() - 1}`)
-
                 spinnerEl.classList.replace("d-none", "d-block")
-                // sendContentToSpringboot(editorContent);
             };
 
             // Attach the event listener to the button
-            button.addEventListener("click",()=>{
-                getEditorContent();
-                console.log(button.getAttribute('data-format'))
+            button.forEach((btn) => {
+
+                btn.addEventListener("click", () => {
+
+                    const form = document.querySelector("#content-form");
+
+                    if (btn.value === "PDF") {
+                        console.log(`This si the value ${btn.value}`)
+                        form.setAttribute("action", "/savecontent/pdf")
+
+                    } else if (btn.value === "DOCX") {
+                        console.log(btn.value)
+                        form.setAttribute("action", "/savecontent/docx")
+                    } else {
+                        console.error("Illegal Request ")
+                    }
+
+
+                    getEditorContent();
+
+                })
+
             });
 
 

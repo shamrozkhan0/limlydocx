@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     console.log("i am ready ")
 
     // Show password / hide password
@@ -16,15 +17,15 @@ $(document).ready(function () {
     });
     
 
-    let input = document.querySelectorAll('input');
+    function inputFocus(bla){
+        const input = document.querySelector(".input");
 
-    input.focus();
+        if(focus){
+            input.focus();
+        }
+    }
 
-    input.forEach((text) => {
-        text.addEventListener("keypress", (e) => {
-            if (e.key === " ") {
-                e.preventDefault(); 
-            }
-        });
-    });    
+
+
+
 });
