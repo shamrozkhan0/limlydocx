@@ -42,7 +42,6 @@ public class User implements UserDetails {
     @NotBlank(message = "You didn't write email")
     @Email(message = "provide a valid email")
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "Invalid email format")
-//    @Column(unique = true)
     private String email;
 
 

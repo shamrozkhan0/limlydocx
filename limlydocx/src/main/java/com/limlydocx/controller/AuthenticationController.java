@@ -2,9 +2,12 @@ package com.limlydocx.controller;
 
 import com.limlydocx.entity.User;
 import com.limlydocx.service.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,7 +64,7 @@ public class AuthenticationController {
      * @return
      */
     @PostMapping("/signup")
-    public String registerUserSignup(@Valid @ModelAttribute User user, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+    public String registerUserSignup(@Valid @ModelAttribute User user, BindingResult result, RedirectAttributes redirectAttributes, Model model, HttpServletRequest request) {
 
         log.info("Processing Start for user , {}", user.getEmail());
 
@@ -73,6 +76,10 @@ public class AuthenticationController {
             redirectAttributes.addFlashAttribute("error", ex.getMessage());
             return "redirect:/signup";
         }
+
+
+        request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
 
         log.info("User is registered");
         return "redirect:/doc";

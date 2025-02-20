@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         // Resource permit
                         .requestMatchers("/css/**" , "/js/**" , "/img/**").permitAll()
-                        .requestMatchers("/signup/**", "/login/**", "/users").permitAll()
+                        .requestMatchers("/signup/**", "/login/**", "/users", "/docs").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -38,7 +38,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")
                         .permitAll()
-                )
+                ).sessionManagement(session -> session
+                                .maximumSessions(1)
+                                .expiredUrl("/login?expired")
+                        )
                 .build();
     }
 
