@@ -1,5 +1,6 @@
 # LimlyDocx - A Collaborative Text-Editor
-A collaborative cloud-based text editor built on a monolithic architecture, allowing you to create in various formats. LimlyDocx features a rich text editor and ensures a secure environment for your work
+A collaborative cloud-based text editor built on a **Monolithic architecture**, allowing you to create in
+various formats like `.pdf` , `.docx` (Microsoft word format). LimlyDocx features a rich text editor and ensures a secure environment for your work
 ## Features
 
 - Create your document or article with our Rich Text Editor.

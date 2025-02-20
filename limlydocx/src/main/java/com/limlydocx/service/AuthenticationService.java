@@ -23,9 +23,9 @@ public class AuthenticationService {
     private final GlobalVariable globalVariable;
 
 
-
     /**
      * Register User Signup
+     *
      * @param user
      * @param result
      * @param redirectAttributes
@@ -33,7 +33,10 @@ public class AuthenticationService {
     public void registerUser(User user, BindingResult result, RedirectAttributes redirectAttributes) {
         log.info("Processing the user register");
         globalVariable.checkFeildError(result);
-        checkUserIsPresentByEmail(user.getEmail());
+
+        this.checkUserIsPresentByEmail(user.getEmail());
+        this.CheckUserIsPresentByUsername(user.getUsername());
+
 
         String hashPassword = passwordEncoder.encode(user.getPassword());
         String formatedUsername = StringUtils.cleanPath(user.getUsername());
@@ -43,44 +46,54 @@ public class AuthenticationService {
     }
 
 
-
     /**
      * Register user in the database
+     *
      * @param email
-     * @param password for testing
+     * @param password     for testing
      * @param hashPassword
      * @param username
      * @param name
      */
     public void createNewUser(String email, String password, String hashPassword, String username, String name) {
         User createUser = new User();
+
         createUser.setEmail(email);
         createUser.setActualPassword(password); //for testing
+
         createUser.setJoinedOn(LocalDateTime.now());
         createUser.setPassword(hashPassword);
+
         createUser.setUsername(username);
         createUser.setName(StringUtils.cleanPath(name));
+
         userRepository.save(createUser);
     }
 
 
-
     /**
      * Checks If user already present in database based on email
+     *
      * @param email
      */
-    public boolean checkUserIsPresentByEmail(String email){
+    public boolean checkUserIsPresentByEmail(String email) {
         userRepository.findUserByEmail(email).ifPresent(
-                user -> {
-                    throw new RuntimeException("User already present by email :" + email);
+                error -> {
+                    throw new RuntimeException("User already present by Credentials : " + email);
                 }
         );
         return false;
     }
 
 
-
-
+    public boolean CheckUserIsPresentByUsername(String username) {
+        userRepository.findUserByUsername(username).ifPresent(
+                error -> {
+                    throw new RuntimeException("User already present by username : " + username);
+                }
+        );
+        return false;
+    }
 
 
 }

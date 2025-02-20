@@ -1,6 +1,5 @@
 <form th:fragment="signup" tha:ction="@{/signup}" method="post" th:object="${user}">
-    <div class="alert alert-danger" th:if="${error}">
-        [[${error}]]
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}">
     </div>
 
     <label for="name">Name</label>
