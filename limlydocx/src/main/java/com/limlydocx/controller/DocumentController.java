@@ -6,6 +6,7 @@ import com.limlydocx.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class DocumentController {
 
     @Value("${cloudinary.document.path}")
     private String cloudPath;
+
 
     /**
      * Directs the user to the editor page.
@@ -59,6 +61,7 @@ public class DocumentController {
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
+
         if (authentication == null) {
             return "redirect:/login";
         }
@@ -71,22 +74,32 @@ public class DocumentController {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
 
-
         try {
-
-            if(Objects.equals(format, "pdf")){
-                System.out.println("Generating PDF...");
+            ResponseEntity<String> task = null;
+            if (Objects.equals(format, "pdf")) {
                 uniqueFileName.append(".pdf");
-                documentService.generatePdfAndUploadToCloud(content, String.valueOf(uniqueFileName));
+                task = documentService.generatePdfAndUploadToCloud(content, String.valueOf(uniqueFileName));
             } else if (Objects.equals(format, "docx")) {
-                System.out.println("Generating DOCX...");
+
                 uniqueFileName.append(".docx");
-                documentService.generatesDocxAndUploadToCloud(content , String.valueOf(uniqueFileName));
+                documentService.generatesDocxAndUploadToCloud(content, String.valueOf(uniqueFileName));
             } else {
                 System.out.println("Invalid format: " + format);
             }
 
+            checlIfDocumentCreatedAndReturn(task, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
+
+        } catch (Exception e) {
+            log.error("Error processing document: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "An error occurred while processing the document");
+        }
+        return "redirect:/doc";
+    }
+
+
+    public void checlIfDocumentCreatedAndReturn(ResponseEntity<String> task, RedirectAttributes redirectAttributes, String uniqueFileName, Authentication authentication, String content) {
+        if (task != null && task.getStatusCode().is2xxSuccessful()) {
             // Save document info in the database
             documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
 
@@ -95,12 +108,14 @@ public class DocumentController {
 
             // Preserve content in the editorclea
             redirectAttributes.addFlashAttribute("content", content);
-
-        } catch (Exception e) {
-            log.error("Error processing document: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "An error occurred while processing the document");
+            redirectAttributes.addFlashAttribute("success", task.getBody());
+        } else {
+            // Preserve content in the editorclea
+            redirectAttributes.addFlashAttribute("content", content);
+            redirectAttributes.addFlashAttribute("error", "Error creating document");
+            throw new RuntimeException();
         }
-
-        return "redirect:/doc";
     }
+
+
 }

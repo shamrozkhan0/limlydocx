@@ -34,6 +34,9 @@
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
     </div>
 
+    <div class="message text-success shadow-danger alert alert-success " th:if="${success}">
+        <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${success}"></p>
+    </div>
 
     <div class="spinner-parent z-2 position-absolute d-flex flex-column align-items-center gap-3 d-none">
         <!-- spinner icon -->

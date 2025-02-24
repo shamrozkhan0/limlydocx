@@ -8,17 +8,16 @@ import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -51,26 +50,6 @@ public class DocumentService {
     }
 
 
-//    /**
-//     * Generates a PDF from HTML content and saves it locally.
-//     * @param content the HTML content
-//     * @param uniqueFileName the unique file name (without extension)
-//     */
-//    public void generatePdfAndUploadToCloud(String content, String uniqueFileName) {
-//        // Define the output file path dynamically
-//        String outputPath = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\" + uniqueFileName + ".pdf";
-//        File outputPdf = new File(outputPath);
-//
-//        try (OutputStream outputStream = new FileOutputStream(outputPdf)) {
-//            ConverterProperties properties = new ConverterProperties();
-//            HtmlConverter.convertToPdf(content, outputStream, properties);
-//            System.out.println("✅ PDF created successfully at: " + outputPath);
-//        } catch (IOException e) {
-//            System.err.println("❌ Error generating PDF: " + e.getMessage());
-//            throw new RuntimeException("PDF generation failed", e);
-//        }
-//    }
-
 
     /**
      * Generates a PDF from HTML content and uploads it to Cloudinary.
@@ -78,47 +57,30 @@ public class DocumentService {
      * @param content        the HTML content
      * @param uniqueFileName the unique file name
      */
-    public void generatePdfAndUploadToCloud(String content, String uniqueFileName) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+    public ResponseEntity<String> generatePdfAndUploadToCloud(String content, String uniqueFileName) {
+
+        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\" + uniqueFileName + ".pdf";
+        File file = new File(path);
+
+//        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
+        try(OutputStream outputStream = new FileOutputStream(file)){
 
             ConverterProperties properties = new ConverterProperties();
-            HtmlConverter.convertToPdf(content, byteArrayOutputStream, properties);
-            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+            HtmlConverter.convertToPdf(content, outputStream, properties);
+//            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
 
-            uploadToCloudinary(uniqueFileName, pdfBytes);
-            System.out.println("pdf is creadted");
+//            uploadToCloudinary(uniqueFileName, pdfBytes);
+
+//            byteArrayOutputStream.close();
+            outputStream.close();
+            return ResponseEntity.ok("pdf created successfully");
         } catch (IOException e) {
             log.error("Error generating PDF: {}", e.getMessage());
-            throw new RuntimeException("PDF generation failed", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("PDF generation failed " + e.getMessage());
         }
     }
 
-
-    public void generatesDocxAndUploadToCloud(String content, String uniqueFileName) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
-            // Create a new WordprocessingMLPackage (a DOCX file)
-            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
-
-            // Convert HTML content to DOCX using XHTMLImporterImpl
-            XHTMLImporterImpl xhtmlImporter = new XHTMLImporterImpl(wordMLPackage);
-
-            // Convert the HTML string content into a list of WordML objects
-            List<Object> convertedContent = xhtmlImporter.convert(content, null);
-
-            // Add the converted content to the main document part
-             wordMLPackage.getMainDocumentPart().getContent().addAll(convertedContent);
-
-             wordMLPackage.save(byteArrayOutputStream);
-
-             byte[] docxByte = byteArrayOutputStream.toByteArray();
-
-             uploadToCloudinary(uniqueFileName, docxByte);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     /**
@@ -141,4 +103,42 @@ public class DocumentService {
             throw new RuntimeException("Cloudinary upload failed", e);
         }
     }
+
+
+//    public void generatesDocxAndUploadToCloud(String content, String uniqueFileName) {
+//
+//
+//        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+//
+//            // Create a new WordprocessingMLPackage (a DOCX file)
+//            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
+//
+//            // Convert HTML content to DOCX using XHTMLImporterImpl
+//
+//            XHTMLImporterImpl xhtmlImporter = new XHTMLImporterImpl(wordMLPackage);
+//
+//            // Convert the HTML string content into a list of WordML objects
+//            List<Object> convertedContent = xhtmlImporter.convert(updatedContent, null);
+//
+//            // Add the converted content to the main document part
+//             wordMLPackage.getMainDocumentPart().getContent().addAll(convertedContent);
+//
+//             wordMLPackage.save(outputStream);
+//
+//             wordMLPackage.save(byteArrayOutputStream);
+//
+//             byte[] docxByte = byteArrayOutputStream.toByteArray();
+//
+//             uploadToCloudinary(uniqueFileName, docxByte);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
+
+
+
 }
