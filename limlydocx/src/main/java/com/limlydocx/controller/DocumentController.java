@@ -57,7 +57,8 @@ public class DocumentController {
     @PostMapping("/savecontent/{format}")
     public String saveDocumentContent(
             @PathVariable String format,
-            @RequestParam("content") String content,
+            @RequestParam("content")
+            String content,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
@@ -74,27 +75,36 @@ public class DocumentController {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
 
-        try {
-            ResponseEntity<String> task = null;
-            if (Objects.equals(format, "pdf")) {
-                uniqueFileName.append(".pdf");
-                task = documentService.generatePdfAndUploadToCloud(content, String.valueOf(uniqueFileName));
-            } else if (Objects.equals(format, "docx")) {
+        ResponseEntity<String> task = null;
 
-                uniqueFileName.append(".docx");
-                documentService.generatesDocxAndUploadToCloud(content, String.valueOf(uniqueFileName));
-            } else {
-                System.out.println("Invalid format: " + format);
-            }
+        try {
+
+            task = formatChecker(format, uniqueFileName, content, task);
 
             checlIfDocumentCreatedAndReturn(task, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
 
         } catch (Exception e) {
             log.error("Error processing document: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "An error occurred while processing the document");
+            redirectAttributes.addFlashAttribute("error", task.getBody());
         }
         return "redirect:/doc";
+    }
+
+
+    public ResponseEntity<String> formatChecker(String format, StringBuilder uniqueFileName, String content, ResponseEntity<String> task) {
+        if (Objects.equals(format, "pdf")) {
+            uniqueFileName.append(".pdf");
+            task = documentService.generatePdfAndUploadOnCloud(content, String.valueOf(uniqueFileName));
+            log.info("format is complete");
+        } else if (Objects.equals(format, "docx")) {
+            uniqueFileName.append(".docx");
+            log.info("Generating Docx");
+            task = documentService.generateDocxAndUploadOnCloud(content, String.valueOf(uniqueFileName));
+        } else {
+            System.out.println("Invalid format: " + format);
+        }
+        return task;
     }
 
 
@@ -104,11 +114,14 @@ public class DocumentController {
             documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
 
             // Provide download URL to the user
-            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
+//            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
 
             // Preserve content in the editorclea
             redirectAttributes.addFlashAttribute("content", content);
             redirectAttributes.addFlashAttribute("success", task.getBody());
+            System.out.println("ijwpeqwkoewkrprw");
+        } else if (task == null) {
+            log.info("task is empyt" + task);
         } else {
             // Preserve content in the editorclea
             redirectAttributes.addFlashAttribute("content", content);

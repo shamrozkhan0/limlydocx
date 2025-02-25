@@ -85,17 +85,66 @@
             <version>4.0.2</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.docx4j</groupId>-->
+<!--            <artifactId>docx4j-JAXB-Internal</artifactId>-->
+<!--            <version>8.3.2</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+
+        <!-- JAXB Runtime -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+        <!-- Docx4j Core -->
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-core</artifactId>
-            <version>11.5.2</version>
+            <version>11.5.0</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.docx4j</groupId>-->
-<!--            <artifactId>docx4j-ImportXHTML-core</artifactId>-->
-<!--            <version>11.5.0</version>-->
-<!--        </dependency>-->
+        <!-- Docx4j XHTML Import -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-ImportXHTML-core</artifactId>
+            <version>11.5.0</version>
+        </dependency>
+
+        <!-- Docx4j JAXB Reference Implementation -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>11.5.0</version>
+        </dependency>
+
+        <!-- Docx4j JAXB MOXy (alternative implementation) -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-MOXy</artifactId>
+            <version>11.5.0</version>
+        </dependency>
+
+        <!-- JSoup for HTML parsing -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.4</version>
+        </dependency>
+
+        <!-- docx4j ImportXHTML for HTML to DOCX conversion -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.docx4j</groupId>-->
+        <!--            <artifactId>docx4j-ImportXHTML</artifactId>-->
+        <!--            <version>11.5.2</version>-->
+        <!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>org.docx4j</groupId>-->
