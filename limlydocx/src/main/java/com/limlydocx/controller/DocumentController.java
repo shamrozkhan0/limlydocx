@@ -57,11 +57,12 @@ public class DocumentController {
     @PostMapping("/savecontent/{format}")
     public String saveDocumentContent(
             @PathVariable String format,
-            @RequestParam("content")
-            String content,
+            @RequestParam("content") String content,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
+
+        log.info(content);
 
         if (authentication == null) {
             return "redirect:/login";
@@ -72,6 +73,7 @@ public class DocumentController {
             return "redirect:/doc";
         }
 
+
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
 
@@ -79,7 +81,7 @@ public class DocumentController {
 
         try {
 
-            task = formatChecker(format, uniqueFileName, content, task);
+            task = formatChecker(format, uniqueFileName, content , task);
 
             checlIfDocumentCreatedAndReturn(task, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
@@ -92,15 +94,17 @@ public class DocumentController {
     }
 
 
-    public ResponseEntity<String> formatChecker(String format, StringBuilder uniqueFileName, String content, ResponseEntity<String> task) {
+    public ResponseEntity<String> formatChecker(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> task) {
         if (Objects.equals(format, "pdf")) {
             uniqueFileName.append(".pdf");
-            task = documentService.generatePdfAndUploadOnCloud(content, String.valueOf(uniqueFileName));
+//            task = documentService.generatePdfAndUploadOnCloud(content, String.valueOf(uniqueFileName));
             log.info("format is complete");
         } else if (Objects.equals(format, "docx")) {
+            String updatedContent = "<html><head></head><body>"
+                    + content.substring(0, content.lastIndexOf("</p>"))  // Extract content before last `</p>`
+                    + "</p></img></body></html>"; // Append closing tags properly
             uniqueFileName.append(".docx");
-            log.info("Generating Docx");
-            task = documentService.generateDocxAndUploadOnCloud(content, String.valueOf(uniqueFileName));
+            task = documentService.generateDocx(updatedContent, String.valueOf(uniqueFileName));
         } else {
             System.out.println("Invalid format: " + format);
         }
@@ -108,7 +112,13 @@ public class DocumentController {
     }
 
 
-    public void checlIfDocumentCreatedAndReturn(ResponseEntity<String> task, RedirectAttributes redirectAttributes, String uniqueFileName, Authentication authentication, String content) {
+    public void checlIfDocumentCreatedAndReturn(
+            ResponseEntity<String> task,
+            RedirectAttributes redirectAttributes,
+            String uniqueFileName,
+            Authentication authentication,
+            String content
+    ) {
         if (task != null && task.getStatusCode().is2xxSuccessful()) {
             // Save document info in the database
             documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);

@@ -79,17 +79,13 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>html2pdf</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-
 <!--        <dependency>-->
-<!--            <groupId>org.docx4j</groupId>-->
-<!--            <artifactId>docx4j-JAXB-Internal</artifactId>-->
-<!--            <version>8.3.2</version>-->
+<!--            <groupId>com.itextpdf</groupId>-->
+<!--            <artifactId>html2pdf</artifactId>-->
+<!--            <version>4.0.2</version>-->
 <!--        </dependency>-->
+
+
 
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
