@@ -16,7 +16,6 @@
     <!-- 
     Issue -  The image is aligning in center which make the form look bad 
     -->
-
     <div class="container-fluid h-100 w-100" th:if="${login}">
         <div  th:replace="~{fragments/login :: login}"></div>
     </div>
@@ -24,6 +23,26 @@
     <div th:if="${signup}">
         <div class="" th:replace="~{fragments/signup :: signup}"></div>
     </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Login/Signup -->
+            <div class="col-5">
+
+                
+
+            </div>
+
+
+            <!-- Authentication Image -->
+            <div class="col-7"></div>
+
+        </div>
+    </div>
+
+
 
 
 

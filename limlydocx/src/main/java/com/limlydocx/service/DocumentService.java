@@ -1,12 +1,11 @@
 package com.limlydocx.service;
 
 import com.cloudinary.Cloudinary;
-//import com.itextpdf.html2pdf.ConverterProperties;
-//import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
-import jakarta.xml.bind.JAXBElement;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
@@ -18,21 +17,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 @Log4j2
 public class DocumentService {
+
 
     private final Cloudinary cloudinary;
     private final GlobalVariable globalVariable;
@@ -47,11 +48,14 @@ public class DocumentService {
      * @param authentication the authentication object
      */
     public void saveDocumentInDatabase(String uniqueFileName, Authentication authentication) {
+
         String username = globalVariable.getUsername(authentication);
+
         DocumentEntity documentEntity = new DocumentEntity();
         documentEntity.setFileName(uniqueFileName);
         documentEntity.setUploadOn(LocalDate.now());
         documentEntity.setCreator(username);
+
         try {
             documentRepository.save(documentEntity);
         } catch (Exception e) {
@@ -62,36 +66,38 @@ public class DocumentService {
 
 
 
-//    /**
-//     * Generates a PDF from HTML content and uploads it to Cloudinary.
-//     *
-//     * @param content        the HTML content
-//     * @param uniqueFileName the unique file name
-//     */
-//    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
-//
-//        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\" + uniqueFileName + ".pdf";
-//        File file = new File(path);
-//
-////        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-//
-//        try (OutputStream outputStream = new FileOutputStream(file)) {
-//
-//            ConverterProperties properties = new ConverterProperties();
-//            HtmlConverter.convertToPdf(content, outputStream, properties);
-////            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
-//
-////            uploadToCloudinary(uniqueFileName, pdfBytes);
-//
-////            byteArrayOutputStream.close();
-//            outputStream.close();
-//            return ResponseEntity.ok("pdf created successfully");
-//        } catch (IOException e) {
-//            log.error("Error generating PDF: {}", e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("PDF generation failed " + e.getMessage());
-//        }
-//    }
+    /**
+     * Generates a PDF from HTML content and uploads it to Cloudinary.
+     *
+     * @param content        the HTML content
+     * @param uniqueFileName the unique file name
+     */
+    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
 
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
+            ConverterProperties properties = new ConverterProperties();
+            HtmlConverter.convertToPdf(content, byteArrayOutputStream, properties);
+
+            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+            uploadToCloudinary(uniqueFileName, pdfBytes);
+
+            byteArrayOutputStream.close();
+            return ResponseEntity.ok("pdf created successfully");
+        } catch (IOException e) {
+            log.error("Error generating PDF: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("PDF generation failed " + e.getMessage());
+        }
+    }
+
+
+
+    /**
+     *
+     * @param htmlContent
+     * @param uniqueFilename
+     * @return
+     */
     public ResponseEntity<String> generateDocx(String htmlContent, String uniqueFilename) {
         // Define the directory path
         String directoryPath = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\";
@@ -174,58 +180,28 @@ public class DocumentService {
         }
     }
 
+
+
     /**
-     * Uploads the PDF byte array to Cloudinary.
+     * Uploads the PDF/DOCX on Cloudinary storage .
      *
      * @param uniqueFileName the unique file name
-     * @param pdfBytes       the PDF byte array
+     * @param documentByte     the PDF byte array
      */
-//    private void uploadToCloudinary(String uniqueFileName, byte[] pdfBytes) {
-//        Map<String, Object> options = new HashMap<>();
-//        options.put("resource_type", "raw");
-//        options.put("public_id", uniqueFileName);
-//        options.put("overwrite", true);
-//        options.put("tags", "pdf,document");
-//
-//        try {
-//            cloudinary.uploader().upload(pdfBytes, options);
-//        } catch (IOException e) {
-//            log.error("Error uploading to Cloudinary: {}", e.getMessage());
-//            throw new RuntimeException("Cloudinary upload failed", e);
-//        }
-//    }
+    private void uploadToCloudinary(String uniqueFileName, byte[] documentByte) {
+        Map<String, Object> options = new HashMap<>();
+        options.put("resource_type", "raw");
+        options.put("public_id", uniqueFileName);
+        options.put("overwrite", true);
+        options.put("tags", "pdf,document");
 
-
-//    public void generatesDocxAndUploadToCloud(String content, String uniqueFileName) {
-//
-//
-//        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-//
-//            // Create a new WordprocessingMLPackage (a DOCX file)
-//            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
-//
-//            // Convert HTML content to DOCX using XHTMLImporterImpl
-//
-//            XHTMLImporterImpl xhtmlImporter = new XHTMLImporterImpl(wordMLPackage);
-//
-//            // Convert the HTML string content into a list of WordML objects
-//            List<Object> convertedContent = xhtmlImporter.convert(updatedContent, null);
-//
-//            // Add the converted content to the main document part
-//             wordMLPackage.getMainDocumentPart().getContent().addAll(convertedContent);
-//
-//             wordMLPackage.save(outputStream);
-//
-//             wordMLPackage.save(byteArrayOutputStream);
-//
-//             byte[] docxByte = byteArrayOutputStream.toByteArray();
-//
-//             uploadToCloudinary(uniqueFileName, docxByte);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+        try {
+            cloudinary.uploader().upload(documentByte, options);
+        } catch (IOException e) {
+            log.error("Error uploading to Cloudinary: {}", e.getMessage());
+            throw new RuntimeException("Cloudinary upload failed", e);
+        }
+    }
 
 
 }
