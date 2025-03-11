@@ -19,15 +19,21 @@ public class UserController {
     @Autowired
     private DocumentRepository documentRepository;
 
+
+
     @GetMapping("/start-at")
     public String sayhello(){
         return "hello world  31-December-2024";
     }
 
+
+
     @GetMapping("/users")
     public List<User> showAllusers(){
         return userRepository.findAll();
     }
+
+
 
     @GetMapping("/docs")
     public List<DocumentEntity> showSavedDocument(){

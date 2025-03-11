@@ -34,6 +34,7 @@ public class DocumentController {
     private String cloudPath;
 
 
+
     /**
      * Directs the user to the editor page.
      *
@@ -44,6 +45,7 @@ public class DocumentController {
         log.info("User is at the Editor page");
         return "editor";
     }
+
 
 
     /**
@@ -74,12 +76,13 @@ public class DocumentController {
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
+
         ResponseEntity<String> task = null;
 
         try {
 
-            task = formatChecker(format, uniqueFileName, content , task);
-            checlIfDocumentCreatedAndReturn(task, redirectAttributes, uniqueFileName.toString(), authentication, content);
+            task = this.formatChecker(format, uniqueFileName, content , task);
+            this.checlIfDocumentCreatedAndReturn(task, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
         } catch (Exception e) {
             log.error("Error processing document: {}", e.getMessage());
@@ -90,43 +93,19 @@ public class DocumentController {
 
 
 
-
-
-
-
-
-
-
     public ResponseEntity<String> formatChecker(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> task) {
         if (Objects.equals(format, "pdf")) {
             uniqueFileName.append(".pdf");
             task = documentService.generatePdfAndUploadOnCloud(content, String.valueOf(uniqueFileName));
             log.info("format is complete");
         } else if (Objects.equals(format, "docx")) {
-            String updatedContent = "<html><head></head><body>"
-                    + content.substring(0, content.lastIndexOf("</p>"))  // Extract content before last `</p>`
-                    + "</p></img></body></html>"; // Append closing tags properly
             uniqueFileName.append(".docx");
-            task = documentService.generateDocx(updatedContent, String.valueOf(uniqueFileName));
+            task = documentService.generateDocx(content, String.valueOf(uniqueFileName));
         } else {
             System.out.println("Invalid format: " + format);
         }
         return task;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

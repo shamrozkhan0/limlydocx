@@ -8,7 +8,7 @@
     width: 50%;
 }
 
-.login-inputs {
+.border-inputs {
     border: 2px solid #432F6F;
 }
 
@@ -19,7 +19,6 @@
 .login-image {
     height: 100vh;
 }
-
 
 h2 {
     background: linear-gradient(to left, #002B62 10%, #99316E);
@@ -38,54 +37,13 @@ h2 {
     max-width: clamp(30px, 10%, 30px);
 }
 
-.shake {
-    transition: all 0.5s ease;
-    animation: shake .5s ease;
+.alert-parent{
+    z-index: 999;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-
-
-@keyframes shake {
-    0% {
-        transform: translateX(10px);
-    }
-
-    10% {
-        transform: translateX(-10px);
-    }
-
-    20% {
-        transform: translateX(10px);
-    }
-
-    30% {
-        transform: translateX(-10px);
-    }
-
-    40% {
-        transform: translateX(10px);
-    }
-
-    50% {
-        transform: translateX(-10px);
-    }
-
-    60% {
-        transform: translateX(10px);
-    }
-
-    70% {
-        transform: translateX(-10px);
-    }
-
-    80% {
-        transform: translateX(10px);
-    }
-
-    100% {
-        transform: translateX(-10px);
-    }
-}
 
 @media screen and (max-width:1580px) {
     .login-parent {

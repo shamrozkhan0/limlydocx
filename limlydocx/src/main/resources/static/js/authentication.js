@@ -26,6 +26,9 @@ $(document).ready(function () {
     }
 
 
-
-
+    const button = document.querySelector('.signupButton').addEventListener("click",(e)=>{
+        e.preventDefault();
+    })
 });
+
+

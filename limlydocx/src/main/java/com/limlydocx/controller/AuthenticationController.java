@@ -68,6 +68,8 @@ public class AuthenticationController {
         log.info("Processing Start for user , {}", user.getEmail());
 
         try {
+
+
             authenticationService.registerUser(user, result, redirectAttributes);
         } catch (Exception ex) {
             log.error("Exception : " + ex);

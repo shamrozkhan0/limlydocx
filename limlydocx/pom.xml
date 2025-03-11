@@ -87,27 +87,56 @@
         </dependency>
         <!--===============================-->
 
-        <!-- Docx4j ======================================-->
+
+
+
+
+
+        <!-- Core docx4j functionality -->
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-core</artifactId>
-            <version>11.5.0</version>
+            <version>11.5.1</version>
         </dependency>
 
-        <!-- Docx4j XHTML Import -->
+        <!-- XHTML import support -->
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-ImportXHTML-core</artifactId>
             <version>11.5.0</version>
         </dependency>
 
+        <!-- JAXB Reference Implementation for docx4j -->
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+            <version>11.5.1</version>
+        </dependency>
 
-        <!-- JSoup for HTML parsing -->
+        <!-- Jakarta XML Binding API -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- JAXB Runtime -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <!-- Jsoup HTML parser (if needed for HTML processing) -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.15.4</version>
+            <version>1.14.3</version>
         </dependency>
+
+
+
+
 
         <!-- ===========================================================-->
 

@@ -8,23 +8,41 @@ import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.docx4j.dml.wordprocessingDrawing.Inline;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
-import org.docx4j.wml.*;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Base64;
+
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
+import org.docx4j.wml.P;
+import org.docx4j.wml.R;
+import org.docx4j.dml.wordprocessingDrawing.Inline;
+import org.docx4j.wml.Drawing;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
+
+import org.springframework.http.ResponseEntity;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
+
+
 import java.io.*;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -76,13 +94,19 @@ public class DocumentService {
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 
+//        String path = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\"+UUID.randomUUID().toString()+".pdf";
+//        File file = new File(path);
+//        try(OutputStream outputStream = new FileOutputStream(file)){
+
             ConverterProperties properties = new ConverterProperties();
             HtmlConverter.convertToPdf(content, byteArrayOutputStream, properties);
 
             byte[] pdfBytes = byteArrayOutputStream.toByteArray();
-            uploadToCloudinary(uniqueFileName, pdfBytes);
+
+//            uploadToCloudinary(uniqueFileName, pdfBytes);
 
             byteArrayOutputStream.close();
+
             return ResponseEntity.ok("pdf created successfully");
         } catch (IOException e) {
             log.error("Error generating PDF: {}", e.getMessage());
@@ -92,88 +116,73 @@ public class DocumentService {
 
 
 
-    /**
-     *
-     * @param htmlContent
-     * @param uniqueFilename
-     * @return
-     */
     public ResponseEntity<String> generateDocx(String htmlContent, String uniqueFilename) {
-        // Define the directory path
+        System.out.println("HTML Content: " + htmlContent);
+
+        // Define directory and file path
         String directoryPath = "E:\\limlydocx\\limlydocx\\src\\main\\resources\\testPdf\\";
-        // Ensure the directory path ends with a separator
         if (!directoryPath.endsWith(File.separator)) {
             directoryPath += File.separator;
         }
-        // Combine directory path with the unique filename
         String path = directoryPath + uniqueFilename;
 
         try {
-            // Create a File object for the directory
+            // Ensure the directory exists
             File directory = new File(directoryPath);
-            // If the directory doesn't exist, create it
-            if (!directory.exists()) {
-                if (!directory.mkdirs()) {
-                    return ResponseEntity.status(500).body("Failed to create directory: " + directoryPath);
-                }
+            if (!directory.exists() && !directory.mkdirs()) {
+                throw new RuntimeException("Failed to create directory: " + directoryPath);
             }
-
-            // Create a File object for the output file
             File file = new File(path);
 
-            // Create a WordprocessingMLPackage
+            // Create a WordprocessingMLPackage and its main document part
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
             MainDocumentPart mainDocumentPart = wordMLPackage.getMainDocumentPart();
 
-            // Parse the HTML content
+            // Parse the HTML using Jsoup
             Document document = Jsoup.parse(htmlContent);
-            Elements imgElements = document.select("img[src^=data:image]");
 
-            // Process each image
+            // Process embedded images (base64) if present
+            Elements imgElements = document.select("img[src^=data:image]");
             for (Element imgElement : imgElements) {
                 String src = imgElement.attr("src");
-                String base64Data = src.split(",")[1];
+                if (!src.contains(",")) continue;
+                String[] parts = src.split(",", 2);
+                if (parts.length < 2) continue;
+                String base64Data = parts[1];
                 byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
-                // Create the image part in the DOCX
+                // Create image part and inline image
                 BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imageBytes);
+                Inline inline = imagePart.createImageInline("Image", "Generated Image", 1, 2, false);
 
-                // Create the inline image
-                Inline inline = imagePart.createImageInline("Filename hint", "Alt text", 1, 2, false);
-
-                // Add the inline image to a drawing
+                // Build the drawing element and wrap it in a run and paragraph
                 Drawing drawing = new Drawing();
                 drawing.getAnchorOrInline().add(inline);
-
-                // Add the drawing to a run
                 R run = new R();
                 run.getContent().add(drawing);
-
-                // Add the run to a paragraph
                 P paragraph = new P();
                 paragraph.getContent().add(run);
-
-                // Add the paragraph to the main document part
                 mainDocumentPart.addObject(paragraph);
 
-                // Remove the original <img> tag
+                // Remove the <img> tag so it won't be processed again in the HTML conversion
                 imgElement.remove();
             }
 
-            // Convert the modified HTML to XHTML
-            String xhtml = document.html();
+            // Normalize and clean the remaining HTML (text, formatting, etc.)
+            // Optionally, replace <br> tags with newline markers if needed
+            document.select("br").append("\\n");
+            String cleanedHtml = document.html().replaceAll("\\s{2,}", " ").trim();
 
-            // Convert XHTML to DOCX content
-            org.docx4j.convert.in.xhtml.XHTMLImporterImpl xhtmlImporter = new org.docx4j.convert.in.xhtml.XHTMLImporterImpl(wordMLPackage);
-            mainDocumentPart.getContent().addAll(xhtmlImporter.convert(xhtml, null));
+            // Import the cleaned XHTML into the DOCX document
+            XHTMLImporterImpl xhtmlImporter = new XHTMLImporterImpl(wordMLPackage);
+            mainDocumentPart.getContent().addAll(xhtmlImporter.convert(cleanedHtml, null));
 
-            // Save the DOCX to the file system
+            // Save the DOCX file
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 wordMLPackage.save(outputStream);
             }
 
             return ResponseEntity.ok("DOCX created successfully at: " + path);
-
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error creating DOCX: " + e.getMessage());
