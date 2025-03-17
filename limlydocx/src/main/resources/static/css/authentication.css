@@ -1,3 +1,7 @@
+form{
+    width: 75%;
+}
+
 .login-button {
     background: linear-gradient(150deg, #96306F, #062A66);
 }
@@ -68,6 +72,12 @@ h2 {
 }
 
 @media screen and (max-width:470px) {
+    
+form{
+    width: 100% !important;
+}
+
+
     .login-image h1 {
         font-size: 25px;
     }

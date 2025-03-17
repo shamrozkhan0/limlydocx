@@ -1,9 +1,9 @@
-<form th:fragment="login" th:action="@{/login}" method="post" class="d-flex flex-column gap-4 px-0 px-md-3 py-3 w-75">
+<form th:fragment="login" th:action="@{/login}" method="post" class="d-flex flex-column gap-4 px-0 px-md-3 py-3">
 
-    <div class="">
+    <header aria-label="login form welcome text">
         <h2 class="p-0 m-0 fw-bold">Welcome Back</h2>
         <p class="m-0 p-0 text-capitalize text-dark fs-18 fw-bold">Let's create your document</p>
-    </div>
+    </header>
 
     <!-- Username Field -->
     <div class="d-flex align-items-center border-inputs px-3 py-2 fs-16 rounded-2">
@@ -36,7 +36,7 @@
     <!-- Sign Up Link -->
     <a th:href="@{/signup}" id="signupButton" aria-label="login button"
         class="button-limly text-center text-decoration-none text-white py-2 rounded-3 fs-18 fw-semibold ">
-        signup
+        SignUp
     </a>
 
     <!-- <div id="signupButton" class="btn btn-primary">buttotn</div> -->

@@ -25,30 +25,37 @@
 
     <div class="container-fluid h-100">
         <div class="row h-100">
-            <!-- Authentication form login/signup -->
-            <div class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center" th:if="${login}">
-                <div th:replace="~{fragments/login.html :: login}"></div>
-            </div>
 
-            <div class="col-5 d-flex align-items-center justify-content-center" th:if="${signup}">
+
+            <!-- Authentication form login/signup -->
+            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center" th:if="${login}"
+                aria-label="login form">
+                <div th:replace="~{fragments/login.html :: login}"></div>
+            </section>
+
+            
+            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center" th:if="${signup}"
+                aria-label="signup form">
                 <div th:replace="~{fragments/signup.html :: signup}"></div>
-            </div>
+            </section>
 
 
 
             <!-- Authentication Image -->
-            <div class="col-12 col-md-6 col-xl-7  position-relative d-flex align-items-center justify-content-center login-image">
+            <figure
+                class="col-12 col-md-6 col-xl-7  position-relative d-flex align-items-center justify-content-center login-image"
+                aria-label="Authentication image">
                 <!-- <img src="../static/img/login.jpg" alt="" class="position-absolute w-100 h-100"> -->
-                <img th:src="@{/img/login.webp}" alt="image " class="w-100 h-100 position-absolute">
-                <div class="text-center text-white d-flex flex-column gap-2 py-2">
+                <img th:src="@{/img/login.webp}" alt="image with text" class="w-100 h-100 position-absolute">
+                <header class="text-center text-white d-flex flex-column gap-2 py-2">
                     <h1 class="z-1 ls-md letter-spacing-normal text-uppercase fw-bold">
                         Limly-DocX
                     </h1>
                     <p class="m-0 fs-18 fw-semibold letter-spacing-sm text-capitalize z-1">
                         Edit with collaboration
                     </p>
-                </div>
-            </div>
+                </header>
+            </figure>
 
         </div>
     </div>
