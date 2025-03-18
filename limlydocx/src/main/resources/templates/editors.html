@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/index.css">
+    <script src="https://kit.fontawesome.com/0a7c965840.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Tiptap Editor Example</title>
+    <style>
+        #editor {
+            height: 600px;
+            width: 769px;
+            padding: 10px;
+            margin-top: 60px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 0.3rem;
+        }
+
+        #editor .ProseMirror {
+            width: 100%;
+            height: 100%;
+            outline: none;
+            border: 0;
+        }
+
+        pre {
+            background: black;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 5px;
+        }
+
+        /* Fixed block menu styling */
+        #fixed-menu {
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        /* Bubble menu styling */
+        #bubble-menu {
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 5px;
+            z-index: 1001;
+        }
+
+        .menu-button {
+            font-size: 18px;
+            padding: 4px 8px;
+            background-color: white;
+            border: none;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+
+        .menu-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .menu-button.is-active {
+            background-color: #e6f2ff;
+        }
+    </style>
+</head>
+
+<body class="d-flex align-items-center justify-content-center flex-column gap-2 bg-dark">
+    <!-- Fixed Block Menu -->
+    <div id="fixed-menu" class="d-flex align-items-center gap-5 px-3 py-2 bg-white">
+        <button class="menu-button fw-semibold"
+            onclick="editor.chain().focus().toggleHeading({ level: 1 }).run()">H1</button>
+        <button class="menu-button fw-semibold"
+            onclick="editor.chain().focus().toggleHeading({ level: 2 }).run()">H2</button>
+        <button class="menu-button fw-semibold"
+            onclick="editor.chain().focus().toggleHeading({ level: 3 }).run()">H3</button>
+        <button class="menu-button fw-semibold"
+            onclick="editor.chain().focus().toggleHeading({ level: 4 }).run()">H4</button>
+        <button class="menu-button fw-semibold"
+            onclick="editor.chain().focus().toggleHeading({ level: 5 }).run()">H5</button>
+        <button class="menu-button fw-semibold"
+            onclick="editor.chain().focus().toggleHeading({ level: 6 }).run()">H6</button>
+
+        <button class="menu-button" onclick="editor.chain().focus().toggleBold().run()">
+            <i class="fas fa-bold"></i>
+        </button>
+
+        <button class="menu-button" onclick="editor.chain().focus().toggleItalic().run()">
+            <i class="fas fa-italic"></i>
+        </button>
+
+        <button class="menu-button" id="bulletListBtn">
+            <i class="fas fa-list"></i>
+        </button>
+
+        <button class="menu-button" onclick="editor.chain().focus().toggleCodeBlock().run()">
+            <i class="fas fa-code"></i>
+        </button>
+
+        <button class="menu-button" onclick="editor.chain().focus().toggleBlockquote().run()">
+            <i class="fas fa-quote-right"></i>
+        </button>
+    </div>
+
+    <!-- Editor Container -->
+    <div id="editor" class="bg-white"></div>
+
+    <!-- Create bubble menu element -->
+    <div id="bubble-menu">
+        <button class="menu-button" onclick="editor.chain().focus().toggleBold().run()">
+            <i class="fas fa-bold"></i>
+        </button>
+        <button class="menu-button" onclick="editor.chain().focus().toggleItalic().run()">
+            <i class="fas fa-italic"></i>
+        </button>
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script type="module">
+
+        import { Editor } from "https://cdn.jsdelivr.net/npm/@tiptap/core/+esm";
+        import StarterKit from "https://cdn.jsdelivr.net/npm/@tiptap/starter-kit/+esm";
+        import { BubbleMenu } from "https://cdn.jsdelivr.net/npm/@tiptap/extension-bubble-menu/+esm";
+        import BulletList from "https://cdn.jsdelivr.net/npm/@tiptap/extension-bullet-list/+esm";
+        import ListItem from "https://cdn.jsdelivr.net/npm/@tiptap/extension-list-item/+esm";
+
+
+        const editor = new Editor({
+            element: document.querySelector('#editor'),
+            content: '<p>Start editing here...</p>',
+            extensions: [
+                bulletList,
+                ListItem,
+                StarterKit.configure({
+                    bulletList: false,
+                }), 
+                BubbleMenu.configure({
+                    element: document.querySelector('#bubble-menu'),
+                    shouldShow: ({ editor, state }) => {
+                        return !state.selection.empty;
+                    },
+                })
+            ],
+            onUpdate: ({ editor }) => updateMenuState(editor),
+            onSelectionUpdate: ({ editor }) => updateMenuState(editor)
+        });
+
+
+
+        // Update the menu state function to include bullet list
+        function updateMenuState(editor) {
+            document.querySelectorAll('button').forEach(button => {
+                button.classList.remove('is-active');
+            });
+
+            if (editor.isActive('heading', { level: 1 })) {
+                document.querySelector('button:nth-child(1)').classList.add('is-active');
+            }
+            if (editor.isActive('bold')) {
+                document.querySelectorAll('button:has(.fa-bold)').forEach(el => el.classList.add('is-active'));
+            }
+            if (editor.isActive('italic')) {
+                document.querySelectorAll('button:has(.fa-italic)').forEach(el => el.classList.add('is-active'));
+            }
+            if (editor.isActive('bulletList')) {
+                document.querySelector('#bulletListBtn').classList.add('is-active');
+            }
+        }
+
+
+
+        // Make editor available globally
+        window.editor = editor;
+
+        // Alternative event listener for bullet list button
+        document.getElementById('bulletListBtn').addEventListener('click', function () {
+            console.log("bullet")
+            editor.chain().focus().toggleBulletList().run();
+        });
+    </script>
+</body>
+
+</html>
