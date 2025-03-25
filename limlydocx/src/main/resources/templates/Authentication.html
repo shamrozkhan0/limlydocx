@@ -28,13 +28,13 @@
 
 
             <!-- Authentication form login/signup -->
-            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center" th:if="${login}"
+            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${login}"
                 aria-label="login form">
                 <div th:replace="~{fragments/login.html :: login}"></div>
             </section>
 
             
-            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center" th:if="${signup}"
+            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${signup}"
                 aria-label="signup form">
                 <div th:replace="~{fragments/signup.html :: signup}"></div>
             </section>

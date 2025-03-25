@@ -1,42 +1,35 @@
-document.addEventListener("DOMContentLoaded", () => {
+// document.addEventListener("DOMContentLoaded", () => {
 
-    const button = document.querySelector(".theme-btn");
-    const body = document.querySelector("body");
+//     const editor = document.getElementById("editor");
+//     const bubbleMenu = document.querySelector(".bubble-menu");
 
+//     let turn = false
 
-    
-    /**
-     * Load Theme For Editor 
-     */
-    function loadEditorTheme(){
-        const savedTheme = localStorage.getItem("theme");
+//     editor.addEventListener("keydown",(e) => {
         
-        if (savedTheme) {
-        body.classList.remove("editor-dark", "editor-light");
-        body.classList.add(savedTheme);
-        }
-    }
+//         if(e.key === "/"){            
+//             if(turn){                 
+//                 bubbleMenu.classList.add("d-none");
+//             } else{
+//                 bubbleMenu.classList.remove("d-none");
+//             }
+//         }
 
-    // Calls the function when DOM is ready
-    loadEditorTheme();
-
-
-
-    /**
-     * Chnage The editor Theme based on User Response
-     */
-    function changeEditorTheme() {
-        if (body.classList.contains("editor-dark")) {
-            body.classList.replace("editor-dark", "editor-light");
-            
-            localStorage.setItem("theme", "editor-light");
-        } else {
-            body.classList.replace("editor-light", "editor-dark");
-            localStorage.setItem("theme", "editor-dark");
-        }
-    }
-
-    button.addEventListener("click", changeEditorTheme);
+//         if(e.key === "Backspace"){
+//             bubbleMenu.classList.add("d-none");
+//             console.log("wehiuoci")
+//         }
 
 
-});
+
+//         if(e.key === "Escape"){
+//             bubbleMenu.classList.add("d-none");
+//         }
+
+
+//     })
+
+
+
+
+// });

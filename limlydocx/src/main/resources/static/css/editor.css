@@ -1,12 +1,6 @@
-.editor-dark{
-    background-color: #080811;
+body{
+    background-color: #F6F6F6;
 }
-
-.editor-light{
-    background-color: #c8d8ff;
-
-}
-
 .ql-size {
     background: #151A2D;
     color: white !important;
@@ -21,16 +15,17 @@
     content: attr(data-value) !important;
 }
 
-.ql-snow .ql-picker-options {
+/* .ql-snow .ql-picker-options {
     background-color: #151A2D !important;
-}
+} */
 
 .bg-webdark {
     background: #151A2D;
 }
 
 #toolbar {
-    border: 0px !important;
+    border: 0px;
+    /* border: 0px !important; */
     /* padding: 8px; */
     /* border-radius: 4px; */
     /* margin-bottom: 10px; */
@@ -43,8 +38,8 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.container {
-    width: 800px;
+.editor-container{
+    max-width: 800px;
 }
 
 .ql-toolbar button {
@@ -79,17 +74,35 @@
 }
 
 
-.ql-snow .ql-stroke {
-    stroke: white !important;
+/* .toolbar button .ql-stroke,
+.toolbar button .ql-fill {
+    width: 20px !important;  
+    height: 20px !important; 
+    stroke-width: 2px;       
+} */
+
+
+.toolbar button{
+    transition: all ease 0.2s;
 }
 
-.ql-snow .ql-fill,
-.ql-snow .ql-stroke.ql-fill {
-    fill: white;
+.toolbar button:hover{
+    background: rgb(233, 233, 233);
+    color: rgb(0, 68, 255) !important;
+}
+ 
+.ql-toolbar button {
+    padding: 8px; /* Increase button padding */
 }
 
-.ql-snow .ql-picker {
-    color: white !important;
+
+
+/* .ql-icon-color{
+    color: #000000;
+} */
+
+.ql-snow .ql-stroke{
+    stroke: #3b3b3b;
 }
 
 .spinner-parent {
@@ -107,8 +120,18 @@
     height: 100px;
 }
 
-.outline-none{
-    outline: none;
+.ql-font .ql-picker-label{
+    overflow: hidden !important;
+}
+
+.ql-font-arial {
+    font-family: Arial, sans-serif;
+}
+.ql-font-times\ new\ roman {
+    font-family: "Times New Roman", serif;
+}
+.ql-font-courier\ new {
+    font-family: "Courier New", monospace;
 }
 
 @keyframes spin {
@@ -126,3 +149,9 @@
 .ql-snow .ql-toolbar:after {
     display: none;
 }
+
+.bubble-menu{
+    /* display: ; */
+}
+
+

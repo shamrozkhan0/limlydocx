@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-image-uploader@1.2.3/dist/quill.imageUploader.min.js"></script>
 
-
     <script src="https://kit.fontawesome.com/0a7c965840.js" crossorigin="anonymous"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,8 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 
     <!-- Custom CSS -->
-    <!-- <link rel="stylesheet" href="../static/css/index.css"> -->
-    <!-- <link rel="stylesheet" href="../static/css/editor.css"> -->
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/editor.css">
 
     <link rel="stylesheet" th:href="@{/css/editor.css}">
     <link rel="stylesheet" th:href="@{/css/index.css}">
@@ -28,15 +27,18 @@
     <title>LimlyDocx-Editor</title>
 </head>
 
-<body class="editor-body">
+<body class="d-flex align-items-center justify-content-center flex-column">
 
     <div class="message text-danger shadow-danger alert alert-danger " th:if="${error}">
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
     </div>
-
+ 
     <div class="message text-success shadow-danger alert alert-success " th:if="${success}">
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${success}"></p>
     </div>
+
+
+
 
     <div class="spinner-parent z-2 position-absolute d-flex flex-column align-items-center gap-3 d-none">
         <!-- spinner icon -->
@@ -48,75 +50,79 @@
     </div>
 
 
+
     <div class="container-fluid px-0 m-0 sticky-top">
 
-        <div id="toolbar" class="bg-webdark text-white d-flex align-items-center justify-content-between px-4 py-2 ">
+        <div id="toolbar" class="toolbar bg-white d-flex align-items-center justify-content-between flex-column flex-md-row gap-3 gap-md-0 px-4 py-2
+                                     border-top border-bottom  border-body-tertiary border-3  ">
 
-            <div class="quill">
+            <div class="quill d-flex align-items-center flex-wrap gap-2">
                 <!-- Font Family -->
-                <select class="ql-font" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="select font">
-                    <option class="d-flex" value="arial">Arial</option>
-                    <option class="d-flex flex gap-0" value="times-new-roman">Times New Roman</option>
-                    <option class="d-flex" value="courier-new">Courier New</option>
+                <select class="ql-font fs-18 ">
+                    <option class="d-flex fs-18" value="arial">Arial</option>
+                    <option class="d-flex fs-18 flex gap-0" value="times new roman">Times New Roman</option>
+                    <option class="d-flex fs-18" value="courier-new">Courier New</option>
                 </select>
 
-                <!-- Font Size -->
-                <select class="ql-size bg-webdark  text-white" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                    data-bs-title="font size">
-                    <option value="8px" selected>8</option>
-                    <option value="10px">10</option>
-                    <option value="12px">12</option>
-                    <option value="14px">14</option>
-                    <option value="16px">16</option>
-                    <option value="20px">20</option>
-                    <option value="24px">24</option>
-                    <option value="32px">32</option>
-                    <option value="48px">48</option>
-                </select>
+                <!-- <span class="ql-header d-flex align-items-center gap-2 "> -->
+                <button class="ql-heading  text-black p-1 fw-medium d-flex align-items-center center" value="H1"
+                    onclick="setHeading(1)">H1</button>
+                <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H2"
+                    onclick="setHeading(2)">H2</button>
+                <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H3"
+                    onclick="setHeading(3)">H3</button>
+                <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H4"
+                    onclick="setHeading(4)">H4</button>
+                <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H5"
+                    onclick="setHeading(5)">H5</button>
+                <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H6"
+                    onclick="setHeading(6)">H6</button>
+                <!-- </span> -->
 
-                <span class="ql-formats" value="Font-Weight">
-                    <button class="ql-bold">bold</button>
-                    <button class="ql-italic">italic</button>
-                    <button class="ql-underline">underline</button>
-                    <button class="ql-strike">line-thorough</button>
-                </span>
+                <!-- <span class="ql-text-type d-flex align-items-center gap-2" value="Font-Weight"> -->
+                <button class="p-1 ql-bold">bold</button>
+                <button class="p-1 text-dark ql-italic">italic</button>
+                <button class="p-1 text-dark ql-underline">underline</button>
+                <button class="p-1 text-dark ql-strike">line-through</button>
+                <!-- </span> -->
 
                 <!-- Text Color and Background Color -->
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
+                <!-- <span class="ql-colors d-flex align-items-center gap-2"> -->
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+                <!-- </span> -->
 
                 <!-- Text Alignment -->
-                <span class="ql-formats">
-                    <!-- <button class="ql-align" value="left">left</button> -->
-                    <button class="ql-align" value="center">center</button>
-                    <button class="ql-align" value="right">right</button>
-                    <button class="ql-align" value="justify">justify</button>
-                </span>
+                <!-- <span class="ql-alignment d-flex align-items-center gap-2"> -->
+                <!-- <button class="ql-align" value="left">left</button> -->
+                <button class="ql-align" value="center">center</button>
+                <button class="ql-align" value="justify">justify</button>
+                <button class="ql-align" value="right">right</button>
+
+                <!-- </span> -->
 
                 <!-- Lists -->
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered">ordered</button>
-                    <button class="ql-list" value="bullet">bullet</button>
-                    <button class="ql-indent" value="-1">forward</button>
-                    <button class="ql-indent" value="+1">backward</button>
-                </span>
+                <!-- <span class="ql-text-decoration d-flex align-items-center gap-2"> -->
+                <button class="ql-list" value="ordered">ordered</button>
+                <button class="ql-list" value="bullet">bullet</button>
+                <button class="ql-indent" value="-1">forward</button>
+                <button class="ql-indent" value="+1">backward</button>
+                <!-- </span> -->
 
                 <!-- Script -->
-                <span class="ql-formats">
-                    <button class="ql-script" value="sub">subline</button>
-                    <button class="ql-script" value="super">superline</button>
-                </span>
+                <!-- <span class="ql-text-style d-flex align-items-center gap-2"> -->
+                <button class="ql-script" value="sub">subline</button>
+                <button class="ql-script" value="super">superline</button>
+                <!-- </span> -->
 
                 <!-- Other formatting -->
-                <span class="ql-formats">
-                    <button class="text-white  ql-link"></button>
-                    <button class="ql-image"></button>
-                    <button class="ql-code-block"></button>
-                    <button class="ql-blockquote"></button>
-                    <button class="ql-clean"></button>
-                </span>
+                <!-- <span class="ql-text-type d-flex align-items-center gap-2"> -->
+                <button class="text-white  ql-link"></button>
+                <button class="ql-image"></button>
+                <button class="ql-code-block"></button>
+                <button class="ql-blockquote"></button>
+                <button class="ql-clean"></button>
+                <!-- </span> -->
 
 
             </div>
@@ -132,11 +138,11 @@
                     <input type="text" name="content" id="contentSender" hidden>
                     <button value="PDF" data-format="PDF" id="getContent"
                         class="w-100 h-100 bg-danger text-white px-3 py-2 fs-18 fw-bold rounded-top rounded-start">
-                         PDF
+                        PDF
                     </button>
                     <button value="DOCX" data-format="DOCX" id="getContent"
                         class="bg-success text-white px-3 py-2 w-100  fw-semibold fs-18 h-100 rounded-top rounded-start">
-                         DOCX
+                        DOCX
                     </button>
                 </form>
 
@@ -146,84 +152,103 @@
         </div>
     </div>
 
-    <div class="container mt-4 d-flex gap-2 ">
-        <div class="d-flex flex-column gap-2">
-            <!-- Theme button  -->
-            <button class="bg-transparent p-0 text-white border-0 theme-btn fs-5" aria-label="theme button">
-                <i class="fa-solid fa-sun"></i>
-            </button>
-            <!-- Lock Editor -->
-            <button class="bg-transparent outline-none text-white border-0 editor-lock-button fs-5"
+    <div class="editor-container w-100 mt-4 d-flex align-items-center justify-content-center gap-2 ">
+
+        <nav class="bubble-menu d-none">
+            <button class="ql-align" value="center">center</button>
+        </nav>
+
+
+        <!-- <div class="d-flex flex-column gap-2">
+
+            <button class="bg-transparent outline-none text-dark border-0 editor-lock-button fs-5"
                 aria-label="lock editor button">
                 <i class="fas fa-unlock"></i>
             </button>
-        </div>
+        </div> -->
         <div id="editor" name="content" class="w-100" th:field="*{content}"></div>
     </div>
 
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js"
-        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.js" -->
+    <!-- integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script> -->
 
     <script th:src="@{/js/editor.js}"></script>
     <script th:src="@{/js/editor-backend.js}"></script>
     <script th:src="@{/js/editor-TTS.js}"></script>
+    <script th:src="@{/js/editor.js}"></script>
 
 
     <script src="../static/js/editor.js"></script>
     <script src="../static/js/editor-backend.js"></script>
     <script src="../static/js/editor-TTS.js"></script>
-
+    <script src="../static/js/editor.js"></script>
 
 
     <script th:inline="javascript">
 
         document.addEventListener("DOMContentLoaded", () => {
 
-            let isLock = false; // editor is unlocked initially
-            let lockButton = document.querySelector(".editor-lock-button"); // Select the button
+            // let isLock = false; // editor is unlocked initially
+            // let lockButton = document.querySelector(".editor-lock-button"); // Select the button
 
-            lockButton.addEventListener("click", () => {
-                isLock = !isLock; // Toggle lock state
-                console.log(`is lock : ${isLock}`);
+            // lockButton.addEventListener("click", () => {
+            //     isLock = !isLock; // Toggle lock state
+            //     console.log(`is lock : ${isLock}`);
 
-                // Update icon and Quill editor readOnly state
-                lockButton.querySelector("i").classList.toggle("fa-lock", isLock);
-                lockButton.querySelector("i").classList.toggle("fa-unlock", !isLock);
+            //     // Update icon and Quill editor readOnly state
+            //     lockButton.querySelector("i").classList.toggle("fa-lock", isLock);
+            //     lockButton.querySelector("i").classList.toggle("fa-unlock", !isLock);
 
-                // Update Quill editor readOnly state
-                quill.enable(!isLock); // Enable or disable editor based on lock state
-            });
+            //     // Update Quill editor readOnly state
+            //     quill.enable(!isLock); // Enable or disable editor based on lock state
+            // });
 
 
 
-            // Configure custom fonts
-            const Font = Quill.import('formats/font');
-            Font.whitelist = ['arial', 'times-new-roman', 'courier-new'];
-            Quill.register(Font, true);
-
-            // Configure custom sizes
-            const Size = Quill.import('attributors/style/size');
-            Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '20px', '24px', '32px', '48px'];
-            Quill.register(Size, true);
-
-            // Initialize Quill editor
             const quill = new Quill('#editor', {
-                readOnly: isLock,
-                theme: 'snow',
+                theme: 'snow', // Use Snow theme for a fixed toolbar
                 modules: {
                     toolbar: {
-                        container: '#toolbar',
+                        container: '#toolbar', // Fixed toolbar
                     },
-                    imageResize: {},
-                },
+                    imageResize: {}
+                }
             });
 
-            // Set default font size and family
-            quill.format('size', '12px'); // initial font size
+            // Add Bubble Toolbar Manually
+            // const bubbleToolbar = new Quill('#editor', {
+            //     theme: 'bubble', // Use Bubble theme for floating toolbar
+            //     modules: {
+            //         toolbar: [
+            //             ['bold', 'italic', 'underline'],
+            //             [{ 'header': 1 }, { 'header': 2 }],
+            //             [{ 'list': 'ordered' }, { 'list': 'bullet' }]
+            //         ]
+            //     }
+            // });
+
+            // // Ensure both toolbars work together
+            // quill.on('selection-change', function (range) {
+            //     if (range) {
+            //         // Enable the fixed toolbar when text is selected
+            //         document.querySelector('#toolbar').style.display = 'block';
+            //     }
+            // });
+
+
+            window.setHeading = function (level) {
+                quill.format('header', level); // Apply heading level
+                console.log(`Heading set to H${level}`);
+            };
+
+
+            const Font = Quill.import('formats/font');
+            Font.whitelist = ['arial', 'times new roman', 'courier new']; // ✅ Fixed spacing
+            Quill.register(Font, true);
+
+
             quill.format('font', 'arial');
-
-
 
 
             // Initialize Bootstrap tooltips

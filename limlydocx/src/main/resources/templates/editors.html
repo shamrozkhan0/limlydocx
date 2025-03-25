@@ -65,7 +65,8 @@
     <!-- This menu will display when user enter slash in editor -->
     <div id="slash-menu" class="slash-menu">
 
-        <button class="slash-menu-item bg-transparent w-100 border-0" data-command="heading1">
+        <button class="slash-menu-item bg-transparent w-100 border-0" data-command="heading1"
+            onclick="console.log('i am clicked')">
             <i class="fas fa-heading"></i>
             <div>
                 <div class="command-name">Heading 1</div>
@@ -78,7 +79,8 @@
                 <div class="command-name">Heading 2</div>
             </div>
         </button>
-
+    </div>
+    <!-- 
         <button class="slash-menu-item bg-transparent w-100 border-0" data-command="bulletList">
             <i class="fas fa-list"></i>
             <div>
@@ -119,14 +121,15 @@
             <div>
                 <div class="command-name">Image</div>
             </div>
-        </button>
+        </button> -->
 
-    </div>
+    <!-- </div> -->
+
 
     <!-- This menu display when user select text in editor -->
-    <div id="bubble-menu" class="bubble-menu ">
-        <!-- Text style -->
-        <button onclick="editor.chain().focus().toggleBold().run()">
+    <!-- <div id="bubble-menu" class="bubble-menu"> -->
+    <!-- Text style -->
+    <!-- <button onclick="editor.chain().focus().toggleBold().run()">
             <i class="fas fa-bold"></i>
         </button>
         <button onclick="editor.chain().focus().toggleItalic().run()">
@@ -147,9 +150,11 @@
         <button onclick="editor.chain().focus().setLink({href: prompt('Enter link URL:')}).run()">
             <i class="fas fa-link"></i>
         </button>
-    </div>
+    </div>  -->
+
 
     <script type="module">
+
         import { Editor } from "https://esm.sh/@tiptap/core@2.0.0";
         import StarterKit from "https://esm.sh/@tiptap/starter-kit@2.0.0";
         import Blockquote from "https://esm.sh/@tiptap/extension-blockquote@2.0.0";
@@ -161,16 +166,13 @@
         import Highlight from "https://esm.sh/@tiptap/extension-highlight@2.0.0";
         import Image from "https://esm.sh/@tiptap/extension-image@2.0.0";
         import TextAlign from "https://esm.sh/@tiptap/extension-text-align@2.0.0";
-        import Document from "https://esm.sh/@tiptap/extension-document@2.0.0";
-        import Paragraph from "https://esm.sh/@tiptap/extension-paragraph@2.0.0";
-        import Text from "https://esm.sh/@tiptap/extension-text@2.0.0";
         import BubbleMenu from "https://esm.sh/@tiptap/extension-bubble-menu@2.0.0";
 
-
+        const slashMenu = document.getElementById('slash-menu');
+        let isSlashActive = false;
 
         const editor = new Editor({
             element: document.querySelector("#editor"),
-            // content: "<p>Select text to see the bubble menu or type '/' to see slash commands</p>",
             editable: true,
             extensions: [
                 StarterKit,
@@ -182,177 +184,151 @@
                 Underline,
                 Highlight,
                 Image,
-                TextAlign.configure({
-                    types: ['heading', 'paragraph'],
-                }),
+                TextAlign.configure({ types: ['heading', 'paragraph'] }),
                 BubbleMenu.configure({
                     element: document.querySelector('#bubble-menu'),
-                    shouldShow: ({ editor }) => {
-                        return editor.view.state.selection.content().size > 0;
-                    },
+                    shouldShow: ({ editor }) => editor.view.state.selection.content().size > 0,
                 }),
             ],
         });
         window.editor = editor;
 
+    
 
-        // Ensure editor is available
-        if (editor && editor.view && editor.view.dom) {
-            const slashMenu = document.getElementById('slash-menu');
-            let isSlashActive = false;
+        function showSlashMenu() {
+            isSlashActive = true;
+            const { selection } = editor.state;
+            const coords = editor.view.coordsAtPos(selection.anchor);
 
-            editor.view.dom.addEventListener('keydown', (event) => {
-                if (isSlashActive) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        event.stopImmediatePropagation();
+            slashMenu.style.left = `${coords.left}px`;
+            slashMenu.style.top = `${coords.bottom + 10}px`;
+            slashMenu.classList.add('active');
+            slashMenu.style.animation = 'fadeIn 0.2s ease-in-out';
 
-                        const activeItem = document.querySelector('.slash-menu-item.active');
-                        if (activeItem) {
-                            executeSlashCommand(activeItem.dataset.command);
-                        }
-                        return false;
-                    }
+            const firstItem = slashMenu.querySelector('.slash-menu-item');
+            if (firstItem) firstItem.classList.add('active');
 
-                    if (event.key === 'Escape') {
-                        event.preventDefault();
-                        hideSlashMenu();
-                        return false;
-                    }
+            document.addEventListener('click', hideSlashMenuOnOutsideClick);
+        }
 
-                    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                        event.preventDefault();
-                        navigateSlashMenu(event.key === 'ArrowDown');
-                        return false;
-                    }
-                }
-            });
 
-            // Get text before cursor
-            function getTextBeforeCursor(editor, anchor) {
-                const $anchor = editor.state.doc.resolve(anchor);
-                const startOfNode = $anchor.start();
-                return editor.state.doc.textBetween(startOfNode, anchor);
+
+        function hideSlashMenu() {
+            isSlashActive = false;
+            slashMenu.classList.remove('active');
+            document.querySelectorAll('.slash-menu-item.active').forEach(item => item.classList.remove('active'));
+            document.removeEventListener('click', hideSlashMenuOnOutsideClick);
+        }
+
+
+
+        function hideSlashMenuOnOutsideClick(event) {
+            if (!slashMenu.contains(event.target) && !editor.view.dom.contains(event.target)) {
+                hideSlashMenu();
+            }
+        }
+
+
+
+        function navigateSlashMenu(moveDown) {
+            const items = Array.from(document.querySelectorAll('.slash-menu-item'));
+            const activeItem = document.querySelector('.slash-menu-item.active');
+
+            if (items.length === 0) return;
+
+            let nextIndex = 0;
+            if (activeItem) {
+                activeItem.classList.remove('active');
+                const currentIndex = items.indexOf(activeItem);
+                nextIndex = moveDown ? (currentIndex + 1) % items.length : (currentIndex - 1 + items.length) % items.length;
             }
 
-            // Editor update event
-            editor.on('update', ({ editor }) => {
-                const { selection } = editor.state;
-                const { empty, anchor } = selection;
+            items[nextIndex].classList.add('active');
+            items[nextIndex].scrollIntoView({ block: 'nearest' });
+        }
 
-                if (!empty) {
+
+
+        function executeSlashCommand(command) {
+            editor.chain().deleteRange({ from: editor.state.selection.anchor - 1, to: editor.state.selection.anchor }).run();
+            let chain = editor.chain().focus();
+
+            console.log("command " + command)
+
+            switch (command) {
+                case 'heading1': chain.setHeading({ level: 1 }).run(); break;
+                case 'heading2': chain.setHeading({ level: 2 }).run(); break;
+                case 'bulletList': chain.toggleBulletList().run(); break;
+                case 'orderedList': chain.toggleOrderedList().run(); break;
+                case 'blockquote': chain.toggleBlockquote().run(); break;
+                case 'codeBlock': chain.toggleCodeBlock().run(); break;
+                case 'horizontalRule': chain.setHorizontalRule().run(); break;
+                case 'image':
+                    const url = prompt('Enter image URL:');
+                    if (url) chain.setImage({ src: url }).run();
+                    break;
+            }
+            hideSlashMenu();
+        }
+
+
+
+        document.addEventListener('keydown', (event) => {
+            if (isSlashActive) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    const activeItem = document.querySelector('.slash-menu-item.active');
+                    if (activeItem) executeSlashCommand(activeItem.getAttribute('data-command'));
+                    return;
+                }
+                if (event.key === 'Escape') {
+                    event.preventDefault();
                     hideSlashMenu();
                     return;
                 }
-
-                const textBeforeCursor = getTextBeforeCursor(editor, anchor);
-
-                if (textBeforeCursor.endsWith('/')) {
-                    showSlashMenu();
-                } else if (isSlashActive) {
-                    hideSlashMenu();
-                }
-            });
-
-            // Show slash menu
-            function showSlashMenu() {
-                isSlashActive = true;
-                const { view } = editor;
-                const { selection } = view.state;
-                const coords = view.coordsAtPos(selection.anchor);
-
-                slashMenu.style.left = `${coords.left}px`;
-                slashMenu.style.top = `${coords.bottom + 10}px`;
-                slashMenu.classList.add('active');
-                slashMenu.style.animation = 'fadeIn 0.2s ease-in-out';
-
-                const firstItem = slashMenu.querySelector('.slash-menu-item');
-                if (firstItem) {
-                    firstItem.classList.add('active');
+                if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    navigateSlashMenu(event.key === 'ArrowDown');
+                    return;
                 }
             }
-
-            function hideSlashMenu() {
-                isSlashActive = false;
-                slashMenu.classList.remove('active');
-
-                document.querySelectorAll('.slash-menu-item.active').forEach(item => {
-                    item.classList.remove('active');
-                });
+            if (event.key === '/') {
+                event.preventDefault();
+                showSlashMenu();
             }
+        });
 
-            function navigateSlashMenu(moveDown) {
-                const activeItem = document.querySelector('.slash-menu-item.active');
-                const items = Array.from(document.querySelectorAll('.slash-menu-item'));
 
-                if (activeItem) {
-                    activeItem.classList.remove('active');
-                    const currentIndex = items.indexOf(activeItem);
-                    const nextIndex = moveDown
-                        ? (currentIndex + 1) % items.length
-                        : (currentIndex - 1 + items.length) % items.length;
 
-                    items[nextIndex].classList.add('active');
-                    items[nextIndex].scrollIntoView({ block: 'nearest' });
-                }
-            }
-
-            function executeSlashCommand(command) {
-                // Remove the slash character
-                editor.chain()
-                    .deleteRange({
-                        from: editor.state.selection.anchor - 1,
-                        to: editor.state.selection.anchor,
-                    })
-                    .run();
-
-                let chain = editor.chain().focus();
-
-                switch (command) {
-                    case 'heading1':
-                        chain.setHeading({ level: 1 }).run();
-                        break;
-                    case 'heading2':
-                        chain.setHeading({ level: 2 }).run();
-                        break;
-                    case 'bulletList':
-                        chain.toggleBulletList().run();
-                        break;
-                    case 'orderedList':
-                        chain.toggleOrderedList().run();
-                        break;
-                    case 'blockquote':
-                        chain.toggleBlockquote().run();
-                        break;
-                    case 'codeBlock':
-                        chain.toggleCodeBlock().run();
-                        break;
-                    case 'horizontalRule':
-                        chain.setHorizontalRule().run();
-                        break;
-                    case 'image':
-                        const url = prompt('Enter image URL:');
-                        if (url) {
-                            chain.setImage({ src: url }).run();
-                        }
-                        break;
-                }
-
-                hideSlashMenu();
-            }
-
-            // Add event listeners to menu items
-            document.querySelectorAll('.slash-menu-item').forEach(item => {
-                item.addEventListener('click', () => executeSlashCommand(item.dataset.command));
-
-                item.addEventListener('mouseenter', () => {
-                    document.querySelectorAll('.slash-menu-item.active').forEach(activeItem => {
-                        activeItem.classList.remove('active');
-                    });
-                    item.classList.add('active');
-                });
-            });
+        function getTextBeforeCursor(editor, anchor) {
+            const $anchor = editor.state.doc.resolve(anchor);
+            const startOfNode = $anchor.start();
+            return editor.state.doc.textBetween(startOfNode, anchor);
         }
+
+
+
+        editor.on('update', ({ editor }) => {
+            const { selection } = editor.state;
+            if (!selection.empty) {
+                hideSlashMenu();
+                return;
+            }
+            const textBeforeCursor = getTextBeforeCursor(editor, selection.anchor);
+            textBeforeCursor.endsWith('/') ? showSlashMenu() : hideSlashMenu();
+        });
+
+
+
+        document.querySelectorAll('.slash-menu-item').forEach(item => {
+            item.addEventListener('click', () => executeSlashCommand(item.dataset.command));
+            item.addEventListener('mouseenter', () => {
+                document.querySelectorAll('.slash-menu-item.active').forEach(active => active.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
 
 
     </script>

@@ -33,6 +33,7 @@ public class DocumentController {
     @Value("${cloudinary.document.path}")
     private String cloudPath;
 
+    private static final String FILE_NAME_PATTERN= "yyyyMMdd_HHmmss";
 
 
     /**
@@ -74,49 +75,76 @@ public class DocumentController {
         }
 
 
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_PATTERN));
         StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
 
-        ResponseEntity<String> task = null;
+        // This ensure pdf is create with success status
+        ResponseEntity<String> status = null;
 
         try {
 
-            task = this.formatChecker(format, uniqueFileName, content , task);
-            this.checlIfDocumentCreatedAndReturn(task, redirectAttributes, uniqueFileName.toString(), authentication, content);
+            status = this.checkDocumentFormat(format, uniqueFileName, content , status);
+            this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
         } catch (Exception e) {
             log.error("Error processing document: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("error", task.getBody());
+            redirectAttributes.addFlashAttribute("error", status.getBody());
         }
         return "redirect:/doc";
     }
 
 
 
-    public ResponseEntity<String> formatChecker(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> task) {
-        if (Objects.equals(format, "pdf")) {
-            uniqueFileName.append(".pdf");
-            task = documentService.generatePdfAndUploadOnCloud(content, String.valueOf(uniqueFileName));
-            log.info("format is complete");
-        } else if (Objects.equals(format, "docx")) {
-            uniqueFileName.append(".docx");
-            task = documentService.generateDocx(content, String.valueOf(uniqueFileName));
-        } else {
-            System.out.println("Invalid format: " + format);
+    /**
+     * Checks the format for the document, appends the extension, and processes it accordingly.
+     *
+     * @param format         The format of the document (e.g., pdf, docx)
+     * @param uniqueFileName The generated unique file name
+     * @param content        The content of the document
+     * @param status         ResponseEntity holding the document creation status
+     * @return ResponseEntity indicating the status of document processing
+     */
+    public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> status) {
+
+        switch (format.toLowerCase()){
+
+            case "pdf" ->{
+                uniqueFileName.append(".pdf");
+                status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString());
+                log.info("USER SELECT PDF");
+            }
+
+            case "docx"->{
+                uniqueFileName.append(".docx");
+                status = documentService.generateDocxFile(content,uniqueFileName.toString());
+                log.info("USER SELECT DOCX");
+            }
+
+            default -> log.error("Invalid format {}", format);
         }
-        return task;
+
+        return status;
     }
 
 
 
-    public void checlIfDocumentCreatedAndReturn(
-            ResponseEntity<String> task,
+    /**
+     * It will check if document is created and return to user to download
+     *
+     * @param status
+     * @param redirectAttributes
+     * @param uniqueFileName
+     * @param authentication
+     * @param content
+     */
+    public void checklIfDocumentCreatedAndReturn(
+            ResponseEntity<String> status,
             RedirectAttributes redirectAttributes,
             String uniqueFileName,
             Authentication authentication,
             String content
     ) {
-        if (task != null && task.getStatusCode().is2xxSuccessful()) {
+        if (status != null && status.getStatusCode().is2xxSuccessful()) {
             // Save document info in the database
             documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
 
@@ -125,9 +153,9 @@ public class DocumentController {
 
             // Preserve content in the editorclea
             redirectAttributes.addFlashAttribute("content", content);
-            redirectAttributes.addFlashAttribute("success", task.getBody());
-        } else if (task == null) {
-            log.info("task is empty" + task);
+            redirectAttributes.addFlashAttribute("success", status.getBody());
+        } else if (status == null) {
+            log.info("task is empty" + status);
         } else {
             // Preserve content in the content in editor
             redirectAttributes.addFlashAttribute("content", content);

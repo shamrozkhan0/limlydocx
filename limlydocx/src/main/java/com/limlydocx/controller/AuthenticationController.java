@@ -76,13 +76,10 @@ public class AuthenticationController {
             return "redirect:/signup";
         }
 
-
         request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
 
         log.info("User is registered");
         return "redirect:/doc";
     }
-
 
 }
