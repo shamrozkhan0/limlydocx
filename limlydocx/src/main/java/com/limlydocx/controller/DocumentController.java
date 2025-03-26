@@ -87,7 +87,7 @@ public class DocumentController {
             this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
         } catch (Exception e) {
-            log.error("Error processing document: {}", e.getMessage());
+            log.error("Error processing document: {} of format ({})", e.getMessage(), format  );
             redirectAttributes.addFlashAttribute("error", status.getBody());
         }
         return "redirect:/doc";

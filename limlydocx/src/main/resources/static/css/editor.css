@@ -1,5 +1,5 @@
 body{
-    background-color: #F6F6F6;
+    background-color: #d6d6d6;
 }
 .ql-size {
     background: #151A2D;
@@ -35,7 +35,7 @@ body{
     height: 800px;
     background: white;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 0px 20px 5px 10px rgba(0, 0, 0, 0.1); */
 }
 
 .editor-container{
@@ -150,8 +150,10 @@ body{
     display: none;
 }
 
-.bubble-menu{
-    /* display: ; */
+.message{
+    /* position: ; */
 }
 
-
+.ql-heading{
+    user-select: none;
+}

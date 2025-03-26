@@ -20,7 +20,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -42,10 +41,8 @@ public class DocumentService {
     private final GlobalVariable globalVariable;
     private final DocumentRepository documentRepository;
 
-//    @Value("${document.storage.path}")
-//    private String documentStoragePath; // Externalized path from application.properties
+    private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
 
-    private final static String documentStoragePath = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
 
 
     /**
@@ -55,6 +52,7 @@ public class DocumentService {
      * @param authentication User authentication details
      */
     public void saveDocumentInDatabase(String uniqueFileName, Authentication authentication) {
+
         String username = globalVariable.getUsername(authentication);
 
         DocumentEntity documentEntity = new DocumentEntity();
@@ -81,12 +79,16 @@ public class DocumentService {
      * @return Response entity indicating success or failure
      */
     public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+        File file = new File(DOCUMENT_STORAGE_PATH + uniqueFileName);
+        System.out.println(DOCUMENT_STORAGE_PATH+uniqueFileName);
+//        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+
+        try(OutputStream outputStream = new FileOutputStream(file)){
 
             ConverterProperties properties = new ConverterProperties();
-            HtmlConverter.convertToPdf(content, byteArrayOutputStream, properties);
+            HtmlConverter.convertToPdf(content, outputStream, properties);
 
-            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+//            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
 
 //            uploadToCloudinary(uniqueFileName, pdfBytes);
 
@@ -108,12 +110,12 @@ public class DocumentService {
      * @return Response entity indicating success or failure
      */
     public ResponseEntity<String> generateDocxFile(String htmlContent, String uniqueFilename) {
-        String filePath = documentStoragePath + File.separator + uniqueFilename;
+        String filePath = DOCUMENT_STORAGE_PATH + File.separator + uniqueFilename;
 
         try {
-            File directory = new File(documentStoragePath);
+            File directory = new File(DOCUMENT_STORAGE_PATH);
             if (!directory.exists() && !directory.mkdirs()) {
-                throw new RuntimeException("Failed to create directory: " + documentStoragePath);
+                throw new RuntimeException("Failed to create directory: " + DOCUMENT_STORAGE_PATH);
             }
             File file = new File(filePath);
 
@@ -122,13 +124,13 @@ public class DocumentService {
 
             Document document = Jsoup.parse(htmlContent);
 
-            processBase64Images(document, wordMLPackage, mainDocumentPart);
 
             document.select("br").append("\\n");
             String cleanedHtml = document.html().replaceAll("\\s{2,}", " ").trim();
 
             XHTMLImporterImpl xhtmlImporter = new XHTMLImporterImpl(wordMLPackage);
             mainDocumentPart.getContent().addAll(xhtmlImporter.convert(cleanedHtml, null));
+            processBase64Images(document, wordMLPackage, mainDocumentPart);
 
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 wordMLPackage.save(outputStream);
@@ -137,7 +139,7 @@ public class DocumentService {
 //              byte[] fileByte = this.readFileToByteArray(file);
 //            uploadToCloudinary(uniqueFilename, fileByte);
 
-            return ResponseEntity.ok("DOCX created successfully: " + filePath);
+            return ResponseEntity.ok("DOCX created successfully");
         } catch (Exception e) {
             log.error("Error creating DOCX: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
