@@ -124,7 +124,7 @@ body{
     overflow: hidden !important;
 }
 
-.ql-font-arial {
+/* .ql-font-arial {
     font-family: Arial, sans-serif;
 }
 .ql-font-times\ new\ roman {
@@ -132,7 +132,7 @@ body{
 }
 .ql-font-courier\ new {
     font-family: "Courier New", monospace;
-}
+} */
 
 @keyframes spin {
     0% {
@@ -151,7 +151,10 @@ body{
 }
 
 .message{
-    /* position: ; */
+    position: absolute;
+    z-index: 999;
+    top: 100px;
+    right: 20px;
 }
 
 .ql-heading{

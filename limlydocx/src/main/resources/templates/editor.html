@@ -29,7 +29,7 @@
 
 <body class="d-flex align-items-center justify-content-center flex-column">
 
-    <div class="message text-danger shadow-danger alert alert-danger position-absolute end-2 top-2" th:if="${error}">
+    <div class="message text-danger shadow-danger alert alert-danger" th:if="${error}" >
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
     </div>
 
@@ -202,7 +202,7 @@
                 setTimeout(() => {
                     console.log("removed")
                     messageElement.classList.add("d-none");
-                }, 10000);
+                }, 5000);
 
             }
 
