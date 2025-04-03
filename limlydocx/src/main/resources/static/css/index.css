@@ -7,8 +7,8 @@
     color: #DBE2EF;
 }
 
-.transition05{
-    transition: all .5s ease;
+.transition03{
+        transition: all ease .3s !important;
 }
 
 .letter-spacing-normal {
@@ -36,9 +36,30 @@
 }
 
 .button-limly{
-    background:linear-gradient(to left, #002B62,#992F6D);
+    background: linear-gradient(130deg, #0070ff , #ff0095 90%);
 }
 
 .bg-webdark{
     background: #151A2D;
 }
+
+.squeezeX-hover:hover{
+    transform: scaleX(0.8);
+}
+
+.squeeze-hover-large:hover{
+    transform: scaleX(0.95);
+}
+
+
+/* 
+@keyframes hover {
+
+    form {
+        transform: translateY(0px);
+    } to {
+
+    }
+    
+} */
+

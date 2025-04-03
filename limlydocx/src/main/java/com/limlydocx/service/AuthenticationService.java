@@ -48,7 +48,7 @@ public class AuthenticationService {
         String formatedUsername = StringUtils.cleanPath(user.getUsername());
 
         createNewUser(user.getEmail(), user.getPassword(), hashPassword, formatedUsername, user.getName());
-        log.info("User is Saves");
+        log.info("User is created in database");
     }
 
 
@@ -86,6 +86,7 @@ public class AuthenticationService {
     }
 
 
+
     /**
      * Checks If User Already Present In database Based On Email
      *
@@ -99,6 +100,7 @@ public class AuthenticationService {
         );
         return false;
     }
+
 
 
     /**

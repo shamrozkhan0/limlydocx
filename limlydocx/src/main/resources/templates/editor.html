@@ -20,16 +20,18 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="../static/css/QuillJS.css">
+    <link rel="stylesheet" href="../static/css/editor.css">
 
     <link rel="stylesheet" th:href="@{/css/QuillJS.css}">
     <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/editor.css}">
 
     <title>LimlyDocx-Editor</title>
 </head>
 
 <body class="d-flex align-items-center justify-content-center flex-column">
 
-    <div class="message text-danger shadow-danger alert alert-danger" th:if="${error}" >
+    <div class="message text-danger shadow-danger alert alert-danger" th:if="${error}">
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
     </div>
 
@@ -158,37 +160,225 @@
 
 
     <script th:inline="javascript">
-
-
+        // Custom Clipboard Module: Converts class-based styles to inline styles
+        Quill.register('modules/clipboard', class InlineClipboard extends Quill.import('modules/clipboard') {
+            convert(html) {
+                let tempDiv = document.createElement("div");
+                tempDiv.innerHTML = html;
+    
+                // Convert all styles to inline styles
+                tempDiv.querySelectorAll('*').forEach((el) => {
+                    let computedStyle = window.getComputedStyle(el);
+                    el.style.cssText = computedStyle.cssText; // Apply computed styles as inline styles
+                });
+    
+                return tempDiv.innerHTML;
+            }
+        });
+    
+        // Initialize Quill Editor
         const quill = new Quill('#editor', {
-            theme: 'snow', // Use Snow theme for a fixed toolbar
+            theme: 'snow', // Snow theme for toolbar
+            modules: {
+                toolbar: { container: '#toolbar' }, // Fixed toolbar
+                clipboard: true, // Use modified clipboard for inline styles
+                imageResize: {} // Enable image resizing
+            }
+        });
+    
+        // Apply heading levels
+        window.setHeading = function (level) {
+            quill.format('header', level);
+            console.log(`Heading set to H${level}`);
+        };
+    
+        // Register custom fonts
+        const Font = Quill.import('formats/font');
+        Font.whitelist = ["sans-serif", "serif", "monospace"];
+        Quill.register(Font, true);
+        quill.format("font", "serif");
+    
+        // Bootstrap Tooltips Initialization
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+            new bootstrap.Tooltip(element);
+        });
+    
+        // Function to apply inline styles before saving content
+        function applyInlineStyles() {
+            document.querySelectorAll(".ql-editor *").forEach(element => {
+                const computedStyle = window.getComputedStyle(element);
+                element.style.fontFamily = computedStyle.fontFamily;
+                element.style.fontSize = computedStyle.fontSize;
+                element.style.color = computedStyle.color;
+                element.style.backgroundColor = computedStyle.backgroundColor;
+                element.style.fontWeight = computedStyle.fontWeight;
+                element.style.fontStyle = computedStyle.fontStyle;
+                element.style.textDecoration = computedStyle.textDecoration;
+                element.style.textAlign = computedStyle.textAlign;
+                element.style.lineHeight = computedStyle.lineHeight;
+                element.style.margin = computedStyle.margin;
+                element.style.padding = computedStyle.padding;
+            });
+    
+            // Apply styles for code blocks
+            document.querySelectorAll(".ql-editor pre").forEach(pre => {
+                pre.style.backgroundColor = "black";
+                pre.style.color = "white";
+                pre.style.padding = "10px";
+                pre.style.borderRadius = "5px";
+                pre.style.overflowX = "auto";
+                pre.style.fontFamily = "monospace";
+            });
+        }
+    
+        // Extract and send inline-styled content
+        document.querySelectorAll("#getContent").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                applyInlineStyles(); // Convert styles to inline
+                let editorContent = document.querySelector(".ql-editor").innerHTML;
+                document.querySelector("#contentSender").value = editorContent;
+            });
+        });
+    
+        // Message Handler (Auto-hide messages after 5 seconds)
+        document.addEventListener("DOMContentLoaded", () => {
+            const messageElement = document.querySelector(".message");
+            if (messageElement) {
+                console.log("Message detected. Auto-hide in 5s...");
+                setTimeout(() => {
+                    messageElement.classList.add("d-none");
+                    console.log("Message hidden.");
+                }, 5000);
+            }
+    
+            // Get Editor Content Before Sending
+            const spinnerEl = document.querySelector(".spinner-parent");
+            const buttons = document.querySelectorAll("#getContent");
+            const contentSender = document.querySelector("#contentSender");
+    
+            const getEditorContent = () => {
+                applyInlineStyles(); // Ensure inline styles before sending
+                const editorContent = quill.root.innerHTML;
+                contentSender.value = editorContent;
+                console.log(`Editor Content: ${editorContent}`);
+                spinnerEl.classList.replace("d-none", "d-block");
+            };
+    
+            // Attach event listeners to all content buttons
+            buttons.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const form = document.querySelector("#content-form");
+    
+                    if (btn.value === "PDF") {
+                        console.log("Generating PDF...");
+                        form.setAttribute("action", "/savecontent/pdf");
+                    } else if (btn.value === "DOCX") {
+                        console.log("Generating DOCX...");
+                        form.setAttribute("action", "/savecontent/docx");
+                    } else {
+                        console.error("Invalid Request!");
+                    }
+    
+                    getEditorContent(); // Process editor content before submitting
+                });
+            });
+    
+            // Load content from backend (if available)
+            var contentFromBackend = /*[[${content}]]*/ '';
+            if (contentFromBackend) {
+                quill.root.innerHTML = contentFromBackend;
+            }
+        });
+    </script>
+    
+
+    <!-- <script th:inline="javascript">
+
+        // Register a custom clipboard module that converts classes to inline styles
+        Quill.register('modules/clipboard', class InlineClipboard extends Quill.import('modules/clipboard') {
+            convert(html) {
+                let tempDiv = document.createElement("div");
+                tempDiv.innerHTML = html;
+
+                // Convert all elements to have inline styles instead of classes
+                tempDiv.querySelectorAll('*').forEach((el) => {
+                    let computedStyle = window.getComputedStyle(el);
+                    el.style.cssText = computedStyle.cssText; // Apply all computed styles as inline
+                });
+
+                return tempDiv.innerHTML;
+            }
+        });
+
+        // Initialize Quill editor
+        const quill = new Quill('#editor', {
+            theme: 'snow', // Use Snow theme for toolbar
             modules: {
                 toolbar: {
                     container: '#toolbar', // Fixed toolbar
                 },
+                clipboard: true, // Use modified clipboard for inline styles
                 imageResize: {}
             }
         });
 
-
+        // Function to apply heading levels
         window.setHeading = function (level) {
             quill.format('header', level); // Apply heading level
             console.log(`Heading set to H${level}`);
         };
 
-
+        // Register custom fonts
         const Font = Quill.import('formats/font');
         Font.whitelist = ["sans-serif", "serif", "monospace"];
         Quill.register(Font, true);
 
+        // Apply default font
         quill.format("font", "serif");
 
-
         // Initialize Bootstrap tooltips
-        var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        tooltipElements.forEach(function (element) {
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
             new bootstrap.Tooltip(element);
         });
+
+        // Function to extract inline-styled content before saving
+        document.querySelectorAll("#getContent").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                let editorContent = document.querySelector(".ql-editor").innerHTML;
+                document.querySelector("#contentSender").value = editorContent; // Store inline-styled content
+            });
+        });
+
+
+        // const quill = new Quill('#editor', {
+        //     theme: 'snow', // Use Snow theme for a fixed toolbar
+        //     modules: {
+        //         toolbar: {
+        //             container: '#toolbar', // Fixed toolbar
+        //         },
+        //         imageResize: {}
+        //     }
+        // });
+
+
+        // window.setHeading = function (level) {
+        //     quill.format('header', level); // Apply heading level
+        //     console.log(`Heading set to H${level}`);
+        // };
+
+
+        // const Font = Quill.import('formats/font');
+        // Font.whitelist = ["sans-serif", "serif", "monospace"];
+        // Quill.register(Font, true);
+
+        // quill.format("font", "serif");
+
+
+        // // Initialize Bootstrap tooltips
+        // var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        // tooltipElements.forEach(function (element) {
+        //     new bootstrap.Tooltip(element);
+        // });
 
 
         // =========================== Message Handler ============================
@@ -258,7 +448,7 @@
 
         })
 
-    </script>
+    </script> -->
 </body>
 
 </html>

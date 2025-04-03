@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.UUID;
 
 @Controller
@@ -65,9 +64,9 @@ public class DocumentController {
             RedirectAttributes redirectAttributes
     ) {
 
-        if (authentication == null) {
-            return "redirect:/login";
-        }
+//        if (authentication == null) {
+//            return "redirect:/login";
+//        }
 
         if (content == null || content.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Content is empty");
