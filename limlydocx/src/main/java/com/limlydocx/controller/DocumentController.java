@@ -115,13 +115,13 @@ public class DocumentController {
 
         switch (format.toLowerCase()){
 
-            case "pdf" ->{
+            case "pdf" -> {
                 uniqueFileName.append(".pdf");
                 status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString());
                 log.info("USER SELECT PDF");
             }
 
-            case "docx"->{
+            case "docx" -> {
                 uniqueFileName.append(".docx");
                 status = documentService.generateDocxFile(content,uniqueFileName.toString());
                 log.info("USER SELECT DOCX");
