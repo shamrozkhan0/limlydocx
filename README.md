@@ -25,7 +25,7 @@ various formats like `.pdf` , `.docx` (Microsoft word format). LimlyDocx feature
 
 ## LimlyDocx Gallery
 ### **Login-Page** :
-![LimlyDocx](limlydocx/src/main/resources/static/img/login-image.png "LimlyDocx Login Form")
+![LimlyDocx](limlydocx/src/main/resources/static/img/login-img.png "LimlyDocx Login Form")
 
 **All Rights Reserved:**
 - **Shamroz Khan is the owner of this repository**

@@ -48,22 +48,7 @@ h2 {
     left: 50%;
     transform: translateX(-50%);
 }
-/* .login-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
 
-.login-image img {
-    max-width: 100%; /* Prevents upscaling */
-    /* max-height: 100%; Prevents upscaling */
-    /* width: auto; Keeps original width */
-    /* height: auto; Keeps original height */
-    /* object-fit: cover; Ensures the full image is shown */
-    /* position: relative; Adjusts positioning */
-/* }  */
 
 
 
@@ -72,6 +57,8 @@ h2 {
         padding-left: 100px !important;
     }
 }
+
+
 
 @media screen and (max-width:1280px) {
     .login-parent {
@@ -83,11 +70,15 @@ h2 {
     }
 }
 
+
+
 @media screen and (max-width:998px) {
     .login-image {
         height: auto;
     }
 }
+
+
 
 @media screen and (max-width:470px) {
     

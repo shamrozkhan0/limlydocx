@@ -32,7 +32,7 @@
             </section>
 
             
-            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${signup}"
+            <section class="col-12 col-md-6 col-lg-4 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${signup}"
                 aria-label="signup form">
                 <div th:replace="~{fragments/signup.html :: signup}"></div>
             </section>
@@ -41,7 +41,7 @@
 
             <!-- Authentication Image -->
             <figure
-                class="col-12 col-md-6 col-xl-7  position-relative d-flex align-items-center justify-content-center login-image"
+                class="col-12 col-md-6 col-lg-4 col-xl-7 h-100 position-relative d-flex align-items-center justify-content-center login-image"
                 aria-label="Authentication image">
                 <!-- <img src="../static/img/login.jpg" alt="" class="position-absolute w-100 h-100"> -->
                 <img th:src="@{/img/authentication.jpg}" alt="image with text" class="w-100 h-100 position-absolute">
