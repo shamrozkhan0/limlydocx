@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +7,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-image-uploader@1.2.3/dist/quill.imageUploader.min.js"></script>
 
@@ -28,7 +28,6 @@
 
     <title>LimlyDocx-Editor</title>
 </head>
-
 <body class="d-flex align-items-center justify-content-center flex-column">
 
     <div class="message text-danger shadow-danger alert alert-danger" th:if="${error}">
@@ -41,8 +40,6 @@
     </div>
 
 
-
-
     <div class="spinner-parent z-2 position-absolute d-flex flex-column align-items-center gap-3 d-none">
         <!-- spinner icon -->
         <div class="spinner">
@@ -53,7 +50,6 @@
     </div>
 
 
-
     <div class="container-fluid px-0 m-0 sticky-top">
 
         <div id="toolbar"
@@ -62,15 +58,17 @@
 
             <div class="quill d-flex align-items-center flex-wrap gap-2">
 
-                <!-- Font Family -->
+                <!-- Font Family
                 <select class="ql-font">
                     <option class="fs-18" value="sans-serif">Sans Serif</option>
                     <option class="fs-18" value="serif" selected>Serif</option>
                     <option class="fs-18" value="monospace">Monospace</option>
-                </select>
+                </select> -->
 
+                <select class="ql-font text-dark"></select>
+                <select class="ql-size text-dark"></select>
 
-                <button class="ql-heading  text-black p-1 fw-medium d-flex align-items-center center" value="H1"
+                <!-- <button class="ql-heading  text-black p-1 fw-medium d-flex align-items-center center" value="H1"
                     onclick="setHeading(1)">H1</button>
                 <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H2"
                     onclick="setHeading(2)">H2</button>
@@ -81,7 +79,7 @@
                 <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H5"
                     onclick="setHeading(5)">H5</button>
                 <button class="ql-heading text-black p-1 fw-medium d-flex align-items-center center" value="H6"
-                    onclick="setHeading(6)">H6</button>
+                    onclick="setHeading(6)">H6</button> -->
 
                 <button class="p-1 ql-bold">bold</button>
                 <button class="p-1 text-dark ql-italic">italic</button>
@@ -113,7 +111,6 @@
                 <button class="ql-code-block"></button>
                 <button class="ql-blockquote"></button>
                 <button class="ql-clean"></button>
-
             </div>
 
 
@@ -158,24 +155,24 @@
     <script src="../static/js/editor-TTS.js"></script>
     <script src="../static/js/editor.js"></script>
 
-
     <script th:inline="javascript">
         // Custom Clipboard Module: Converts class-based styles to inline styles
         Quill.register('modules/clipboard', class InlineClipboard extends Quill.import('modules/clipboard') {
             convert(html) {
                 let tempDiv = document.createElement("div");
                 tempDiv.innerHTML = html;
-    
+
                 // Convert all styles to inline styles
                 tempDiv.querySelectorAll('*').forEach((el) => {
                     let computedStyle = window.getComputedStyle(el);
                     el.style.cssText = computedStyle.cssText; // Apply computed styles as inline styles
                 });
-    
+
                 return tempDiv.innerHTML;
             }
         });
-    
+
+
         // Initialize Quill Editor
         const quill = new Quill('#editor', {
             theme: 'snow', // Snow theme for toolbar
@@ -185,24 +182,25 @@
                 imageResize: {} // Enable image resizing
             }
         });
-    
+
         // Apply heading levels
         window.setHeading = function (level) {
             quill.format('header', level);
             console.log(`Heading set to H${level}`);
         };
-    
+
         // Register custom fonts
         const Font = Quill.import('formats/font');
         Font.whitelist = ["sans-serif", "serif", "monospace"];
         Quill.register(Font, true);
         quill.format("font", "serif");
-    
+
         // Bootstrap Tooltips Initialization
         document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
             new bootstrap.Tooltip(element);
         });
-    
+
+
         // Function to apply inline styles before saving content
         function applyInlineStyles() {
             document.querySelectorAll(".ql-editor *").forEach(element => {
@@ -219,7 +217,7 @@
                 element.style.margin = computedStyle.margin;
                 element.style.padding = computedStyle.padding;
             });
-    
+
             // Apply styles for code blocks
             document.querySelectorAll(".ql-editor pre").forEach(pre => {
                 pre.style.backgroundColor = "black";
@@ -230,7 +228,8 @@
                 pre.style.fontFamily = "monospace";
             });
         }
-    
+
+
         // Extract and send inline-styled content
         document.querySelectorAll("#getContent").forEach((btn) => {
             btn.addEventListener("click", function () {
@@ -239,7 +238,10 @@
                 document.querySelector("#contentSender").value = editorContent;
             });
         });
-    
+
+
+
+
         // Message Handler (Auto-hide messages after 5 seconds)
         document.addEventListener("DOMContentLoaded", () => {
             const messageElement = document.querySelector(".message");
@@ -250,12 +252,15 @@
                     console.log("Message hidden.");
                 }, 5000);
             }
-    
+
+
+
+
             // Get Editor Content Before Sending
             const spinnerEl = document.querySelector(".spinner-parent");
             const buttons = document.querySelectorAll("#getContent");
             const contentSender = document.querySelector("#contentSender");
-    
+
             const getEditorContent = () => {
                 applyInlineStyles(); // Ensure inline styles before sending
                 const editorContent = quill.root.innerHTML;
@@ -263,192 +268,35 @@
                 console.log(`Editor Content: ${editorContent}`);
                 spinnerEl.classList.replace("d-none", "d-block");
             };
-    
+
             // Attach event listeners to all content buttons
             buttons.forEach((btn) => {
                 btn.addEventListener("click", () => {
                     const form = document.querySelector("#content-form");
-    
+
                     if (btn.value === "PDF") {
                         console.log("Generating PDF...");
-                        form.setAttribute("action", "/savecontent/pdf");
+                        form.setAttribute("action", "/editor/savecontent/pdf");
                     } else if (btn.value === "DOCX") {
                         console.log("Generating DOCX...");
-                        form.setAttribute("action", "/savecontent/docx");
+                        form.setAttribute("action", "/editor/savecontent/docx");
                     } else {
                         console.error("Invalid Request!");
                     }
-    
+
                     getEditorContent(); // Process editor content before submitting
                 });
             });
-    
+
             // Load content from backend (if available)
             var contentFromBackend = /*[[${content}]]*/ '';
             if (contentFromBackend) {
                 quill.root.innerHTML = contentFromBackend;
             }
         });
+
     </script>
-    
-
-    <!-- <script th:inline="javascript">
-
-        // Register a custom clipboard module that converts classes to inline styles
-        Quill.register('modules/clipboard', class InlineClipboard extends Quill.import('modules/clipboard') {
-            convert(html) {
-                let tempDiv = document.createElement("div");
-                tempDiv.innerHTML = html;
-
-                // Convert all elements to have inline styles instead of classes
-                tempDiv.querySelectorAll('*').forEach((el) => {
-                    let computedStyle = window.getComputedStyle(el);
-                    el.style.cssText = computedStyle.cssText; // Apply all computed styles as inline
-                });
-
-                return tempDiv.innerHTML;
-            }
-        });
-
-        // Initialize Quill editor
-        const quill = new Quill('#editor', {
-            theme: 'snow', // Use Snow theme for toolbar
-            modules: {
-                toolbar: {
-                    container: '#toolbar', // Fixed toolbar
-                },
-                clipboard: true, // Use modified clipboard for inline styles
-                imageResize: {}
-            }
-        });
-
-        // Function to apply heading levels
-        window.setHeading = function (level) {
-            quill.format('header', level); // Apply heading level
-            console.log(`Heading set to H${level}`);
-        };
-
-        // Register custom fonts
-        const Font = Quill.import('formats/font');
-        Font.whitelist = ["sans-serif", "serif", "monospace"];
-        Quill.register(Font, true);
-
-        // Apply default font
-        quill.format("font", "serif");
-
-        // Initialize Bootstrap tooltips
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
-            new bootstrap.Tooltip(element);
-        });
-
-        // Function to extract inline-styled content before saving
-        document.querySelectorAll("#getContent").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                let editorContent = document.querySelector(".ql-editor").innerHTML;
-                document.querySelector("#contentSender").value = editorContent; // Store inline-styled content
-            });
-        });
 
 
-        // const quill = new Quill('#editor', {
-        //     theme: 'snow', // Use Snow theme for a fixed toolbar
-        //     modules: {
-        //         toolbar: {
-        //             container: '#toolbar', // Fixed toolbar
-        //         },
-        //         imageResize: {}
-        //     }
-        // });
-
-
-        // window.setHeading = function (level) {
-        //     quill.format('header', level); // Apply heading level
-        //     console.log(`Heading set to H${level}`);
-        // };
-
-
-        // const Font = Quill.import('formats/font');
-        // Font.whitelist = ["sans-serif", "serif", "monospace"];
-        // Quill.register(Font, true);
-
-        // quill.format("font", "serif");
-
-
-        // // Initialize Bootstrap tooltips
-        // var tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        // tooltipElements.forEach(function (element) {
-        //     new bootstrap.Tooltip(element);
-        // });
-
-
-        // =========================== Message Handler ============================
-
-        document.addEventListener("DOMContentLoaded", () => {
-
-            const messageElement = document.querySelector(".message");
-            if (messageElement) {
-
-                console.log("started")
-                setTimeout(() => {
-                    console.log("removed")
-                    messageElement.classList.add("d-none");
-                }, 5000);
-
-            }
-
-            //======================= Get Content =====================================
-
-            const spinnerEl = document.querySelector(".spinner-parent");
-            // trigger getEditorContent() function
-            const button = document.querySelectorAll("#getContent");
-            const contentSender = document.querySelector("#contentSender");
-
-
-            /**
-             * Function to get the content of the editor
-             */
-            const getEditorContent = () => {
-                const editorContent = quill.root.innerHTML;
-                contentSender.value = editorContent
-
-                console.log(`Editor Content: ${editorContent}`);
-                spinnerEl.classList.replace("d-none", "d-block")
-            };
-
-            // Attach the event listener to the button
-            button.forEach((btn) => {
-
-                btn.addEventListener("click", () => {
-
-                    const form = document.querySelector("#content-form");
-
-                    if (btn.value === "PDF") {
-                        console.log(`This si the value ${btn.value}`)
-                        form.setAttribute("action", "/savecontent/pdf")
-
-                    } else if (btn.value === "DOCX") {
-                        console.log(btn.value)
-                        form.setAttribute("action", "/savecontent/docx")
-                    } else {
-                        console.error("Illegal Request ")
-                    }
-
-
-                    getEditorContent();
-
-                })
-
-            });
-
-
-            var contentFromBackend = /*[[${content}]]*/ '';
-            if (contentFromBackend) {
-                quill.root.innerHTML = contentFromBackend;
-            }
-
-        })
-
-    </script> -->
 </body>
-
 </html>

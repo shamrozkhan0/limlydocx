@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -22,7 +19,9 @@ import java.util.UUID;
 @Controller
 @RequiredArgsConstructor
 @Log4j2
+@RequestMapping("/editor")
 public class DocumentController {
+
 
     private final DocumentService documentService;
     private final UserRepository userRepository;
@@ -42,8 +41,15 @@ public class DocumentController {
      */
     @GetMapping("/doc")
     public String showEditor() {
-        log.info("User is at the Editor page");
+        log.info("User is at the quillJS Editor page");
         return "editor";
+    }
+
+
+    @GetMapping("/second")
+    public String EditorJS(){
+        log.info("User is at the editorJS editor");
+        return "editorJS";
     }
 
 
@@ -64,9 +70,11 @@ public class DocumentController {
             RedirectAttributes redirectAttributes
     ) {
 
-//        if (authentication == null) {
-//            return "redirect:/login";
-//        }
+        log.info("A request is made");
+
+        if (authentication == null) {
+            return "redirect:/login";
+        }
 
         if (content == null || content.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Content is empty");
@@ -89,7 +97,7 @@ public class DocumentController {
             log.error("Error processing document: {} of format ({})", e.getMessage(), format  );
             redirectAttributes.addFlashAttribute("error", status.getBody());
         }
-        return "redirect:/doc";
+        return "redirect:/editor/doc";
     }
 
 
@@ -97,11 +105,11 @@ public class DocumentController {
     /**
      * Checks the format for the document, appends the extension, and processes it accordingly.
      *
-     * @param format         The format of the document (e.g., pdf, docx)
-     * @param uniqueFileName The generated unique file name
-     * @param content        The content of the document
-     * @param status         ResponseEntity holding the document creation status
-     * @return ResponseEntity indicating the status of document processing
+     * @param format          The format of the document (e.g., pdf, docx)
+     * @param uniqueFileName  The generated unique file name
+     * @param content         The content of the document
+     * @param status          ResponseEntity holding the document creation status
+     * @return ResponseEntity Indicating the status of document processing
      */
     public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> status) {
 
