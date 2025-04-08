@@ -3,6 +3,7 @@ package com.limlydocx.controller;
 import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.DocumentService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ public class DocumentController {
     private static final String FILE_NAME_PATTERN= "yyyyMMdd_HHmmss";
 
 
+
     /**
      * Directs the user to the editor page.
      *
@@ -46,6 +48,11 @@ public class DocumentController {
     }
 
 
+
+    /**
+     * second editor
+     * @return
+     */
     @GetMapping("/second")
     public String EditorJS(){
         log.info("User is at the editorJS editor");
@@ -64,13 +71,13 @@ public class DocumentController {
      */
     @PostMapping("/savecontent/{format}")
     public String saveDocumentContent(
+            HttpServletRequest httpRequest,
             @PathVariable String format,
             @RequestParam("content") String content,
+            @RequestParam("editor-path") String HTTP_PATH,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
-
-        log.info("A request is made");
 
         if (authentication == null) {
             return "redirect:/login";
@@ -94,10 +101,12 @@ public class DocumentController {
             this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
         } catch (Exception e) {
+
             log.error("Error processing document: {} of format ({})", e.getMessage(), format  );
             redirectAttributes.addFlashAttribute("error", status.getBody());
+
         }
-        return "redirect:/editor/doc";
+        return "redirect:" + HTTP_PATH;
     }
 
 
@@ -151,14 +160,16 @@ public class DocumentController {
             Authentication authentication,
             String content
     ) {
+
+
         if (status != null && status.getStatusCode().is2xxSuccessful()) {
             // Save document info in the database
             documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
 
             // Provide download URL to the user
-            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
+//            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
 
-            // Preserve content in the editorclea
+            // Preserve content in the editor
             redirectAttributes.addFlashAttribute("content", content);
             redirectAttributes.addFlashAttribute("success", status.getBody());
         } else if (status == null) {
