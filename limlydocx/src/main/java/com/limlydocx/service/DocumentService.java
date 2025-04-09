@@ -77,7 +77,7 @@ public class DocumentService {
      * @param uniqueFileName The unique file name
      * @return Response entity indicating success or failure
      */
-    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
+    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName, String EDITOR_ID) {
         File file = new File(DOCUMENT_STORAGE_PATH + uniqueFileName);
         System.out.println(DOCUMENT_STORAGE_PATH+uniqueFileName);
 //        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
@@ -87,7 +87,12 @@ public class DocumentService {
             ConverterProperties properties = new ConverterProperties();
             HtmlConverter.convertToPdf(content, outputStream, properties);
 
+
 //            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+
+
+
+//            checkIfEditorFileExist();
 
 //            uploadToCloudinary(uniqueFileName, pdfBytes);
 
@@ -134,6 +139,8 @@ public class DocumentService {
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 wordMLPackage.save(outputStream);
             }
+
+
 
 //              byte[] fileByte = this.readFileToByteArray(file);
 //            uploadToCloudinary(uniqueFilename, fileByte);
@@ -225,4 +232,30 @@ public class DocumentService {
             return byteArrayOutputStream.toByteArray();
         }
     }
+
+
+    public void checkIfEditorFileExist(String EDITOR_ID){
+        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
+                ifpresent ->{
+                    log.info("Existed File - Re-uploading the file");
+
+
+                },
+
+                () ->{
+
+                    log.info("New File - cloudinary will take this as a new file");
+
+                }
+
+
+        );
+
+
+
+    }
+
+
+
+
 }

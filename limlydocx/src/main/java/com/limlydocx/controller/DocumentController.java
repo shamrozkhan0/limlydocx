@@ -23,7 +23,6 @@ import java.util.UUID;
 @RequestMapping("/editor")
 public class DocumentController {
 
-
     private final DocumentService documentService;
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
@@ -35,13 +34,15 @@ public class DocumentController {
     private static final String FILE_NAME_PATTERN= "yyyyMMdd_HHmmss";
 
 
+    String editorID = UUID.randomUUID().toString();
+
 
     /**
      * Directs the user to the editor page.
      *
      * @return the editor view name
      */
-    @GetMapping("/doc")
+    @GetMapping("/doc/{editorID}"  )
     public String showEditor() {
         log.info("User is at the quillJS Editor page");
         return "editor";
@@ -75,6 +76,7 @@ public class DocumentController {
             @PathVariable String format,
             @RequestParam("content") String content,
             @RequestParam("editor-path") String HTTP_PATH,
+            @RequestParam("editorID") String EDITOR_ID,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
@@ -97,7 +99,7 @@ public class DocumentController {
 
         try {
 
-            status = this.checkDocumentFormat(format, uniqueFileName, content , status);
+            status = this.checkDocumentFormat(format, uniqueFileName, content , status, EDITOR_ID);
             this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
         } catch (Exception e) {
@@ -120,13 +122,13 @@ public class DocumentController {
      * @param status          ResponseEntity holding the document creation status
      * @return ResponseEntity Indicating the status of document processing
      */
-    public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> status) {
+    public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> status, String EDITOR_ID) {
 
         switch (format.toLowerCase()){
 
             case "pdf" -> {
                 uniqueFileName.append(".pdf");
-                status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString());
+                status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString(), EDITOR_ID );
                 log.info("USER SELECT PDF");
             }
 
@@ -181,6 +183,11 @@ public class DocumentController {
             throw new RuntimeException();
         }
     }
+
+
+
+
+
 
 
 }

@@ -123,6 +123,7 @@
                 <form class="d-flex align-items-center" method="post" id="content-form">
                     <input type="text" name="content" id="contentSender" hidden>
                     <input type="text" name="editor-path" value="/editor/doc" hidden>
+                    <input type="text" name="editorID" th:value="${}">
                     <button value="PDF" data-format="PDF" id="getContent"
                         class="w-100 h-100 bg-danger text-white px-3 py-2 fs-18 fw-bold rounded-top rounded-start">
                         PDF
