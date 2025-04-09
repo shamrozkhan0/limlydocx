@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- For Testing -->
+    <link rel="stylesheet" href="../static/css/EditorJS.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/editor.css">
+
+    <link rel="stylesheet" th:href="@{/css/EditorJS.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/editor.css}">
+    <title>Editor.js</title>
+    
+</head>
+<body class="d-flex align-items-center justify-content-center flex-column vh-100 ">
+
+    <div id="editor" class="bg-white w-75 p-4 rounded " th:field="*{content}">
+        <!-- <h1>wdsdweeqw</h1> -->
+    </div>
+
+    <form  id="editorForm" method="post" class="mt-3">
+        <input type="text" name="content" class="" id="content">
+        <button id="getContent" class="btn btn-primary mt-3" type="submit">Get Content</button>
+        <input type="text" name="editor-path" value="/editor/second" hidden>
+    </form>
+
+
+
+    <!-- <div id="output" class="mt-3 p-3 border"></div> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <!-- Load Editor.js and Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script>
+
+    <script src="../static/js/editorJs.js" type="module"></script>
+
+    <script th:src="@{/js/editorJs.js}" type="module"></script>
+</body>
+</html>
