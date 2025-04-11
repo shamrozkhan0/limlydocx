@@ -30,5 +30,5 @@ various formats like `.pdf` , `.docx` (Microsoft word format). LimlyDocx feature
 ![LimlyDocx login form picture](limlydocx/src/main/resources/static/img/login-img.png)
 
 **All Rights Reserved:**
-- **Shamroz Khan is the owner of this repository    **
+- **Shamroz Khan is the owner of this repository**
 - **Designed and Developed by Shamroz Khan**

@@ -1,24 +1,24 @@
 package com.limlydocx.controller;
 
+import com.limlydocx.entity.Dashboard;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.entity.User;
+import com.limlydocx.repository.DashboardRepository;
 import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private DocumentRepository documentRepository;
-
+    private final UserRepository userRepository;
+    private final DocumentRepository documentRepository;
+    private final DashboardRepository dashboardRepository;
 
 
     @GetMapping("/start-at")
@@ -40,6 +40,12 @@ public class UserController {
         return documentRepository.findAll();
     }
 
+
+
+    @GetMapping("/dash")
+    public List<Dashboard> showDashboard(){
+        return dashboardRepository.findAll();
+    }
 
 
 

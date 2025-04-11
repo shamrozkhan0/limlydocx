@@ -77,7 +77,8 @@ public class DocumentService {
      * @param uniqueFileName The unique file name
      * @return Response entity indicating success or failure
      */
-    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName, String EDITOR_ID) {
+//    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName, String EDITOR_ID) {
+    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
         File file = new File(DOCUMENT_STORAGE_PATH + uniqueFileName);
         System.out.println(DOCUMENT_STORAGE_PATH+uniqueFileName);
 //        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
@@ -234,28 +235,23 @@ public class DocumentService {
     }
 
 
-    public void checkIfEditorFileExist(String EDITOR_ID){
-        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
-                ifpresent ->{
-                    log.info("Existed File - Re-uploading the file");
-
-
-                },
-
-                () ->{
-
-                    log.info("New File - cloudinary will take this as a new file");
-
-                }
-
-
-        );
+//    public void checkIfEditorFileExist(String EDITOR_ID){
+//        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
+//                ifpresent ->{
+//                    log.info("Existed File - Re-uploading the file");
+//
+//
+//                },
+//
+//                () ->{
+//
+//                    log.info("New File - cloudinary will take this as a new file");
+//
+//                }
+//
+//
+//        );
 
 
 
     }
-
-
-
-
-}
