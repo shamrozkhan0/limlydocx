@@ -37,7 +37,7 @@ public  class GlobalVariable {
      * @param authentication
      * @return Username
      */
-    public  String getUsername(Authentication authentication){
+    public String getUsername(Authentication authentication){
         Optional<User> user = userRepository.findUserByEmail(authentication.getName());
         return user.get().getUsername();
     }

@@ -29,12 +29,12 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/editor/doc",true )
+                                .defaultSuccessUrl("/doc",true )
                                 .failureUrl("/login?error=true")
                 )
                  .oauth2Login(oauth2 -> oauth2
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/doc", true)
+                                .defaultSuccessUrl("/dashboard", true)
                  )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login")

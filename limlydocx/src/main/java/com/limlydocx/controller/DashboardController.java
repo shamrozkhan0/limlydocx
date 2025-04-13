@@ -26,6 +26,7 @@ public class DashboardController {
     public String showDashboard(Authentication authentication, Model model){
         String username = authentication.getName();
         List<Dashboard> dashboards = dashboardRepository.getAllDocumentByOwner(username);
+        System.out.println(dashboards.get(0).getOwner());
         model.addAttribute("dashboards" , dashboards);
         return "dashboard";
     }
@@ -37,11 +38,16 @@ public class DashboardController {
             Authentication authentication,
             @RequestParam("dashboard-name") String name
     ){
-
         dashboardService.createUserDashboard(authentication, name);
-        // I have to make the conditon fo the dashboard editor
         return "redirect:/dashboard";
     }
+
+
+
+
+
+
+
 
 
 

@@ -22,21 +22,21 @@ public class UserController {
 
 
     @GetMapping("/start-at")
-    public String sayhello(){
+    public String sayHello(){
         return "hello world  31-December-2024";
     }
 
 
 
     @GetMapping("/users")
-    public List<User> showAllusers(){
+    public List<User> showAllUsers(){
         return userRepository.findAll();
     }
 
 
 
     @GetMapping("/docs")
-    public List<DocumentEntity> showSavedDocument(){
+    public List<DocumentEntity> showAllDocument(){
         return documentRepository.findAll();
     }
 
