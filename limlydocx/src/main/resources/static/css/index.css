@@ -31,6 +31,10 @@
     font-size: 18px;
 }
 
+.fs-20 {
+    font-size: 20px;
+}   
+
 .outline-none {
     outline: none;
 }
@@ -39,8 +43,19 @@
     background: linear-gradient(130deg, #0070ff , #ff0095 90%);
 }
 
+/* .heading-limly{
+    background: rgb(1, 95, 95);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+} */
+
 .bg-webdark{
     background: #151A2D;
+}
+
+.w-fit{
+    width: fit-content;
 }
 
 .squeezeX-hover:hover{

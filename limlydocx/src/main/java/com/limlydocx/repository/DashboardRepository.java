@@ -1,14 +1,14 @@
 package com.limlydocx.repository;
 
-import com.limlydocx.entity.Dashboard;
+import com.limlydocx.entity.DashboardDocumentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface DashboardRepository extends JpaRepository<Dashboard, Integer> {
+public interface DashboardRepository extends JpaRepository<DashboardDocumentEntity, Integer> {
 
-    List<Dashboard> getAllDocumentByOwner(String username);
+    List<DashboardDocumentEntity> getAllDocumentByOwner(String username);
 
 }

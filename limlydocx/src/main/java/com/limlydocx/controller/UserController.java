@@ -1,6 +1,6 @@
 package com.limlydocx.controller;
 
-import com.limlydocx.entity.Dashboard;
+import com.limlydocx.entity.DashboardDocumentEntity;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.entity.User;
 import com.limlydocx.repository.DashboardRepository;
@@ -43,7 +43,7 @@ public class UserController {
 
 
     @GetMapping("/dash")
-    public List<Dashboard> showDashboard(){
+    public List<DashboardDocumentEntity> showDashboard(){
         return dashboardRepository.findAll();
     }
 

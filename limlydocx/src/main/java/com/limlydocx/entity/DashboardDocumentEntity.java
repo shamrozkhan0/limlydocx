@@ -9,12 +9,12 @@ import java.time.LocalDate;
 
 
 @Entity
-@Table(name = "dashboard")
+@Table(name = "document-Data")
 @Getter
 @Setter
 @RequiredArgsConstructor
 @ToString
-public class Dashboard {
+public class DashboardDocumentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,16 @@ public class Dashboard {
 
     private String owner;
 
-    private LocalDate date;
+    private LocalDate CreatedOn;
 
     @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "name can only contain letters , numbers and _")
     @Column(unique = true)
     @NotBlank(message = "Name cannot be blank")
     private String name;
+
+
+
+
+
 
 }

@@ -1,6 +1,6 @@
 package com.limlydocx.service;
 
-import com.limlydocx.entity.Dashboard;
+import com.limlydocx.entity.DashboardDocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DashboardRepository;
 import lombok.AllArgsConstructor;
@@ -19,19 +19,20 @@ public class DashboardService {
     private final GlobalVariable globalVariable;
 
 
+
     /**
      *  Get user document from the database by using user username
      *
      * @param authentication
      * @param name
      */
-    public void createUserDashboard(Authentication authentication, String name) {
+    public void createUserDashboardDocuments(Authentication authentication, String name) {
 
         String username = globalVariable.getUsername(authentication);
 
-        Dashboard dashboard = new Dashboard();
+        DashboardDocumentEntity dashboard = new DashboardDocumentEntity();
         dashboard.setOwner(username);
-        dashboard.setDate(LocalDate.now());
+        dashboard.setCreatedOn(LocalDate.now());
         dashboard.setName(name);
         log.info("Dashboard credential {} , {}", username, name);
 

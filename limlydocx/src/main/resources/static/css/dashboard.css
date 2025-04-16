@@ -1,13 +1,37 @@
-.bg-purple{
-    background-color: #481A54;
+body{
+    /* background-color: rgb(208, 253, 255); */
+}
+
+.bg-dashboard{
+    background-color: #3a0347;
 }
 
 nav{
     height: fit-content;
+    /* background-color: teal; */
 }
 
-.profile-image .img{
+nav .dashboard-profile-img{
     width: 50px;
-    height: 50px;
-    
+    height:50px;
+    padding: 0px;
+    /* border-radius: 50%; */
+    /* object-fit: cover; */
+}
+
+.dashboard-document{
+    overflow-y:scroll;
+    height:830px;
+    /* height: 1900px; */
+}
+
+.btn-create-document{
+    bottom: 50px;
+    right: 50px;
+}
+
+.heading-empty-document{
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   
 }

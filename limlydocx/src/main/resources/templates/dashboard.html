@@ -20,37 +20,42 @@
     <title>Dashboard</title>
 </head>
 
-<body class="vh-100">
+<body class="vh-100 overflow-hidden  ">
 
-    <div class="container-fluid h-100">
-        <div class="row h-100">
+    <div class="container-fluid px-0  ">
 
-            <aside class="col-2 bg-purple ">
-                <h2 class="text-white"> <span id="element"></span></h2>
-                <p class="text-white">Welcome to your dashboard. Here you can manage your documents.</p>
+        <nav class="row bg-dashboard d-flex align-items-center justify-content-between m-0 py-3 px-3">
+            <h1 class="w-fit fs-3 text-white heading-limly fw-bold">LimlyDocX</h1>
+            <h2 class="w-fit fs-3 text-light "><span id="element"></span></h2>
+            <img src="../static/img/google-logo.webp" th:src="@{/img/google-logo.webp}" alt=""
+                class="dashboard-profile-img bg-white rounded-circle">
+        </nav>
+
+        <div class="row vh-100 w-100">
+
+            <aside class="col-2 vh-100 bg-dashboard px-4 py-3 text-white">
+                <h3>aisdooa</h3>
             </aside>
 
-            <nav class="col-10 bg-purple py-3 px-5">
+            <section class="col-10 dashboard-document position-relative " aria-label="" th:object="${dashboards}">
 
-                <div class="w-100 d-flex align-items-center justify-content-between">
+                <h1 th:if="${dashboards.isEmpty()}" class="text-danger position-absolute heading-empty-document w-100 text-center">
+                    <i class="fas fa-file-alt"></i>
+                    You currently have no documents available
+                </h1>
 
-                    <div class="search-bar d-flex align-items-center justify-content-center  w-75">
-                        <form action="" class="bg-light  px-3 py-1 w-50 fs-18 d-flex align-items-center rounded-pill ">
-                            <input type="text" placeholder="search"
-                                class="bg-transparent w-75 fs-18 border-0 outline-none">
-                            <button class="bg-transparent border-0 text-dark w-25 text-end "><i
-                                    class="fas fa-magnifying-glass fs-18"></i></button>
-                        </form>
-                    </div>
+                <div th:each="document : ${dashboards}">
+                    <h1 th:text="${document.name}"></h1>
+                </div>
 
-                    <div class="profile-image w-25 d-flex align-items-center justify-content-end">
-                        <img src="" class="bg-primary rounded-circle img d-flex " />
-                    </div>
-                </div>  
+                <button class="btn btn-primary rounded-circle btn-create-document py-2 position-absolute">
+                    <i class="fas fa-plus fs-2 m-1 "></i>
+                </button>
 
-            </nav>
+            </section>
 
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
@@ -58,8 +63,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             var typed = new Typed('#element', {
-                strings: ["hello [[${dashboards[0].owner}]]"],
-                typeSpeed: 30
+                strings: ["Welcome [[${user.username}]]", "Your future is created by what you do today, not tomorrow."],
+                typeSpeed: 20
             });
         })
     </script>
