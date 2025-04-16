@@ -5,9 +5,9 @@ various formats like `.pdf` , `.docx` (Microsoft word format). LimlyDocx feature
 
 - Create your document or article with our Rich Text Editor.
 - Export your document in various formats, including `.pdf` or `.docx` (Microsoft Word).
-- Invite your friends to collaborate and help you with your document.
-- Invite your naughty friend to review the document, but restrict editing permissions to prevent unwanted changes.
-- Custom Dashboard to manage your documents and collaboration efforts.
+- **Invite your friends** to collaborate and help you with your document.
+- Invite your naughty friend to review the document, but restrict **editing permissions** to prevent unwanted changes.
+- Custom **Dashboard** to manage your documents and collaboration efforts.
 - **Text-To-Speech (TTS)**: Tired of reading your professor’s long, boring explanations? With LimlyDocx,you can have any document or specific line read aloud, making learning more convenient and effortless.
 
 
@@ -17,7 +17,8 @@ various formats like `.pdf` , `.docx` (Microsoft word format). LimlyDocx feature
 - **Backend:** Java, Spring Boot, Spring Security, OAuth2, WebSocket ⚙️🔒
 - **Database:** MySQL 💾
 - **Libraries:** Quill.js (rich text editor), iText (PDF generation) 📚
-- **Architecture:**  Monolithic, Cloudinary for cloud storage ☁️  
+- **Cloud-Storage** **Cloudinary** for cloud storage ☁️  
+- **Application Architecture:** Monolithic Architecture 
 
 ## Coming Soon
 
