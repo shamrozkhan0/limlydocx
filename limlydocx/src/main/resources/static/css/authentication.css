@@ -6,11 +6,10 @@ form{
     background: linear-gradient(150deg, #96306F, #062A66);
 }
 
-.login-parent {
-    /* padding-left: 250px !important; */
+/* .login-parent {
     align-items: end;
     width: 50%;
-}
+} */
 
 .border-inputs {
     border: solid #B421B4;
@@ -25,7 +24,6 @@ form{
 }
 
 h2 {
-    /* background: linear-gradient(to left, #002B62 10%, #99316E); */
     background: linear-gradient(130deg, #0070ff , #ff0095 90%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -37,8 +35,6 @@ h2 {
 }
 
 .google-button img {
-    /* max-width: 30px; */
-    /* max-height:30px ; */
     max-width: clamp(30px, 10%, 30px);
 }
 

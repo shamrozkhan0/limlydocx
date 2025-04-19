@@ -29,11 +29,9 @@ public class DocumentController {
     @Value("${cloudinary.document.path}")
     private String cloudPath;
 
-    private static final String FILE_NAME_PATTERN= "yyyyMMdd_HHmmss";
+    private static final String FILE_NAME_PATTERN = "yyyyMMdd_HHmmss";
 
 
-
-//    String editorID = UUID.randomUUID().toString();
 
     /**
      * Directs the user to the editor page.
@@ -48,15 +46,30 @@ public class DocumentController {
 
 
 
+    @GetMapping("/editor/{id}")
+    public String sendToEditor(
+            @PathVariable("id") UUID id
+    ) {
+//        documentService.checkIfDocumentExist(id);
+        log.info("Okay iwjedxoqwp");
+        return "editor";
+    }
+
+
+//    String editorID = UUID.randomUUID().toString();
+
+
     /**
      * second editor
+     *
      * @return
      */
     @GetMapping("/second")
-    public String EditorJS(){
+    public String EditorJS() {
         log.info("User is at the editorJS editor");
         return "editorJS";
     }
+
 
 
 
@@ -68,16 +81,14 @@ public class DocumentController {
      * @param redirectAttributes attributes for redirect
      * @return the redirect view name
      */
-    @PostMapping("/savecontent/{format}")
-    public String saveDocumentContent(
-            HttpServletRequest httpRequest,
-            @PathVariable String format,
-            @RequestParam("content") String content,
-            @RequestParam("editor-path") String HTTP_PATH,
-//            @RequestParam("editorID") String EDITOR_ID,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes
-    ) {
+    @PostMapping("/save-content/{format}")
+    public String saveDocumentContent(HttpServletRequest httpRequest, @PathVariable String format,
+                                      @RequestParam("content") String content,
+//                                    @RequestParam("editor-path") String HTTP_PATH,
+//                                    @RequestParam("editorID") String EDITOR_ID,
+                                      Authentication authentication, RedirectAttributes redirectAttributes) {
+
+        log.info("content: {}", content);
 
         if (authentication == null) {
             return "redirect:/login";
@@ -96,46 +107,45 @@ public class DocumentController {
         ResponseEntity<String> status = null;
 
         try {
-
-//            status = this.checkDocumentFormat(format, uniqueFileName, content , status, EDITOR_ID);
-            status = this.checkDocumentFormat(format, uniqueFileName, content , status);
+//          status = this.checkDocumentFormat(format, uniqueFileName, content , status, EDITOR_ID);
+            status = this.checkDocumentFormat(format, uniqueFileName, content, status);
             this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, content);
 
         } catch (Exception e) {
 
-            log.error("Error processing document: {} of format ({})", e.getMessage(), format  );
+            log.error("Error processing document: {} of format ({})", e.getMessage(), format);
             redirectAttributes.addFlashAttribute("error", status.getBody());
 
         }
-        return "redirect:" + HTTP_PATH;
+//        return "redirect:" + HTTP_PATH;
+        return "redirect:/doc";
     }
-
 
 
     /**
      * Checks the format for the document, appends the extension, and processes it accordingly.
      *
-     * @param format          The format of the document (e.g., pdf, docx)
-     * @param uniqueFileName  The generated unique file name
-     * @param content         The content of the document
-     * @param status          ResponseEntity holding the document creation status
+     * @param format         The format of the document (e.g., pdf, docx)
+     * @param uniqueFileName The generated unique file name
+     * @param content        The content of the document
+     * @param status         ResponseEntity holding the document creation status
      * @return ResponseEntity Indicating the status of document processing
      */
 //    public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> status, String EDITOR_ID) {
-    public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName,  String content, ResponseEntity<String> status) {
+    public ResponseEntity<String> checkDocumentFormat(String format, StringBuilder uniqueFileName, String content, ResponseEntity<String> status) {
 
-        switch (format.toLowerCase()){
+        switch (format.toLowerCase()) {
 
             case "pdf" -> {
                 uniqueFileName.append(".pdf");
 //                status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString(), EDITOR_ID );
-                status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString() );
+                status = documentService.generatePdfAndUploadOnCloud(content, uniqueFileName.toString());
                 log.info("USER SELECT PDF");
             }
 
             case "docx" -> {
                 uniqueFileName.append(".docx");
-                status = documentService.generateDocxFile(content,uniqueFileName.toString());
+                status = documentService.generateDocxFile(content, uniqueFileName.toString());
                 log.info("USER SELECT DOCX");
             }
 
@@ -144,7 +154,6 @@ public class DocumentController {
 
         return status;
     }
-
 
 
     /**
@@ -156,13 +165,7 @@ public class DocumentController {
      * @param authentication
      * @param content
      */
-    public void checklIfDocumentCreatedAndReturn(
-            ResponseEntity<String> status,
-            RedirectAttributes redirectAttributes,
-            String uniqueFileName,
-            Authentication authentication,
-            String content
-    ) {
+    public void checklIfDocumentCreatedAndReturn(ResponseEntity<String> status, RedirectAttributes redirectAttributes, String uniqueFileName, Authentication authentication, String content) {
 
 
         if (status != null && status.getStatusCode().is2xxSuccessful()) {
@@ -184,11 +187,6 @@ public class DocumentController {
             throw new RuntimeException();
         }
     }
-
-
-
-
-
 
 
 }

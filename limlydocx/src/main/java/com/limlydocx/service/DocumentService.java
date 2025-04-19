@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+
 import java.io.*;
 import java.time.LocalDate;
 import java.util.Base64;
@@ -41,6 +42,12 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
 
     private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
+
+
+//    public ResponseEntity<String> checkIfDocumnentExist(UUID id){
+//        this.documentRepository.findById()
+//        return ResponseEntity.ok().body("Document exist with id: " + id );
+//    }
 
 
 
@@ -79,19 +86,24 @@ public class DocumentService {
      */
 //    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName, String EDITOR_ID) {
     public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
+
+        File directory = new File(DOCUMENT_STORAGE_PATH);
+        if (!directory.exists()) {
+            directory.mkdirs(); // create the directory if it doesn't exist
+        }
+
+
         File file = new File(DOCUMENT_STORAGE_PATH + uniqueFileName);
-        System.out.println(DOCUMENT_STORAGE_PATH+uniqueFileName);
+        System.out.println(DOCUMENT_STORAGE_PATH + uniqueFileName);
 //        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 
-        try(OutputStream outputStream = new FileOutputStream(file)){
+        try (OutputStream outputStream = new FileOutputStream(file)) {
 
             ConverterProperties properties = new ConverterProperties();
             HtmlConverter.convertToPdf(content, outputStream, properties);
 
 
 //            byte[] pdfBytes = byteArrayOutputStream.toByteArray();
-
-
 
 //            checkIfEditorFileExist();
 
@@ -129,7 +141,6 @@ public class DocumentService {
 
             Document document = Jsoup.parse(htmlContent);
 
-
             document.select("br").append("\\n");
             String cleanedHtml = document.html().replaceAll("\\s{2,}", " ").trim();
 
@@ -141,9 +152,7 @@ public class DocumentService {
                 wordMLPackage.save(outputStream);
             }
 
-
-
-//              byte[] fileByte = this.readFileToByteArray(file);
+//            byte[] fileByte = this.readFileToByteArray(file);
 //            uploadToCloudinary(uniqueFilename, fileByte);
 
             return ResponseEntity.ok("DOCX created successfully");
@@ -159,8 +168,8 @@ public class DocumentService {
     /**
      * Processes base64 images embedded in HTML and embeds them into DOCX.
      *
-     * @param document        The parsed HTML document
-     * @param wordMLPackage   The WordprocessingMLPackage
+     * @param document         The parsed HTML document
+     * @param wordMLPackage    The WordprocessingMLPackage
      * @param mainDocumentPart The main document part
      * @throws Exception In case of processing errors
      */
@@ -235,6 +244,7 @@ public class DocumentService {
     }
 
 
+
 //    public void checkIfEditorFileExist(String EDITOR_ID){
 //        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
 //                ifpresent ->{
@@ -253,5 +263,4 @@ public class DocumentService {
 //        );
 
 
-
-    }
+}

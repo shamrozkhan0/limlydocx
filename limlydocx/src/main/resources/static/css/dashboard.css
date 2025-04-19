@@ -1,37 +1,64 @@
-body{
-    /* background-color: rgb(208, 253, 255); */
+.bg-dashboard {
+    background: linear-gradient(135deg, #570569, #7a1c89);
 }
 
-.bg-dashboard{
-    background-color: #3a0347;
+.bg-purple {
+    background-color: #630453;
 }
 
-nav{
+#element {
+    color: #FFD700;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #b8860b;
+}
+
+nav {
     height: fit-content;
-    /* background-color: teal; */
 }
 
-nav .dashboard-profile-img{
+nav .dashboard-profile-img {
     width: 50px;
-    height:50px;
+    height: 50px;
     padding: 0px;
-    /* border-radius: 50%; */
-    /* object-fit: cover; */
 }
 
-.dashboard-document{
-    overflow-y:scroll;
-    height:830px;
-    /* height: 1900px; */
+.row-dashboard {
+    height: calc(100vh - 82px);
 }
 
-.btn-create-document{
-    bottom: 50px;
-    right: 50px;
+.btn-create-document {
+    bottom: 30px;
+    right: 30px;
 }
 
-.heading-empty-document{
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);   
+aside nav a.btn {
+    background-color: #4b075a;
+
+}
+
+aside nav a.btn:hover {
+    background-color: #3e054b;
+}
+
+
+.document-card {
+    background: linear-gradient(160deg, white 50%, #630453 30%);
+    box-shadow: 0 8px 30px rgba(128, 0, 255, 0.295);
+}
+
+.scale-hover:hover {
+    transform: scale(1.02);
+}
+
+.document-card:hover {
+    /* transition: all 0.3s ease; */
+    box-shadow: 0 10px 40px rgba(128, 0, 255, 0.25);
+}
+
+.document-create-button {
+    padding: 18px 21px;
+}
+
+.document-create-button:hover {
+    background-color: #500644;
 }

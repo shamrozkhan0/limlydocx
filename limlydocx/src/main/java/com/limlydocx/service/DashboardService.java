@@ -1,8 +1,8 @@
 package com.limlydocx.service;
 
-import com.limlydocx.entity.DashboardDocumentEntity;
+import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
-import com.limlydocx.repository.DashboardRepository;
+import com.limlydocx.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -15,8 +15,9 @@ import java.time.LocalDate;
 @Log4j2
 public class DashboardService {
 
-    private final DashboardRepository dashboardRepository;
+//    private final DashboardRepository dashboardRepository;
     private final GlobalVariable globalVariable;
+    private final DocumentRepository documentRepository;
 
 
 
@@ -30,14 +31,21 @@ public class DashboardService {
 
         String username = globalVariable.getUsername(authentication);
 
-        DashboardDocumentEntity dashboard = new DashboardDocumentEntity();
-        dashboard.setOwner(username);
-        dashboard.setCreatedOn(LocalDate.now());
-        dashboard.setName(name);
-        log.info("Dashboard credential {} , {}", username, name);
+        DocumentEntity documentEntity = new DocumentEntity();
+        documentEntity.setFileName(name.replaceAll("\\s+"," ").trim());
+        documentEntity.setUploadOn(LocalDate.now());
+        documentEntity.setCreator(username);
+
+
+//        DashboardDocumentEntity dashboard = new DashboardDocumentEntity();
+//        dashboard.setOwner(username);
+//        dashboard.setCreatedOn(LocalDate.now());
+//        dashboard.setName(name);
+//        log.info("Dashboard credential {} , {}", username, name);
 
         try {
-            dashboardRepository.save(dashboard);
+//            dashboardRepository.save(dashboard);
+            documentRepository.save(documentEntity);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

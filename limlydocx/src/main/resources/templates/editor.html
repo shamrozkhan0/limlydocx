@@ -120,10 +120,10 @@
                     <a class="btn btn-primary text-white" th:href="${download_url}">Download document</a>
                 </div>
 
-                <form class="d-flex align-items-center" method="post" id="content-form">
+                <form  class="d-flex align-items-center" method="post" id="content-form">
                     <input type="text" name="content" id="contentSender" hidden>
-                    <input type="text" name="editor-path" value="/editor/doc" hidden>
-                    <input type="text" name="editorID" th:value="${editorID}">
+                    <!-- <input type="text" name="editor-path" value="/editor/doc" hidden> -->
+                    <!-- <input type="text" name="editorID" th:value="${editorID}"> -->
                     <button value="PDF" data-format="PDF" id="getContent"
                         class="w-100 h-100 bg-danger text-white px-3 py-2 fs-18 fw-bold rounded-top rounded-start">
                         PDF
@@ -280,10 +280,10 @@
 
                     if (btn.value === "PDF") {
                         console.log("Generating PDF...");
-                        form.setAttribute("action", "/editor/savecontent/pdf");
+                        form.setAttribute("action", "/save-content/pdf");
                     } else if (btn.value === "DOCX") {
                         console.log("Generating DOCX...");
-                        form.setAttribute("action", "/editor/savecontent/docx");
+                        form.setAttribute("action", "/save-content/docx");
                     } else {
                         console.error("Invalid Request!");
                     }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +12,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <title>Limly-DocX Login</title>
 </head>
-
 <body class="w-100 vh-100 bg-white ">
 
     <!-- Error Alert -->
@@ -24,25 +22,24 @@
     <div class="container-fluid h-100">
         <div class="row h-100">
 
-            
-
-            <!-- Authentication form login/signup -->
+            <!-- Authentication form -->
+             
+            <!-- Login -->
             <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${login}"
                 aria-label="login form">
                 <div th:replace="~{fragments/login.html :: login}"></div>
             </section>
 
-            
-            <section class="col-12 col-md-6 col-lg-4 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${signup}"
+            <!-- Signup -->
+            <section class="col-12 col-md-6 col-xl-5 d-flex align-items-center justify-content-center h-100" th:if="${signup}"
                 aria-label="signup form">
                 <div th:replace="~{fragments/signup.html :: signup}"></div>
             </section>
 
-
-
+            
             <!-- Authentication Image -->
             <figure
-                class="col-12 col-md-6 col-lg-4 col-xl-7 h-100 position-relative d-flex align-items-center justify-content-center login-image"
+                class="col-12 col-md-6 col-xl-7 h-100 position-relative d-flex align-items-center justify-content-center login-image"
                 aria-label="Authentication image">
                 <!-- <img src="../static/img/login.jpg" alt="" class="position-absolute w-100 h-100"> -->
                 <img th:src="@{/img/authentication.jpg}" alt="image with text" class="w-100 h-100 position-absolute">
@@ -58,9 +55,6 @@
 
         </div>
     </div>
-    </div>
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

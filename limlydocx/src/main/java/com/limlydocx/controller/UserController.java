@@ -1,9 +1,7 @@
 package com.limlydocx.controller;
 
-import com.limlydocx.entity.DashboardDocumentEntity;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.entity.User;
-import com.limlydocx.repository.DashboardRepository;
 import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -18,7 +16,7 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final DocumentRepository documentRepository;
-    private final DashboardRepository dashboardRepository;
+
 
 
     @GetMapping("/start-at")
@@ -38,13 +36,6 @@ public class UserController {
     @GetMapping("/docs")
     public List<DocumentEntity> showAllDocument(){
         return documentRepository.findAll();
-    }
-
-
-
-    @GetMapping("/dash")
-    public List<DashboardDocumentEntity> showDashboard(){
-        return dashboardRepository.findAll();
     }
 
 
