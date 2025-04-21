@@ -2,7 +2,7 @@ package com.limlydocx.controller;
 
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.entity.User;
-import com.limlydocx.repository.DocumentRepository;
+import com.limlydocx.repository.EditorRepository;
 import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.DashboardService;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class DashboardController {
     private final UserRepository userRepository;
     private final DashboardService dashboardService;
 //    private final DashboardRepository dashboardRepository;
-    private final DocumentRepository documentRepository;
+    private final EditorRepository documentRepository;
 
 
     @GetMapping("/dashboard")
@@ -37,7 +37,7 @@ public class DashboardController {
 
 //            List<DashboardDocumentEntity> dashboards = dashboardRepository.getAllDocumentByOwner(users.get().getUsername());
             List<DocumentEntity> dashboards =  documentRepository.getAllDocumentByCreator(users.get().getUsername());
-            log.info("this is the repo of {}", dashboards);
+            log.info("this is the repo of {} ", dashboards);
             model.addAttribute("dashboards" , dashboards);
 
         } catch (Exception e){
@@ -80,10 +80,8 @@ public class DashboardController {
 
 
     /*
-    - Making doc private and only accible when user create it
+    - setup file path and name for cloudinary
     -
-
-
      */
 
 

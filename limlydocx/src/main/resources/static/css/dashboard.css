@@ -62,3 +62,10 @@ aside nav a.btn:hover {
 .document-create-button:hover {
     background-color: #500644;
 }
+
+.dashboard-logo{
+    width: 100px;
+    height: 100px;
+}
+
+

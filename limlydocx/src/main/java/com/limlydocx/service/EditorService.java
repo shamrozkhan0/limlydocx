@@ -4,8 +4,10 @@ import com.cloudinary.Cloudinary;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
+import com.limlydocx.entity.User;
 import com.limlydocx.globalVariable.GlobalVariable;
-import com.limlydocx.repository.DocumentRepository;
+import com.limlydocx.repository.EditorRepository;
+import com.limlydocx.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
@@ -28,26 +30,20 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 @Log4j2
-public class DocumentService {
+public class EditorService {
 
     private final Cloudinary cloudinary;
     private final GlobalVariable globalVariable;
-    private final DocumentRepository documentRepository;
+    private final EditorRepository documentRepository;
+    private final UserRepository userRepository;
+//    private final User user;
 
     private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
-
-
-//    public ResponseEntity<String> checkIfDocumnentExist(UUID id){
-//        this.documentRepository.findById()
-//        return ResponseEntity.ok().body("Document exist with id: " + id );
-//    }
 
 
 
@@ -61,19 +57,30 @@ public class DocumentService {
 
         String username = globalVariable.getUsername(authentication);
 
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
         DocumentEntity documentEntity = new DocumentEntity();
         documentEntity.setFileName(uniqueFileName);
         documentEntity.setUploadOn(LocalDate.now());
         documentEntity.setCreator(username);
+        documentEntity.setUser(user);
+
+        user.addDocument(documentEntity);
+//        user.getDocuments().add(documentEntity);
 
         try {
-            documentRepository.save(documentEntity);
+                userRepository.save(user);
             log.info("Document saved successfully: {}", uniqueFileName);
         } catch (Exception e) {
             log.error("Error saving document to database: {}", e.getMessage());
             throw new RuntimeException("Database save failed", e);
         }
     }
+
+
+
+
 
 
 

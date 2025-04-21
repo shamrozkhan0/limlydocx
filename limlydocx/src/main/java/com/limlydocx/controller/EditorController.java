@@ -1,8 +1,8 @@
 package com.limlydocx.controller;
 
-import com.limlydocx.repository.DocumentRepository;
+import com.limlydocx.repository.EditorRepository;
 import com.limlydocx.repository.UserRepository;
-import com.limlydocx.service.DocumentService;
+import com.limlydocx.service.EditorService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,11 +20,11 @@ import java.util.UUID;
 @Controller
 @RequiredArgsConstructor
 @Log4j2
-public class DocumentController {
+public class EditorController {
 
-    private final DocumentService documentService;
+    private final EditorService documentService;
     private final UserRepository userRepository;
-    private final DocumentRepository documentRepository;
+    private final EditorRepository documentRepository;
 
     @Value("${cloudinary.document.path}")
     private String cloudPath;
@@ -46,17 +46,17 @@ public class DocumentController {
 
 
 
-    @GetMapping("/editor/{id}")
-    public String sendToEditor(
-            @PathVariable("id") UUID id
-    ) {
+//    @GetMapping("/editor/{id}")
+//    public String sendToEditor(
+//            @PathVariable("id") UUID id,
+//            Authentication authentication
+//    ) {
 //        documentService.checkIfDocumentExist(id);
-        log.info("Okay iwjedxoqwp");
-        return "editor";
-    }
+//        log.info("Okay iwjedxoqwp");
+//        return "editor";
+//    }
 
 
-//    String editorID = UUID.randomUUID().toString();
 
 
     /**

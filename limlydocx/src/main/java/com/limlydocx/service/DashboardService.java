@@ -2,7 +2,7 @@ package com.limlydocx.service;
 
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
-import com.limlydocx.repository.DocumentRepository;
+import com.limlydocx.repository.EditorRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -17,7 +17,7 @@ public class DashboardService {
 
 //    private final DashboardRepository dashboardRepository;
     private final GlobalVariable globalVariable;
-    private final DocumentRepository documentRepository;
+    private final EditorRepository documentRepository;
 
 
 

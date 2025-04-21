@@ -1,5 +1,6 @@
 package com.limlydocx.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,6 +58,14 @@ public class User implements UserDetails {
 
     private String actualPassword;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<DocumentEntity> documents;
+
+    public void addDocument(DocumentEntity document) {
+        documents.add(document);
+        document.setUser(this);  // Set the relationship from DocumentEntity side
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

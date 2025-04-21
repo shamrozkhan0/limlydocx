@@ -2,7 +2,7 @@ package com.limlydocx.controller;
 
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.entity.User;
-import com.limlydocx.repository.DocumentRepository;
+import com.limlydocx.repository.EditorRepository;
 import com.limlydocx.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
-    private final DocumentRepository documentRepository;
+    private final EditorRepository documentRepository;
 
 
 
