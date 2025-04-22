@@ -170,7 +170,7 @@ public class EditorController {
 
         if (status != null && status.getStatusCode().is2xxSuccessful()) {
             // Save document info in the database
-            documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
+//            documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication);
 
             // Provide download URL to the user
 //            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);

@@ -26,6 +26,7 @@
         <nav class="row bg-dashboard d-flex align-items-center justify-content-between m-0 py-3 px-3">
             <!-- <h1 class="w-fit fs-3 text-white heading-limly fw-bold">LimlyDocX</h1> -->
              <img src="../static/img/ld.png" alt="" class="dashboard-logo">
+             <!-- <img th:src="@{/img/ld.png}" alt="LimlyDocX-logo" class="dashboard-logo"> -->
             <h2 class="w-fit fs-3 text-light fw-bold ls-1 ls-1 "><span id="element"></span></h2>
             <img src="../static/img/google-logo.webp" th:src="@{/img/google-logo.webp}" alt=""
                 class="dashboard-profile-img bg-white rounded-circle p-1">
@@ -45,11 +46,11 @@
             <section class="col-10 dashboard-document position-relative px-4 py-4">
 
                 <!-- Empty State -->
-                <div th:if="${dashboards.isEmpty()}"
+                <!-- <div th:if="${dashboards.isEmpty()}"
                     class="d-flex flex-column align-items-center justify-content-center h-100 text-center">
                     <i class="fas fa-file-alt fa-3x text-secondary mb-3"></i>
                     <h2 class="text-muted">You currently have no documents available</h2>
-                </div>
+                </div> -->
 
                 <!-- Document Cards -->
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${!dashboards.isEmpty()}">
@@ -136,7 +137,6 @@
                             class="p-2 rounded-2 outline-none" required>
                         <button class="btn btn-primary fs-18 fw-semibold" type="submit">submit</button>
                     </form>
-
                 </div>
             </div>
         </div>
@@ -155,7 +155,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             var typed = new Typed('#element', {
-                strings: ["Welcome [[${user.username}]]", "Motivational Quote: Your future is created by what you do today, not tomorrow."],
+                strings: ["Welcome [[${user.username}]]", "Your future is created by what you do today, not tomorrow."],
                 typeSpeed: 20,
                 backDelay: 1500,
                 // loop:true

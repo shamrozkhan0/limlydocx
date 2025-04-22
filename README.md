@@ -25,6 +25,9 @@ various formats like `.pdf` , `.docx` (Microsoft word format). LimlyDocx feature
 - 🤖 **AI Bot**: An intelligent assistant that will help you write and review your documents, making content creation even easier and faster!
 
 ## LimlyDocx Gallery
+### **LimlyDocx - Logo**
+![LimlyDocx login form picture](limlydocx/src/main/resources/static/img/ld.png)
+
 
 ### **Login-Page** :
 

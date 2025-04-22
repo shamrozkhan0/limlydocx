@@ -23,7 +23,7 @@ nav .dashboard-profile-img {
 }
 
 .row-dashboard {
-    height: calc(100vh - 82px);
+    height: calc(100vh - 102.66px);
 }
 
 .btn-create-document {
@@ -64,8 +64,8 @@ aside nav a.btn:hover {
 }
 
 .dashboard-logo{
-    width: 100px;
-    height: 100px;
+    width: 350px;
+    /* height: 100px; */
 }
 
 

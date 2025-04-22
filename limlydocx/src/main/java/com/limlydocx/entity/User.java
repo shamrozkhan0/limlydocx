@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -21,7 +22,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+//@ToString
 public class User implements UserDetails {
 
     @Id
@@ -60,12 +61,10 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<DocumentEntity> documents;
+    private List<DocumentEntity> documents = new ArrayList<>();
 
-    public void addDocument(DocumentEntity document) {
-        documents.add(document);
-        document.setUser(this);  // Set the relationship from DocumentEntity side
-    }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
