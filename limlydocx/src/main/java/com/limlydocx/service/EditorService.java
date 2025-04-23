@@ -24,6 +24,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 
@@ -46,40 +47,32 @@ public class EditorService {
 
 
 
+
+
+
     /**
      * Saves document metadata in the database.
      *
      * @param uniqueFileName The unique file name
      * @param authentication User authentication details
      */
-//    public void saveDocumentInDatabase(String uniqueFileName, Authentication authentication) {
-//
-//        String username = globalVariable.getUsername(authentication);
-//
-//        User user = userRepository.findUserByUsername(username)
-//                .orElseThrow(() -> new RuntimeException("User not found: " + username));
-//
-//        DocumentEntity documentEntity = new DocumentEntity();
-//        documentEntity.setFileName(uniqueFileName);
-//        documentEntity.setUploadOn(LocalDate.now());
-//        documentEntity.setCreator(username);
-//        documentEntity.setUser(user);
-//
-//        user.addDocument(documentEntity);
-////        user.getDocuments().add(documentEntity);
-//
-//        try {
-//                userRepository.save(user);
-//            log.info("Document saved successfully: {}", uniqueFileName);
-//        } catch (Exception e) {
-//            log.error("Error saving document to database: {}", e.getMessage());
-//            throw new RuntimeException("Database save failed", e);
-//        }
-//    }
+    public void saveDocumentInDatabase(String uniqueFileName, Authentication authentication) {
 
+        String username = globalVariable.getUsername(authentication);
 
+        DocumentEntity documentEntity = new DocumentEntity();
+        documentEntity.setFileName(uniqueFileName);
+        documentEntity.setUploadOn(LocalDate.now());
+        documentEntity.setCreator(username);
 
-
+        try {
+            documentRepository.save(documentEntity);
+            log.info("Document saved successfully: {}", uniqueFileName);
+        } catch (Exception e) {
+            log.error("Error saving document to database: {}", e.getMessage());
+            throw new RuntimeException("Database save failed", e);
+        }
+    }
 
 
 
@@ -90,7 +83,6 @@ public class EditorService {
      * @param uniqueFileName The unique file name
      * @return Response entity indicating success or failure
      */
-//    public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName, String EDITOR_ID) {
     public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
 
         File directory = new File(DOCUMENT_STORAGE_PATH);
@@ -251,22 +243,18 @@ public class EditorService {
 
 
 
-//    public void checkIfEditorFileExist(String EDITOR_ID){
-//        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
-//                ifpresent ->{
-//                    log.info("Existed File - Re-uploading the file");
-//
-//
-//                },
-//
-//                () ->{
-//
-//                    log.info("New File - cloudinary will take this as a new file");
-//
-//                }
-//
-//
-//        );
+    public void checkIfEditorFileExist(UUID EDITOR_ID){
+        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
+                ifpresent ->{
+                    log.info("Existed File - Re-uploading the file");
+                },
 
+                () ->{
+                    log.info("New File - cloudinary will take this as a new file");
+                }
+
+
+        );
+}
 
 }
