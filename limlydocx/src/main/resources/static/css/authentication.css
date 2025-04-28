@@ -6,11 +6,6 @@ form{
     background: linear-gradient(150deg, #96306F, #062A66);
 }
 
-/* .login-parent {
-    align-items: end;
-    width: 50%;
-} */
-
 .border-inputs {
     border: solid #B421B4;
 }
@@ -44,7 +39,6 @@ h2 {
     left: 50%;
     transform: translateX(-50%);
 }
-
 
 
 

@@ -1,7 +1,5 @@
 package com.limlydocx.controller;
 
-import com.limlydocx.entity.DocumentEntity;
-import com.limlydocx.entity.User;
 import com.limlydocx.repository.EditorRepository;
 import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.DashboardService;
@@ -13,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -24,23 +20,22 @@ public class DashboardController {
 
     private final UserRepository userRepository;
     private final DashboardService dashboardService;
-//    private final DashboardRepository dashboardRepository;
     private final EditorRepository documentRepository;
 
 
+
+    /**
+     * This will find the document of user's username and show then in the dashboard
+     *
+     * @param authentication
+     * @param model
+     * @return redirect to dashboard page
+     */
     @GetMapping("/dashboard")
-    public String showDashboard(Authentication authentication, Model model){
+    public String loadUserDashboardWithDocument(Authentication authentication, Model model) {
         try {
-            String username = authentication.getName();
-            Optional<User> users = userRepository.findUserByEmail(username);
-            model.addAttribute("user", users.get());
-
-//            List<DashboardDocumentEntity> dashboards = dashboardRepository.getAllDocumentByOwner(users.get().getUsername());
-            List<DocumentEntity> dashboards =  documentRepository.getAllDocumentByCreator(users.get().getUsername());
-            log.info("this is the repo of {} ", dashboards);
-            model.addAttribute("dashboards" , dashboards);
-
-        } catch (Exception e){
+          dashboardService.getUsersDocumentByUsername(authentication, model);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "dashboard";
@@ -48,41 +43,44 @@ public class DashboardController {
 
 
 
-    @GetMapping("/create")
-    public String showCreatePage(){
-        return "dash";
-    }
-
-
-
-    @PostMapping("/dashboard/generateEditor")
+    /**
+     * This will generates the document for the user
+     * @param authentication uses for user authentication
+     * @param name FileName for processing and naming
+     * @return redirect to dashboard page
+     */
+    @PostMapping("/dashboard/generateDocument")
     public String generateUserEditor(
             Authentication authentication,
             @RequestParam("dashboard-name") String name
-    ){
-        dashboardService.createUserDashboardDocuments(authentication, name);
+    ) {
+        try{
+            dashboardService.createUserDashboardDocuments(authentication, name);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return "redirect:/dashboard";
     }
 
 
 
+    /**
+     * This will delete the document of user if its exists
+     * @param id
+     * @return redirect to dashboard page
+     */
     @DeleteMapping("delete/document/{id}")
     @Transactional
     public String deleteDocument(@PathVariable("id") UUID id) {
         try {
             documentRepository.deleteById(id);
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception to understand any errors
-            return "redirect:/dashboard";  // Redirect to dashboard in case of error
+            e.printStackTrace();
+            return "redirect:/dashboard";
         }
-        return "redirect:/dashboard";  // Redirect to dashboard after successful deletion
+        return "redirect:/dashboard";
     }
-
-
-    /*
-    - setup file path and name for cloudinary
-    -
-     */
 
 
 

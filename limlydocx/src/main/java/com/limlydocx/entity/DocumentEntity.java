@@ -29,7 +29,7 @@ public class DocumentEntity {
 
     @Pattern(regexp = "^[a-zA-Z0-9_ ]+$", message = "name can only contain letters , numbers and _")
     @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3 , max = 16)
+    @Size(min = 3)
     private String fileName;
 
 
@@ -37,7 +37,7 @@ public class DocumentEntity {
 
 
     @NotBlank(message = "Cannot find you account info please do logout and login again")
-    private String creator;
+    private String username;
 
 
 //  @OneToMany(mappedBy = "guest")
@@ -53,8 +53,4 @@ public class DocumentEntity {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
-
-
-
- 
 }

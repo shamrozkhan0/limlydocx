@@ -13,7 +13,7 @@ import java.util.UUID;
 public  interface EditorRepository extends JpaRepository<DocumentEntity, Long>{
     Optional<DocumentEntity> findEditorFileById(UUID id);
 
-    List<DocumentEntity> getAllDocumentByCreator(String creator);
+    List<DocumentEntity> getAllDocumentByUsername(String creator);
 
     @Transactional
     void deleteById(UUID id);

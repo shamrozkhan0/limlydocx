@@ -3,9 +3,9 @@
     padding: 0;
 }
 
-.text-color {
+/* .text-color {
     color: #DBE2EF;
-}
+} */
 
 .transition03{
         transition: all ease .3s !important;
@@ -65,16 +65,3 @@
 .squeeze-hover-large:hover{
     transform: scaleX(0.95);
 }
-
-
-/* 
-@keyframes hover {
-
-    form {
-        transform: translateY(0px);
-    } to {
-
-    }
-    
-} */
-

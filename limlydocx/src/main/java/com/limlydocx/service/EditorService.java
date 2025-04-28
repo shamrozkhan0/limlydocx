@@ -4,7 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
-import com.limlydocx.entity.User;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.EditorRepository;
 import com.limlydocx.repository.UserRepository;
@@ -26,10 +25,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
+import org.springframework.ui.Model;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -40,13 +38,10 @@ public class EditorService {
     private final Cloudinary cloudinary;
     private final GlobalVariable globalVariable;
     private final EditorRepository documentRepository;
-    private final UserRepository userRepository;
-//    private final User user;
+    //    private final UserRepository userRepository;
+    private final EditorRepository editorRepository;
 
     private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
-
-
-
 
 
 
@@ -56,20 +51,20 @@ public class EditorService {
      * @param uniqueFileName The unique file name
      * @param authentication User authentication details
      */
-    public void saveDocumentInDatabase(String uniqueFileName, Authentication authentication) {
+    public void saveDocumentInDatabase(String uniqueFileName, Authentication authentication, UUID editorId, String content) {
 
         String username = globalVariable.getUsername(authentication);
 
-        DocumentEntity documentEntity = new DocumentEntity();
-        documentEntity.setFileName(uniqueFileName);
-        documentEntity.setUploadOn(LocalDate.now());
-        documentEntity.setCreator(username);
+        DocumentEntity documentEntity = editorRepository.findEditorFileById(editorId).orElseThrow(
+                () -> new RuntimeException("Document Not founds")
+        );
 
         try {
+            documentEntity.setContent(content);
             documentRepository.save(documentEntity);
             log.info("Document saved successfully: {}", uniqueFileName);
         } catch (Exception e) {
-            log.error("Error saving document to database: {}", e.getMessage());
+            log.error("Error saving document to database: {}", e);
             throw new RuntimeException("Database save failed", e);
         }
     }
@@ -167,7 +162,7 @@ public class EditorService {
      * Processes base64 images embedded in HTML and embeds them into DOCX.
      *
      * @param document         The parsed HTML document
-     * @param wordMLPackage    The WordprocessingMLPackage
+     * @param wordMLPackage    The WordProcessingMLPackage
      * @param mainDocumentPart The main document part
      * @throws Exception In case of processing errors
      */
@@ -241,20 +236,18 @@ public class EditorService {
         }
     }
 
+    
 
+    public void checkIfEditorFileExist(UUID editorId, Model model) {
+        Optional<DocumentEntity> documentOpt = documentRepository.findEditorFileById(editorId);
 
-    public void checkIfEditorFileExist(UUID EDITOR_ID){
-        documentRepository.findEditorFileById(EDITOR_ID).ifPresentOrElse(
-                ifpresent ->{
-                    log.info("Existed File - Re-uploading the file");
-                },
+        if (documentOpt.isPresent()) {
+            log.info("Existed File - Re-uploading the file");
+            model.addAttribute("document", documentOpt.get());
+        } else {
+            log.info("New File - cloudinary will take this as a new file");
+        }
+    }
 
-                () ->{
-                    log.info("New File - cloudinary will take this as a new file");
-                }
-
-
-        );
-}
 
 }
