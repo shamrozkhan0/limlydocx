@@ -6,7 +6,6 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.EditorRepository;
-import com.limlydocx.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
@@ -14,12 +13,14 @@ import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.wml.Drawing;
 import org.docx4j.wml.P;
 import org.docx4j.wml.R;
-import org.docx4j.wml.Drawing;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Entities;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,6 @@ public class EditorService {
     private final Cloudinary cloudinary;
     private final GlobalVariable globalVariable;
     private final EditorRepository documentRepository;
-    //    private final UserRepository userRepository;
     private final EditorRepository editorRepository;
 
     private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
@@ -64,7 +64,7 @@ public class EditorService {
             documentRepository.save(documentEntity);
             log.info("Document saved successfully: {}", uniqueFileName);
         } catch (Exception e) {
-            log.error("Error saving document to database: {}", e);
+            log.error("Error saving document to database: ", e);
             throw new RuntimeException("Database save failed", e);
         }
     }
@@ -81,6 +81,7 @@ public class EditorService {
     public ResponseEntity<String> generatePdfAndUploadOnCloud(String content, String uniqueFileName) {
 
         File directory = new File(DOCUMENT_STORAGE_PATH);
+
         if (!directory.exists()) {
             directory.mkdirs(); // create the directory if it doesn't exist
         }
@@ -132,28 +133,56 @@ public class EditorService {
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
             MainDocumentPart mainDocumentPart = wordMLPackage.getMainDocumentPart();
 
+            // Parse HTML content with Jsoup
             Document document = Jsoup.parse(htmlContent);
 
-            document.select("br").append("\\n");
+            // Fix line breaks
+            document.select("br").before("\\n");
+
+            // Process base64 images before converting HTML to DOCX
+            processBase64Images(document, wordMLPackage, mainDocumentPart);
+
+            // Get the cleaned HTML content after image processing
             String cleanedHtml = document.html().replaceAll("\\s{2,}", " ").trim();
 
+            // Use the Docx4j HTML importer to convert the cleaned HTML
             XHTMLImporterImpl xhtmlImporter = new XHTMLImporterImpl(wordMLPackage);
+
+            // Fix for XML parsing issues - ensure XHTML compliance
+            cleanedHtml = makeXhtmlCompliant(cleanedHtml);
+
             mainDocumentPart.getContent().addAll(xhtmlImporter.convert(cleanedHtml, null));
-            processBase64Images(document, wordMLPackage, mainDocumentPart);
 
             try (OutputStream outputStream = new FileOutputStream(file)) {
                 wordMLPackage.save(outputStream);
             }
 
-//            byte[] fileByte = this.readFileToByteArray(file);
-//            uploadToCloudinary(uniqueFilename, fileByte);
+            // Uncomment if needed
+            // byte[] fileByte = this.readFileToByteArray(file);
+            // uploadToCloudinary(uniqueFilename, fileByte);
 
             return ResponseEntity.ok("DOCX created successfully");
         } catch (Exception e) {
-            log.error("Error creating DOCX: {}", e.getMessage());
+            log.error("Error creating DOCX: {}", e.getMessage(), e); // Added stack trace logging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("DOCX creation failed: " + e.getMessage());
         }
+    }
+
+
+
+    /**
+     * Makes HTML compliant with XHTML standards for XML parsing
+     *
+     * @param html The HTML content to make compliant
+     * @return XHTML compliant content
+     */
+    private String makeXhtmlCompliant(String html) {
+        // Use Jsoup to parse and output as XML to ensure all tags are properly closed
+        Document doc = Jsoup.parse(html);
+        doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        doc.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+        return doc.html();
     }
 
 
@@ -175,6 +204,7 @@ public class EditorService {
             String base64Data = src.split(",", 2)[1];
             byte[] imageBytes = Base64.getDecoder().decode(base64Data);
 
+            // Create image part and add to document
             BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imageBytes);
             Inline inline = imagePart.createImageInline("Image", "Generated Image", 1, 2, false);
 
@@ -186,7 +216,9 @@ public class EditorService {
             paragraph.getContent().add(run);
             mainDocumentPart.addObject(paragraph);
 
-            imgElement.remove();
+            // Replace the img element with a placeholder or remove it
+            // Here we're just removing it as it will be handled separately through the above code
+            imgElement.replaceWith(new TextNode(""));
         }
     }
 
@@ -236,7 +268,7 @@ public class EditorService {
         }
     }
 
-    
+
 
     public void checkIfEditorFileExist(UUID editorId, Model model) {
         Optional<DocumentEntity> documentOpt = documentRepository.findEditorFileById(editorId);
@@ -248,6 +280,11 @@ public class EditorService {
             log.info("New File - cloudinary will take this as a new file");
         }
     }
+
+
+
+
+
 
 
 }

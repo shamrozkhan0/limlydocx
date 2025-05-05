@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Quill JS -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -23,7 +24,7 @@
     <link rel="stylesheet" th:href="@{/css/QuillJS.css}">
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/editor.css}">
-    
+
     <title>LimlyDocx-Editor | Quill</title>
 </head>
 <body class="d-flex align-items-center justify-content-center flex-column">
@@ -32,8 +33,8 @@
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${error}"></p>
     </div>
 
-    <div class="message text-success shadow-danger alert alert-success position-absolute end-2 top-2"
-        th:if="${success}">
+    <div class="message text-success shadow-danger alert alert-success position-absolute end-2 top-2" 
+         th:if="${success}">
         <p class="p-0 p-md-2 m-0  fw-semibold" th:text="${success}"></p>
     </div>
 
@@ -98,16 +99,16 @@
                     <a class="btn btn-primary text-white" th:href="${download_url}">Download document</a>
                 </div>
 
-                <form  class="d-flex align-items-center" method="post" id="content-form">
-                    <input type="text" name="content" id="contentSender" hidden> 
+                <form class="d-flex align-items-center" method="post" id="content-form">
+                    <input type="text" name="content" id="contentSender" hidden>
                     <input type="text" name="editorID" th:value="${document.id}" hidden>
                     <button value="PDF" data-format="PDF" id="getContent"
-                        class="w-100 h-100 bg-danger text-white px-3 py-2 fs-18 fw-bold rounded-top rounded-start">
-                        PDF
+                        class="w-100 h-100 px-3 py-2">
+                        <i class="fas fa-file-pdf fs-2"></i>
                     </button>
                     <button value="DOCX" data-format="DOCX" id="getContent"
-                        class="bg-success text-white px-3 py-2 w-100  fw-semibold fs-18 h-100 rounded-top rounded-start">
-                        DOCX
+                        class="px-3 py-2 w-100  fs-2 h-100  rounded-start">
+                        <i class="fas fa-file-word"></i>
                     </button>
                 </form>
 
@@ -128,7 +129,7 @@
 
     <script src="../static/js/editor.js"></script>
     <script th:inline="javascript">
-        
+
         // Custom Clipboard Module: Converts class-based styles to inline styles
         // Quill.register('modules/clipboard', class InlineClipboard extends Quill.import('modules/clipboard') {
         //     convert(html) {
@@ -272,4 +273,5 @@
 
 
 </body>
+
 </html>

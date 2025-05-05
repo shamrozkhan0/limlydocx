@@ -24,6 +24,13 @@ public class DashboardController {
 
 
 
+    @GetMapping("/bla")
+    public String wqel(){
+        return "editor";
+    }
+
+
+
     /**
      * This will find the document of user's username and show then in the dashboard
      *

@@ -41,7 +41,6 @@ public class DashboardService {
         );
 
         DocumentEntity documentEntity = new DocumentEntity();
-//        documentEntity.setFileName(name.replaceAll("\\s+", " ").trim());
         documentEntity.setFileName(name.replaceAll("\\s+", " ").trim());
         documentEntity.setUploadOn(LocalDate.now());
         documentEntity.setUsername(username);
@@ -55,22 +54,10 @@ public class DashboardService {
 
     public void getUsersDocumentByUsername(Authentication authentication, Model model){
         String username = globalVariable.getUsername(authentication);
-
-
-//        Optional<User> users = userRepository.findUserByEmail(username);
-//        model.addAttribute("user", users.get()); // thi send username
-//
         List<DocumentEntity> dashboards = documentRepository.getAllDocumentByUsername(username);
+
         model.addAttribute("dashboards", dashboards);
         model.addAttribute("username", username);
-
-//        List<DocumentEntity> documentEntity =  editorRepository.getAllDocumentByUsername(username);
-
-
-
-//        DocumentDTO documentDTO = new DocumentDTO(
-//                documentEntity.get().getUsername()
-//        )
     }
 
 
