@@ -3,7 +3,7 @@ package com.limlydocx.service;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.entity.User;
 import com.limlydocx.globalVariable.GlobalVariable;
-import com.limlydocx.repository.EditorRepository;
+import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,17 +21,13 @@ import java.util.List;
 public class DashboardService {
 
     private final GlobalVariable globalVariable;
-    private final EditorRepository documentRepository;
     private final UserRepository userRepository;
-    private final EditorRepository editorRepository;
+    private final DocumentRepository documentRepository;
 
 
 
     /**
      * Get user document from the database by using user username
-     *
-     * @param authentication
-     * @param name
      */
     public void createUserDashboardDocuments(Authentication authentication, String name) {
         String username = globalVariable.getUsername(authentication);
@@ -52,10 +48,12 @@ public class DashboardService {
 
 
 
+    /**
+     * Gets every document by user's username
+     */
     public void getUsersDocumentByUsername(Authentication authentication, Model model){
         String username = globalVariable.getUsername(authentication);
         List<DocumentEntity> dashboards = documentRepository.getAllDocumentByUsername(username);
-
         model.addAttribute("dashboards", dashboards);
         model.addAttribute("username", username);
     }

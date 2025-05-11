@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function sendContentToBackend(){
         const form = document.querySelector("#editorForm");
-        form.setAttribute("action", "/editor/savecontent/pdf");   
+        form.setAttribute("action", "/save-content/pdf");   
     }
 
 

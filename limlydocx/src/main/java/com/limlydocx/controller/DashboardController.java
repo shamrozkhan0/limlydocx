@@ -1,6 +1,6 @@
 package com.limlydocx.controller;
 
-import com.limlydocx.repository.EditorRepository;
+import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.DashboardService;
 import lombok.AllArgsConstructor;
@@ -20,10 +20,11 @@ public class DashboardController {
 
     private final UserRepository userRepository;
     private final DashboardService dashboardService;
-    private final EditorRepository documentRepository;
+    private final DocumentRepository documentRepository;
 
 
 
+    // FOR TESTING REMOVED, WHEN TESTING COMPLETES
     @GetMapping("/bla")
     public String wqel(){
         return "editor";
@@ -32,10 +33,10 @@ public class DashboardController {
 
 
     /**
-     * This will find the document of user's username and show then in the dashboard
+     * This will find the document of user's username and show them in the dashboard
      *
-     * @param authentication
-     * @param model
+     * @param authentication get the user authentication to get document from database
+     * @param model sends document from database to user
      * @return redirect to dashboard page
      */
     @GetMapping("/dashboard")
@@ -43,7 +44,7 @@ public class DashboardController {
         try {
           dashboardService.getUsersDocumentByUsername(authentication, model);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return "dashboard";
     }
@@ -51,7 +52,8 @@ public class DashboardController {
 
 
     /**
-     * This will generates the document for the user
+     * This will generate the document for the user
+     *
      * @param authentication uses for user authentication
      * @param name FileName for processing and naming
      * @return redirect to dashboard page
@@ -74,7 +76,8 @@ public class DashboardController {
 
     /**
      * This will delete the document of user if its exists
-     * @param id
+     *
+     * @param id Gets id to delete the document
      * @return redirect to dashboard page
      */
     @DeleteMapping("delete/document/{id}")
@@ -83,7 +86,7 @@ public class DashboardController {
         try {
             documentRepository.deleteById(id);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return "redirect:/dashboard";
         }
         return "redirect:/dashboard";

@@ -5,7 +5,7 @@ import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
-import com.limlydocx.repository.EditorRepository;
+import com.limlydocx.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
@@ -38,8 +38,8 @@ public class EditorService {
 
     private final Cloudinary cloudinary;
     private final GlobalVariable globalVariable;
-    private final EditorRepository documentRepository;
-    private final EditorRepository editorRepository;
+    private final DocumentRepository documentRepository;
+    private final DocumentRepository editorRepository;
 
     private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
 
@@ -55,7 +55,7 @@ public class EditorService {
 
         String username = globalVariable.getUsername(authentication);
 
-        DocumentEntity documentEntity = editorRepository.findEditorFileById(editorId).orElseThrow(
+        DocumentEntity documentEntity = editorRepository.findDocumentFileById(editorId).orElseThrow(
                 () -> new RuntimeException("Document Not founds")
         );
 
@@ -271,7 +271,7 @@ public class EditorService {
 
 
     public void checkIfEditorFileExist(UUID editorId, Model model) {
-        Optional<DocumentEntity> documentOpt = documentRepository.findEditorFileById(editorId);
+        Optional<DocumentEntity> documentOpt = documentRepository.findDocumentFileById(editorId);
 
         if (documentOpt.isPresent()) {
             log.info("Existed File - Re-uploading the file");

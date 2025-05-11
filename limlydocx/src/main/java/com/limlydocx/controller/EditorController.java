@@ -1,6 +1,6 @@
 package com.limlydocx.controller;
 
-import com.limlydocx.repository.EditorRepository;
+import com.limlydocx.repository.DocumentRepository;
 import com.limlydocx.repository.UserRepository;
 import com.limlydocx.service.EditorService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,12 +25,12 @@ public class EditorController {
 
     private final EditorService documentService;
     private final UserRepository userRepository;
-    private final EditorRepository documentRepository;
+    private final DocumentRepository documentRepository;
 
     @Value("${cloudinary.document.path}")
     private String cloudPath;
 
-    private static final String FILE_NAME_PATTERN = "yyyyMMdd_HHmmss";
+    private static final String FILE_NAME_PATTERN = "yyyyMMdd_HHMMSS";
 
 
 
@@ -49,17 +49,15 @@ public class EditorController {
 
 
 
-
     /**
      * second editor
-     *
-     * @return
      */
     @GetMapping("/second")
     public String EditorJS() {
         log.info("User is at the editorJS editor");
         return "editorJS";
     }
+
 
 
     /**
@@ -71,10 +69,13 @@ public class EditorController {
      * @return the redirect view name
      */
     @PostMapping("/save-content/{format}")
-    public String saveDocumentContent(HttpServletRequest httpRequest, @PathVariable String format,
+    public String saveDocumentContent(HttpServletRequest httpRequest,
+                                      @PathVariable String format,
                                       @RequestParam("content") String content,
-                                        @RequestParam("editorID") UUID editorId,
+                                      @RequestParam("editorID") UUID editorId,
                                       Authentication authentication, RedirectAttributes redirectAttributes) {
+
+        log.info("Editor id {} ", editorId);
 
         if (authentication == null) {
             return "redirect:/login";
@@ -85,6 +86,7 @@ public class EditorController {
             return "redirect:/doc";
         }
 
+        log.info("okay 1");
 
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_PATTERN));
         StringBuilder uniqueFileName = new StringBuilder("document_" + timestamp + "_" + UUID.randomUUID());
@@ -107,6 +109,7 @@ public class EditorController {
         }
         return "redirect:/editor/" + editorId;
     }
+
 
 
     /**

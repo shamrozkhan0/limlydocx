@@ -10,14 +10,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public  interface EditorRepository extends JpaRepository<DocumentEntity, Long>{
-    Optional<DocumentEntity> findEditorFileById(UUID id);
+public  interface DocumentRepository extends JpaRepository<DocumentEntity, Long>{
+
+    Optional<DocumentEntity> findDocumentFileById(UUID id);
 
     List<DocumentEntity> getAllDocumentByUsername(String creator);
 
     @Transactional
     void deleteById(UUID id);
-
-
 
 }
