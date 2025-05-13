@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -58,6 +59,13 @@ public class EditorController {
         return "editorJS";
     }
 
+//
+//    @PostMapping("saveInDatabase")
+//    public void saveEditorContent(){
+//        log.info("request is triggered!!!!!!");
+//        documentService.saveDocumentInDatabase();
+//    }
+
 
 
     /**
@@ -72,8 +80,9 @@ public class EditorController {
     public String saveDocumentContent(HttpServletRequest httpRequest,
                                       @PathVariable String format,
                                       @RequestParam("content") String content,
+                                      @RequestParam("contentDB") String contentDB,
                                       @RequestParam("editorID") UUID editorId,
-                                      Authentication authentication, RedirectAttributes redirectAttributes) {
+                                      Authentication authentication, RedirectAttributes redirectAttributes) throws InterruptedException {
 
         log.info("Editor id {} ", editorId);
 
@@ -81,10 +90,17 @@ public class EditorController {
             return "redirect:/login";
         }
 
-        if (content == null || content.isEmpty()) {
+        if (content == null  || content.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Content is empty");
-            return "redirect:/doc";
+            return "redirect:/editor/" + editorId;
         }
+        log.info("Content for pdf/docx {}", content);
+
+        if(contentDB == null || contentDB.isEmpty()){
+            redirectAttributes.addFlashAttribute("error", "Write something in editor");
+            return "redirect:/editor/"+ editorId;
+        }
+
 
         log.info("okay 1");
 
@@ -98,7 +114,7 @@ public class EditorController {
             System.out.println("okay 1");
             status = this.checkDocumentFormat(format, uniqueFileName, content, status);
             System.out.println("okay 2");
-            this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, content, editorId);
+            this.checklIfDocumentCreatedAndReturn(status, redirectAttributes, uniqueFileName.toString(), authentication, contentDB, editorId);
             System.out.println("okay 3");
 
         } catch (Exception e) {
@@ -152,10 +168,10 @@ public class EditorController {
      * @param redirectAttributes
      * @param uniqueFileName
      * @param authentication
-     * @param content
+     * @param contentDB
      */
     public void checklIfDocumentCreatedAndReturn(ResponseEntity<String> status, RedirectAttributes redirectAttributes,
-                                                 String uniqueFileName, Authentication authentication, String content,
+                                                 String uniqueFileName, Authentication authentication, String contentDB,
                                                  UUID editorId) {
 
 
@@ -163,12 +179,12 @@ public class EditorController {
             log.info("Status code {}", status.getStatusCode());
 
             // Save document info in the database
-            documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication, editorId, content);
+            documentService.saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication, editorId, contentDB);
             // Provide download URL to the user
 //            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
 
             // Preserve content in the editor
-            redirectAttributes.addFlashAttribute("content", content);
+            redirectAttributes.addFlashAttribute("content", contentDB);
             redirectAttributes.addFlashAttribute("success", status.getBody());
 
         } else if (status == null) {
@@ -176,7 +192,7 @@ public class EditorController {
         } else {
             System.out.println("status error");
             // Preserve content in the content in editor
-            redirectAttributes.addFlashAttribute("content", content);
+            redirectAttributes.addFlashAttribute("content", contentDB);
             redirectAttributes.addFlashAttribute("error", "Error creating document");
             throw new RuntimeException();
         }
