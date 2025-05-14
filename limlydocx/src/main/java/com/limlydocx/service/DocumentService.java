@@ -1,12 +1,14 @@
 package com.limlydocx.service;
 
 import com.cloudinary.Cloudinary;
+import com.itextpdf.commons.utils.Action;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.limlydocx.entity.DocumentEntity;
 import com.limlydocx.globalVariable.GlobalVariable;
 import com.limlydocx.repository.DocumentRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.docx4j.convert.in.xhtml.XHTMLImporterImpl;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
@@ -27,21 +29,127 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Log4j2
-public class EditorService {
+public class DocumentService {
 
     private final Cloudinary cloudinary;
     private final GlobalVariable globalVariable;
     private final DocumentRepository documentRepository;
     private final DocumentRepository editorRepository;
 
+    private static final String FILE_NAME_PATTERN = "yyyyMMdd_HHMMSS";
+
+
+    // THis is for testing
     private static final String DOCUMENT_STORAGE_PATH = "E:/limlydocx/limlydocx/src/main/resources/testPdf/";
+    private Action action;
+
+
+
+    public String generateUniqueFileName() {
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern(FILE_NAME_PATTERN));
+        return "document_" + timestamp + "_" + UUID.randomUUID();
+    }
+
+
+    /**
+     *
+     * @param editorId
+     */
+    public ResponseEntity<DocumentEntity> checkIfEditorFileExist(UUID editorId, Model model) {
+        Optional<DocumentEntity> documentOpt = documentRepository.findDocumentFileById(editorId);
+
+        if (documentOpt.isPresent()) {
+            log.info("Existed File for editor {} - Re-uploading the file", editorId);
+            return ResponseEntity.ok(documentOpt.get());
+        } else {
+            log.error("New File for editor {} - Cloudinary will take this as a new file", editorId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+    }
+
+
+
+    /**
+     * Checks the format for the document, appends the extension, and processes it accordingly.
+     *
+     * @param format         The format of the document (e.g., pdf, docx)
+     * @param uniqueFileName The generated unique file name
+     * @param content        The content of the document
+     * @param status         ResponseEntity holding the document creation status
+     * @return ResponseEntity Indicating the status of document processing
+     */
+    public ResponseEntity<String> checkDocumentFormat(String format, String uniqueFileName, String content, ResponseEntity<String> status) {
+
+        switch (format.toLowerCase()) {
+
+            case "pdf" -> {
+                uniqueFileName += ".pdf";
+                status = generatePdfAndUploadOnCloud(content, uniqueFileName.toString());
+                log.info("USER SELECT PDF");
+            }
+
+            case "docx" -> {
+//                uniqueFileName.append(".docx");
+                uniqueFileName += ".docx";
+                status = generateDocxFile(content, uniqueFileName.toString());
+                log.info("USER SELECT DOCX");
+            }
+
+            default -> log.error("Invalid format {}", format);
+        }
+
+        return status;
+    }
+
+
+
+    /**
+     * It will check if document is created and return to user to download
+     *
+     * @param status
+     * @param redirectAttributes
+     * @param uniqueFileName
+     * @param authentication
+     * @param contentDB
+     */
+    public void checklIfDocumentCreatedAndReturn(ResponseEntity<String> status, RedirectAttributes redirectAttributes,
+                                                 String uniqueFileName, Authentication authentication, String contentDB,
+                                                 UUID editorId) {
+
+
+        if (status != null && status.getStatusCode().is2xxSuccessful()) {
+            log.info("Status code {}", status.getStatusCode());
+
+            // Save document info in the database
+            saveDocumentInDatabase(String.valueOf(uniqueFileName), authentication, editorId, contentDB);
+            // Provide download URL to the user
+//            redirectAttributes.addFlashAttribute("download_url", cloudPath + uniqueFileName);
+
+            // Preserve content in the editor
+            redirectAttributes.addFlashAttribute("content", contentDB);
+            redirectAttributes.addFlashAttribute("success", status.getBody());
+
+        } else if (status == null) {
+            log.info("task is empty" + status);
+        } else {
+            System.out.println("status error");
+            // Preserve content in the content in editor
+            redirectAttributes.addFlashAttribute("content", contentDB);
+            redirectAttributes.addFlashAttribute("error", "Error creating document");
+            throw new RuntimeException();
+        }
+    }
 
 
 
@@ -265,19 +373,6 @@ public class EditorService {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
             return byteArrayOutputStream.toByteArray();
-        }
-    }
-
-
-
-    public void checkIfEditorFileExist(UUID editorId, Model model) {
-        Optional<DocumentEntity> documentOpt = documentRepository.findDocumentFileById(editorId);
-
-        if (documentOpt.isPresent()) {
-            log.info("Existed File - Re-uploading the file");
-            model.addAttribute("document", documentOpt.get());
-        } else {
-            log.info("New File - cloudinary will take this as a new file");
         }
     }
 

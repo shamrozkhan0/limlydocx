@@ -97,7 +97,6 @@
 
             <div class="d-flex align-items-center gap-3">
 
-
                 <div th:if="${download_url}">
                     <a class="btn btn-primary text-white" th:href="${download_url}">Download document</a>
                 </div>
@@ -105,10 +104,9 @@
                 <form class="d-flex align-items-center" method="post" id="content-form">
 
                     <input type="text" name="content" id="contentSender" hidden>
-                    
                     <input type="text" name="contentDB" id="contentSenderDB" hidden>
-                    
                     <input type="text" name="editorID" th:value="${document.id}" hidden>
+
                     <button value="PDF" data-format="PDF" id="getContent" class="w-100 h-100 px-3 py-2">
                         <i class="fas fa-file-pdf fs-2"></i>
                     </button>
@@ -129,17 +127,19 @@
     <div class="editor-container w-100 mt-4 d-flex align-items-center justify-content-center gap-2 px-3 px-md-0">
         <!-- <div id="editor" name="content" class="w-100 border-0" th:utext="${document.content}"></div> -->
         <div id="editor" name="content" class="w-100 border-0"></div>
+        <div class="position-absolute top-0 z-1">
+            <button class="bg-white px-5 py-2 rounded-2 border-0 shadow ">
+                <i class="fas fa-volume-high fs-2"></i>
+            </button>
+        </div>
     </div>
 
 
     <script th:src="@{/js/editor.js}"></script>
     <script th:src="@{/js/editorTTS.js}"></script>
 
-    <script src="../static/js/editorTTS.js"></script>
     <script src="../static/js/editor.js"></script>
     <script th:inline="javascript">
-
-
 
         // Initialize Quill Editor
         const quill = new Quill('#editor', {
@@ -152,11 +152,13 @@
         });
 
 
-
+        
         quill.on("selection-change", (range) => {
             if (range && range.length > 0) {
                 const selectedText = quill.getText(range.index, range.length).trim();
                 console.log("Selected text:", selectedText);
+
+
             }
         });
 
@@ -180,11 +182,9 @@
         // Message Handler (Auto-hide messages after 5 seconds)
         document.addEventListener("DOMContentLoaded", () => {
 
-
-
             const spinnerEl = document.querySelector(".spinner-parent");
             const buttons = document.querySelectorAll("#getContent");
-            const contentSender = document.querySelector("#contentSender"); 
+            const contentSender = document.querySelector("#contentSender");
             const ContentSenderDB = document.querySelector('#contentSenderDB')
 
 
@@ -193,14 +193,15 @@
              * Gets content from the editor and 
              */
             const getEditorContent = () => {
-                
+
                 ContentSenderDB.value = quill.root.innerHTML;
-                applyInlineStyles(); 
+                applyInlineStyles();
                 const editorContent = quill.root.innerHTML;
                 contentSender.value = editorContent;
                 spinnerEl.classList.replace("d-none", "d-block");
-              
+
             };
+
 
 
             /**
@@ -258,8 +259,8 @@
                 quill.root.innerHTML = contentFromBackend;
             }
         });
-
     </script>
+    <script type="module" src="../static/js/editorTTS.js"></script>
 
 
 </body>
