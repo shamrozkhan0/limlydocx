@@ -23,15 +23,6 @@ public class DashboardController {
     private final DocumentRepository documentRepository;
 
 
-
-    // FOR TESTING REMOVED, WHEN TESTING COMPLETES
-    @GetMapping("/bla")
-    public String wqel(){
-        return "editor";
-    }
-
-
-
     /**
      * This will find the document of user's username and show them in the dashboard
      *

@@ -92,6 +92,16 @@
                 <button class="ql-code-block"></button>
                 <button class="ql-blockquote"></button>
                 <button class="ql-clean"></button>
+
+                <!-- Tooltip Wrapper -->
+                <span data-bs-toggle="tooltip" data-bs-placement="top" title="Select some text to play speech">
+                    <button id="ttsButton" class="border-0 text-muted bg-transparent d-flex align-items-center justify-content-center
+                                 p-2 rounded-circle shadow-sm" disabled>
+                        <i class="fas fa-play  fs-5"></i>
+                    </button>
+                </span>
+
+
             </div>
 
 
@@ -102,7 +112,6 @@
                 </div>
 
                 <form class="d-flex align-items-center" method="post" id="content-form">
-
                     <input type="text" name="content" id="contentSender" hidden>
                     <input type="text" name="contentDB" id="contentSenderDB" hidden>
                     <input type="text" name="editorID" th:value="${document.id}" hidden>
@@ -123,21 +132,31 @@
     </div>
 
 
+
+
     <!-- Editor Element -->
-    <div class="editor-container w-100 mt-4 d-flex align-items-center justify-content-center gap-2 px-3 px-md-0">
+    <div class="editor-container w-100 mt-4 d-flex align-items-start justify-content-center gap-2 px-3 px-md-0 ">
         <!-- <div id="editor" name="content" class="w-100 border-0" th:utext="${document.content}"></div> -->
         <div id="editor" name="content" class="w-100 border-0"></div>
-        <div class="position-absolute top-0 z-1">
-            <button class="bg-white px-5 py-2 rounded-2 border-0 shadow ">
-                <i class="fas fa-volume-high fs-2"></i>
-            </button>
+
+        <div class="d-flex-items-center bg-white px-5 rounded gap-2 fs-4 tts-button-parent">
+            <!-- <button class="border-0 bg-transparent p-1">
+                <i class="fas fa-volume-high "></i>
+            </button> -->
+
+
+
+
         </div>
+
     </div>
 
 
     <script th:src="@{/js/editor.js}"></script>
-    <script th:src="@{/js/editorTTS.js}"></script>
+    <!-- <script th:src="@{/js/editorTTS.js}"></script> -->
 
+    <!-- <script type="module" src="../static/js/editorTTS.js"></script> -->
+    <script src="../static/js/editor.js"></script>
     <script src="../static/js/editor.js"></script>
     <script th:inline="javascript">
 
@@ -150,18 +169,6 @@
                 imageResize: {} // Enable image resizing
             }
         });
-
-
-        
-        quill.on("selection-change", (range) => {
-            if (range && range.length > 0) {
-                const selectedText = quill.getText(range.index, range.length).trim();
-                console.log("Selected text:", selectedText);
-
-
-            }
-        });
-
 
 
         // Apply heading levels
@@ -177,6 +184,7 @@
         Font.whitelist = ["sans-serif", "serif", "monospace"];
         Quill.register(Font, true);
         quill.format("font", "serif");
+
 
 
         // Message Handler (Auto-hide messages after 5 seconds)
@@ -258,9 +266,57 @@
             if (contentFromBackend) {
                 quill.root.innerHTML = contentFromBackend;
             }
+
+
+
+
+            quill.on("selection-change", (range) => {
+                getSelectionTextAndActivateButton(range);
+            });
+
+
+
+            
+
+            const speechButton = document.querySelector("#ttsButton");
+            const speechIcon = speechButton.querySelector("i");
+
+
+            function getSelectionTextAndActivateButton(range) {
+                if (range && range.length > 0) {
+                    const selectedText = quill.getText(range.index, range.length).trim();
+                    // console.log("Selected text:", selectedText);
+                    speechButton.classList.replace("text-muted", "text-primary")
+                    speechButton.disabled = false;
+                    speechButton.onclick = () => TTS(selectedText)
+                    // speechButton.addEventListener("click", TTS(selectedText));
+                } else {
+                    speechButton.disabled = true
+                    speechButton.classList.replace("text-primary", "text-muted")
+                    if (speechIcon.classList.contains("fa-pause")) {
+                        speechIcon.classList.replace("fa-pause", "fa-play");
+                    }
+                    speechSynthesis.cancel()
+                }
+            }
+
+
+
+            function TTS(text) {
+                console.log("jweoqwe")
+                speechIcon.classList.replace("fa-play", "fa-pause")
+
+                const utterace = new SpeechSynthesisUtterance(text);
+                speechSynthesis.speak(utterace)
+
+
+            }
+
+            console.log(speechSynthesis.getVoices())
+
+
         });
     </script>
-    <script type="module" src="../static/js/editorTTS.js"></script>
 
 
 </body>
