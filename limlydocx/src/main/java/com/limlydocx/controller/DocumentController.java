@@ -60,6 +60,7 @@ public class DocumentController {
     }
 
 
+
     /**
      * Saves the document content, generates a PDF, uploads it to Cloudinary, and stores the document info in the database.
      *
@@ -110,7 +111,7 @@ public class DocumentController {
 
             log.error("Error processing document: {} of format ({})", e.getMessage(), format);
             redirectAttributes.addFlashAttribute("error", status.getBody());
-5
+
         }
         return "redirect:/editor/" + editorId;
     }

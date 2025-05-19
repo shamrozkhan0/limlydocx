@@ -94,13 +94,12 @@
                 <button class="ql-clean"></button>
 
                 <!-- Tooltip Wrapper -->
-                <span data-bs-toggle="tooltip" data-bs-placement="top" title="Select some text to play speech">
+                <!-- <span data-bs-toggle="tooltip" data-bs-placement="top" title="Select some text to play speech">
                     <button id="ttsButton" class="border-0 text-muted bg-transparent d-flex align-items-center justify-content-center
                                  p-2 rounded-circle shadow-sm" disabled>
                         <i class="fas fa-play  fs-5"></i>
                     </button>
-                </span>
-
+                </span> -->
 
             </div>
 
@@ -135,19 +134,25 @@
 
 
     <!-- Editor Element -->
-    <div class="editor-container w-100 mt-4 d-flex align-items-start justify-content-center gap-2 px-3 px-md-0 ">
+    <div class="editor-container w-100 mt-4 d-flex align-items-start justify-content-center gap-2 px-3 px-md-0
+                 position-relative ">
         <!-- <div id="editor" name="content" class="w-100 border-0" th:utext="${document.content}"></div> -->
-        <div id="editor" name="content" class="w-100 border-0"></div>
+        <div id="editor" name="content" class="w-100 border-0 z-2"></div>
 
-        <div class="d-flex-items-center bg-white px-5 rounded gap-2 fs-4 tts-button-parent">
-            <!-- <button class="border-0 bg-transparent p-1">
-                <i class="fas fa-volume-high "></i>
-            </button> -->
+        <nav class="tts-navigations bg-white w-100  rounded  z-1 d-flex align-items-center justify-content-start px-2 gap-2"
+            aria-label="limlydocx tts button">
 
+            <button id="ttsButtonPlay" class="text-muted bg-transparent d-flex align-items-center justify-content-center p-2
+                    rounded-circle outline-none border-0" disabled>
+                <i class="fas fa-play  fs-5"></i>
+            </button>
 
+            <button id="ttsButtonCancle" class="border-0 outline-none d-flex align-items-center justify-content-center p-2
+                     bg-transparen text-danger">
+                <i class="fas fa-square fs-5"></i>
+            </button>
 
-
-        </div>
+        </nav>
 
     </div>
 
@@ -155,40 +160,42 @@
     <script th:src="@{/js/editor.js}"></script>
     <!-- <script th:src="@{/js/editorTTS.js}"></script> -->
 
-    <!-- <script type="module" src="../static/js/editorTTS.js"></script> -->
-    <script src="../static/js/editor.js"></script>
     <script src="../static/js/editor.js"></script>
     <script th:inline="javascript">
 
-        // Initialize Quill Editor
-        const quill = new Quill('#editor', {
-            theme: 'snow', // Snow theme for toolbar
-            modules: {
-                toolbar: { container: '#toolbar' }, // Fixed toolbar
-                // clipboard: true, // Use modified clipboard for inline styles
-                imageResize: {} // Enable image resizing
-            }
-        });
 
-
-        // Apply heading levels
-        window.setHeading = function (level) {
-            quill.format('header', level);
-            console.log(`Heading set to H${level}`);
-        };
-
-
-
-        // Register custom fonts
-        const Font = Quill.import('formats/font');
-        Font.whitelist = ["sans-serif", "serif", "monospace"];
-        Quill.register(Font, true);
-        quill.format("font", "serif");
 
 
 
         // Message Handler (Auto-hide messages after 5 seconds)
         document.addEventListener("DOMContentLoaded", () => {
+
+            // Initialize Quill Editor
+            const quill = new Quill('#editor', {
+                theme: 'snow', // Snow theme for toolbar
+                modules: {
+                    toolbar: { container: '#toolbar' }, // Fixed toolbar
+                    // clipboard: true, // Use modified clipboard for inline styles
+                    imageResize: {} // Enable image resizing
+                }
+            });
+
+
+
+            // Apply heading levels
+            window.setHeading = function (level) {
+                quill.format('header', level);
+                console.log(`Heading set to H${level}`);
+            };
+
+
+
+            // Register custom fonts
+            const Font = Quill.import('formats/font');
+            Font.whitelist = ["sans-serif", "serif", "monospace"];
+            Quill.register(Font, true);
+            quill.format("font", "serif");
+
 
             const spinnerEl = document.querySelector(".spinner-parent");
             const buttons = document.querySelectorAll("#getContent");
@@ -269,17 +276,18 @@
 
 
 
-
-            quill.on("selection-change", (range) => {
-                getSelectionTextAndActivateButton(range);
-            });
-
-
-
-            
+            // =========================== TTS ==============================
 
             const speechButton = document.querySelector("#ttsButton");
             const speechIcon = speechButton.querySelector("i");
+
+
+            quill.on("selection-change", (range) => {
+                speechButton.parentElement.classList.add("tts-shown")
+                speechButton.classList.replace("d-none", "d-flex")
+                getSelectionTextAndActivateButton(range);
+            });
+
 
 
             function getSelectionTextAndActivateButton(range) {
@@ -289,30 +297,50 @@
                     speechButton.classList.replace("text-muted", "text-primary")
                     speechButton.disabled = false;
                     speechButton.onclick = () => TTS(selectedText)
-                    // speechButton.addEventListener("click", TTS(selectedText));
                 } else {
+                    speechButton.parentElement.classList.remove("tts-shown")
                     speechButton.disabled = true
                     speechButton.classList.replace("text-primary", "text-muted")
-                    if (speechIcon.classList.contains("fa-pause")) {
-                        speechIcon.classList.replace("fa-pause", "fa-play");
-                    }
+
+                    setTimeout(() => {
+                        speechButton.classList.replace("d-flex", "d-none")
+                    }, 500)
+
                     speechSynthesis.cancel()
                 }
             }
 
 
 
+
+
             function TTS(text) {
+                console.log("ewjooqd")
+                const voice = speechSynthesis.getVoices();
+                const naturalVoice = voice.find(vocie => voice.name === "Google US English") || voice[0];
+
                 console.log("jweoqwe")
                 speechIcon.classList.replace("fa-play", "fa-pause")
 
                 const utterace = new SpeechSynthesisUtterance(text);
+                utterace.voice = naturalVoice;
                 speechSynthesis.speak(utterace)
 
 
+                utterace.onend = () => {
+                    if (speechIcon.classList.contains("fa-pause")) {
+                        speechIcon.classList.replace("fa-pause", "fa-play");
+                    }
+
+                    speechSynthesis.cancel()
+                }
             }
 
-            console.log(speechSynthesis.getVoices())
+
+
+
+            // =========================== TTS ==============================
+
 
 
         });
